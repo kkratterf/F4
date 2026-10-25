@@ -34,6 +34,15 @@ final class FloatingPanel: NSPanel {
         hasShadow = true
     }
 
+    /// Called on Esc. The panel does not close itself: its controller decides.
+    var onCancel: (() -> Void)?
+
+    /// Esc anywhere in the panel, including inside the search field, whose
+    /// field editor forwards `cancelOperation(_:)` up the responder chain.
+    override func cancelOperation(_ sender: Any?) {
+        onCancel?()
+    }
+
     // Borderless-looking panels refuse key status by default; the search field needs it.
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
