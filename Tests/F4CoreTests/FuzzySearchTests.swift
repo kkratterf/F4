@@ -52,6 +52,13 @@ final class FuzzySearchTests: XCTestCase {
         XCTAssertTrue(FuzzySearch.filter(memes, query: "jpg").isEmpty)
     }
 
+    func testMatchesTheSubfolder() {
+        let dog = Meme(url: URL(fileURLWithPath: "/m/dogs/fine.gif"), kind: .gif, modificationDate: .distantPast, category: "dogs")
+        let cat = Meme(url: URL(fileURLWithPath: "/m/fine.gif"), kind: .gif, modificationDate: .distantPast)
+        XCTAssertEqual(FuzzySearch.filter([cat, dog], query: "dogs").map(\.category), ["dogs"])
+        XCTAssertEqual(FuzzySearch.filter([cat, dog], query: "fine").count, 2)
+    }
+
     func testIsFastEnoughForThousandsOfMemes() {
         let names = (0..<5000).map { "some long meme name number \($0) with words" }
         measure {

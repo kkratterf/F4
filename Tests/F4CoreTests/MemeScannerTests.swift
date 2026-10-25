@@ -39,12 +39,28 @@ final class MemeScannerTests: XCTestCase {
         XCTAssertEqual(memes.map(\.name), ["apple", "Banana", "meme 2", "meme 10"])
     }
 
-    func testSkipsSubfolders() throws {
-        let sub = folder.appendingPathComponent("sub", isDirectory: true)
+    private func touch(_ name: String, in subfolder: String) throws {
+        let sub = folder.appendingPathComponent(subfolder, isDirectory: true)
         try FileManager.default.createDirectory(at: sub, withIntermediateDirectories: true)
-        try Data().write(to: sub.appendingPathComponent("deep.gif"))
+        try Data([0x47]).write(to: sub.appendingPathComponent(name))
+    }
+
+    func testSubfoldersBecomeCategories() throws {
         try touch("top.gif")
-        XCTAssertEqual(try MemeScanner.scan(folder: folder).map(\.name), ["top"])
+        try touch("fine.gif", in: "dogs")
+        try touch("blink.png", in: "reactions/guys")
+        let memes = try MemeScanner.scan(folder: folder)
+        XCTAssertEqual(memes.map(\.name), ["top", "fine", "blink"])
+        XCTAssertEqual(memes.map(\.category), [nil, "dogs", "reactions/guys"])
+        XCTAssertEqual(memes[2].searchText, "reactions guys blink")
+        XCTAssertEqual(memes[0].searchText, "top")
+    }
+
+    func testSkipsHiddenFoldersAndTooDeepOnes() throws {
+        try touch("secret.gif", in: ".hidden")
+        try touch("deep.gif", in: "a/b/c/d/e")
+        try touch("ok.gif", in: "a/b/c/d")
+        XCTAssertEqual(try MemeScanner.scan(folder: folder).map(\.name), ["ok"])
     }
 
     func testMissingFolderThrows() {

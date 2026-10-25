@@ -66,7 +66,7 @@ struct MemeCell: View {
             }
             .contentShape(Rectangle())
             .onHover { isHovered = $0 }
-            .help(meme.name)
+            .help(meme.category.map { "\($0)/\(meme.name)" } ?? meme.name)
             .accessibilityElement()
             .accessibilityLabel(meme.name)
             .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)

@@ -47,7 +47,7 @@ struct SettingsView: View {
                     }
                     .disabled(settings.isUsingDefaultFolder)
                 }
-                Text("F4 shows the GIF, PNG and JPEG files in this folder and updates when you add or remove one.")
+                Text("F4 shows the GIF, PNG and JPEG files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
