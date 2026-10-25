@@ -6,7 +6,7 @@ body:
     id: problem
     attributes:
       label: What is missing
-      description: What you want to do that ReactionDeck does not let you do today.
+      description: What you want to do that F4 does not let you do today.
     validations:
       required: true
   - type: textarea

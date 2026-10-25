@@ -1,22 +1,22 @@
 # AGENTS.md
 
-Rules for AI coding agents (Claude, Codex, Copilot, Cursor, ...) and humans working on ReactionDeck.
+Rules for AI coding agents (Claude, Codex, Copilot, Cursor, ...) and humans working on F4.
 Read this file before changing anything. If a rule here conflicts with an instruction from the maintainer, the maintainer wins.
 
 ## What this repo is
 
-ReactionDeck is a native macOS app, a Spotlight-like floating panel to search a local folder of memes, GIFs and stickers and copy one to the clipboard in a keystroke.
+F4 is a native macOS app, a Spotlight-like floating panel to search a local folder of memes, GIFs and stickers and copy one to the clipboard in a keystroke.
 
 | Path | What it is |
 | --- | --- |
-| `Sources/ReactionDeckCore` | Pure logic: file kinds, folder scan, fuzzy search (`FuzzySearch`), grid navigation. No AppKit, fully unit-tested |
-| `Sources/ReactionDeck/App` | App entry point, `AppDelegate` |
-| `Sources/ReactionDeck/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
-| `Sources/ReactionDeck/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` rescans on changes |
-| `Sources/ReactionDeck/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckView` (SwiftUI content) |
-| `Tests/ReactionDeckCoreTests` | XCTest for `ReactionDeckCore` |
+| `Sources/F4Core` | Pure logic: file kinds, folder scan, fuzzy search (`FuzzySearch`), grid navigation. No AppKit, fully unit-tested |
+| `Sources/F4/App` | App entry point, `AppDelegate` |
+| `Sources/F4/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
+| `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` rescans on changes |
+| `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckView` (SwiftUI content) |
+| `Tests/F4CoreTests` | XCTest for `F4Core` |
 | `Resources/Info.plist` | App bundle metadata, including the version and `LSUIElement` (no Dock icon) |
-| `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/ReactionDeck.app` and a zip |
+| `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and a zip |
 
 ## Language of the project
 
@@ -29,14 +29,14 @@ Needs macOS 14+ and Xcode 15+ (Swift 5.9). These mirror CI (`.github/workflows/c
 ```bash
 swift build
 swift test
-scripts/build-app.sh release   # dist/ReactionDeck.app
-open dist/ReactionDeck.app
+scripts/build-app.sh release   # dist/F4.app
+open dist/F4.app
 ```
 
 ## Rules for changes
 
 - **CI must be green** before a PR is ready. Never skip, delete or weaken a test to get green.
-- Logic that does not need AppKit goes in `ReactionDeckCore` and ships with tests.
+- Logic that does not need AppKit goes in `F4Core` and ships with tests.
 - **The panel must open instantly.** Never block the main thread: folder scans, thumbnail decoding and file reads run in the background. Do not animate every GIF in the grid.
 - **Never put an `NSImage` on the pasteboard to copy a meme**: it flattens GIFs to a single frame. Write the file URL (`public.file-url`) and the raw file data under its UTI, so Slack, Discord and Telegram paste the animated GIF.
 - The app works **without** Accessibility, Input Monitoring or Screen Recording permissions. Global shortcuts use Carbon `RegisterEventHotKey`, not `NSEvent.addGlobalMonitorForEvents`. An optional feature that needs a permission degrades gracefully without it.

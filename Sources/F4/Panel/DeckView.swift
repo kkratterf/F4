@@ -1,4 +1,4 @@
-import ReactionDeckCore
+import F4Core
 import SwiftUI
 
 /// The content of the panel: the search field on top, the memes below.

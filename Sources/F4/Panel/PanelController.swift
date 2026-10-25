@@ -8,7 +8,7 @@ import SwiftUI
 ///
 /// It hides on Esc and as soon as the panel loses key status, which is what
 /// happens when the user clicks outside it or switches app. The panel never
-/// activates ReactionDeck, so the app the user was in keeps the focus.
+/// activates F4, so the app the user was in keeps the focus.
 @MainActor
 final class PanelController: NSObject, NSWindowDelegate {
     static let size = NSSize(width: 720, height: 460)

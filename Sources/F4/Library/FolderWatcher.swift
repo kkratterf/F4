@@ -10,7 +10,7 @@ final class FolderWatcher {
     private let url: URL
     private let delay: TimeInterval
     private let onChange: @Sendable () -> Void
-    private let queue = DispatchQueue(label: "ReactionDeck.FolderWatcher", qos: .utility)
+    private let queue = DispatchQueue(label: "F4.FolderWatcher", qos: .utility)
     private var source: DispatchSourceFileSystemObject?
     private var pending: DispatchWorkItem?
 

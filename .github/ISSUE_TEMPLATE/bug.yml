@@ -31,5 +31,5 @@ body:
   - type: input
     id: version
     attributes:
-      label: ReactionDeck version
+      label: F4 version
       description: From the release you downloaded, or the commit you built.

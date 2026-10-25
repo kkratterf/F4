@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds ReactionDeck.app (and a zip of it) from the Swift package.
+# Builds F4.app (and a zip of it) from the Swift package.
 # Usage: scripts/build-app.sh [debug|release]   (default: release)
 # Environment: SIGN_IDENTITY  codesign identity (default "-", ad-hoc)
 set -euo pipefail
@@ -7,7 +7,7 @@ set -euo pipefail
 CONFIG="${1:-release}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 DIST="$ROOT/dist"
-APP="$DIST/ReactionDeck.app"
+APP="$DIST/F4.app"
 
 cd "$ROOT"
 # Universal when the toolchain can; otherwise the host architecture only. The bin path
@@ -23,12 +23,12 @@ BIN_DIR="$(swift build -c "$CONFIG" ${ARCH_FLAGS[@]+"${ARCH_FLAGS[@]}"} --show-b
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN_DIR/ReactionDeck" "$APP/Contents/MacOS/ReactionDeck"
+cp "$BIN_DIR/F4" "$APP/Contents/MacOS/F4"
 if [ "$CONFIG" = "release" ]; then
   # Debug info and local symbols are only for crash symbolication; must run before codesign.
-  strip -S -x "$APP/Contents/MacOS/ReactionDeck"
+  strip -S -x "$APP/Contents/MacOS/F4"
 fi
-echo "Architectures: $(lipo -archs "$APP/Contents/MacOS/ReactionDeck" 2>/dev/null || echo unknown)"
+echo "Architectures: $(lipo -archs "$APP/Contents/MacOS/F4" 2>/dev/null || echo unknown)"
 
 cp "$ROOT/Resources/Info.plist" "$APP/Contents/Info.plist"
 
@@ -42,7 +42,7 @@ fi
 codesign --verify --strict --verbose=1 "$APP"
 
 VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")"
-(cd "$DIST" && rm -f "ReactionDeck-$VERSION.zip" && ditto -c -k --keepParent ReactionDeck.app "ReactionDeck-$VERSION.zip")
+(cd "$DIST" && rm -f "F4-$VERSION.zip" && ditto -c -k --keepParent F4.app "F4-$VERSION.zip")
 
 echo "Built $APP"
-echo "Zipped $DIST/ReactionDeck-$VERSION.zip"
+echo "Zipped $DIST/F4-$VERSION.zip"

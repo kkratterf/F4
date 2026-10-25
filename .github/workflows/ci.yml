@@ -35,26 +35,26 @@ jobs:
 
       - name: Check the app bundle
         run: |
-          app=dist/ReactionDeck.app
-          lipo -archs "$app/Contents/MacOS/ReactionDeck"
+          app=dist/F4.app
+          lipo -archs "$app/Contents/MacOS/F4"
           codesign --verify --strict --verbose=1 "$app"
           test "$(/usr/libexec/PlistBuddy -c 'Print :LSUIElement' "$app/Contents/Info.plist")" = true
           # Smoke test: the app must launch and stay up.
-          "$app/Contents/MacOS/ReactionDeck" &
+          "$app/Contents/MacOS/F4" &
           pid=$!
           sleep 8
           if ! kill -0 "$pid" 2>/dev/null; then
             wait "$pid" || true
-            echo "::error::ReactionDeck.app exited at launch"
+            echo "::error::F4.app exited at launch"
             exit 1
           fi
           kill "$pid"
-          echo "::notice::ReactionDeck.app $(lipo -archs "$app/Contents/MacOS/ReactionDeck"), bundle $(du -sk "$app" | cut -f1) KB"
+          echo "::notice::F4.app $(lipo -archs "$app/Contents/MacOS/F4"), bundle $(du -sk "$app" | cut -f1) KB"
 
-      - name: Upload ReactionDeck.app
+      - name: Upload F4.app
         uses: actions/upload-artifact@v4
         with:
-          name: ReactionDeck-app
+          name: F4-app
           path: dist/*.zip
           retention-days: 14
 

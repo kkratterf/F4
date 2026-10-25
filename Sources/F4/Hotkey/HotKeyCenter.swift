@@ -55,9 +55,9 @@ struct HotKeyCombo: Equatable {
 final class HotKeyCenter {
     static let shared = HotKeyCenter()
 
-    /// Four-char code that marks our hot keys ("RDCK"), so events for hot
+    /// Four-char code that marks our hot keys ("F4HK"), so events for hot
     /// keys registered by other code are passed on untouched.
-    fileprivate static let signature: OSType = 0x5244_434B
+    fileprivate static let signature: OSType = 0x4634_484B
 
     private struct Registration {
         let numericID: UInt32

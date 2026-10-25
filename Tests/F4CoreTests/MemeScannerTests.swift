@@ -1,5 +1,5 @@
 import XCTest
-@testable import ReactionDeckCore
+@testable import F4Core
 
 final class MemeScannerTests: XCTestCase {
     private var folder: URL!
