@@ -6,11 +6,18 @@ final class StatusItemController: NSObject {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let onOpen: () -> Void
     private let onOpenFolder: () -> Void
+    private let onSettings: () -> Void
 
     /// - Parameter shortcut: shown next to "Open F4", e.g. "⌘⇧M".
-    init(shortcut: String, onOpen: @escaping () -> Void, onOpenFolder: @escaping () -> Void) {
+    init(
+        shortcut: String,
+        onOpen: @escaping () -> Void,
+        onOpenFolder: @escaping () -> Void,
+        onSettings: @escaping () -> Void
+    ) {
         self.onOpen = onOpen
         self.onOpenFolder = onOpenFolder
+        self.onSettings = onSettings
         super.init()
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "face.smiling", accessibilityDescription: "F4")
@@ -29,11 +36,14 @@ final class StatusItemController: NSObject {
         shortcutHint.isEnabled = false
         let folder = NSMenuItem(title: "Open Meme Folder", action: #selector(openFolder(_:)), keyEquivalent: "")
         folder.target = self
+        let settings = NSMenuItem(title: "Settings…", action: #selector(openSettings(_:)), keyEquivalent: ",")
+        settings.target = self
         let quit = NSMenuItem(title: "Quit F4", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        menu.items = [open, shortcutHint, .separator(), folder, .separator(), quit]
+        menu.items = [open, shortcutHint, .separator(), folder, settings, .separator(), quit]
         return menu
     }
 
     @objc private func open(_ sender: Any?) { onOpen() }
     @objc private func openFolder(_ sender: Any?) { onOpenFolder() }
+    @objc private func openSettings(_ sender: Any?) { onSettings() }
 }

@@ -9,12 +9,22 @@ final class MemeLibrary: ObservableObject {
     /// Set when the folder cannot be read.
     @Published private(set) var error: String?
 
-    let folder: URL
+    @Published private(set) var folder: URL
     private var scanTask: Task<Void, Never>?
     private var watcher: FolderWatcher?
 
     init(folder: URL = MemeScanner.defaultFolder) {
         self.folder = folder
+    }
+
+    /// Switches to another folder: stops watching the old one and scans the new one.
+    func setFolder(_ url: URL) {
+        guard url.standardizedFileURL != folder.standardizedFileURL else { return }
+        watcher?.stop()
+        watcher = nil
+        folder = url
+        memes = []
+        reload()
     }
 
     /// Rescans the folder off the main thread and publishes the result.

@@ -1,4 +1,5 @@
 import AppKit
+import Combine
 import SwiftUI
 
 @main
@@ -19,12 +20,20 @@ struct F4App: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var statusItem: StatusItemController?
-    private let library = MemeLibrary()
+    private let settings = AppSettings.shared
+    private lazy var library = MemeLibrary(folder: settings.memeFolder)
+    private lazy var settingsWindow = SettingsWindowController(settings: settings)
+    private var cancellables: Set<AnyCancellable> = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // No Dock icon and no menu bar of our own (also set via LSUIElement in the bundle).
         NSApp.setActivationPolicy(.accessory)
         library.reload()
+        settings.$memeFolder
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] url in self?.library.setFolder(url) }
+            .store(in: &cancellables)
         let panel = PanelController(library: library)
         self.panel = panel
         registerToggleShortcut()
@@ -34,7 +43,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onOpenFolder: { [weak self] in
                 guard let self else { return }
                 NSWorkspace.shared.open(self.library.folder)
-            }
+            },
+            onSettings: { [weak self] in self?.settingsWindow.show() }
         )
         // Opening the app from Finder or Spotlight shows the panel right away.
         panel.show()
