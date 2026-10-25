@@ -1,4 +1,5 @@
 import AppKit
+import Carbon.HIToolbox
 import F4Core
 import SwiftUI
 
@@ -17,6 +18,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     private let panel: FloatingPanel
     private let library: MemeLibrary
     private let model: DeckModel
+    private var keyMonitor: Any?
 
     init(library: MemeLibrary) {
         self.library = library
@@ -47,11 +49,45 @@ final class PanelController: NSObject, NSWindowDelegate {
     func show() {
         model.prepareForShow()
         position(on: screenWithMouse())
+        startArrowKeys()
         panel.makeKeyAndOrderFront(nil)
     }
 
     func hide() {
+        stopArrowKeys()
         panel.orderOut(nil)
+    }
+
+    // MARK: Arrow keys
+
+    /// Arrow keys move the selection in the grid while the search field keeps
+    /// the focus, so the user can type and navigate without switching. A local
+    /// monitor sees the key before the field editor does; it only exists
+    /// while the panel is open and only takes events aimed at the panel.
+    private func startArrowKeys() {
+        guard keyMonitor == nil else { return }
+        keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
+            guard let self, event.window === self.panel,
+                  let direction = Self.direction(for: event) else { return event }
+            return self.model.move(direction) ? nil : event
+        }
+    }
+
+    private func stopArrowKeys() {
+        if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
+        keyMonitor = nil
+    }
+
+    private static func direction(for event: NSEvent) -> GridDirection? {
+        // Leave ⌘/⌥-arrows to the text field (jump to start/end, word by word).
+        guard event.modifierFlags.intersection([.command, .option, .control]).isEmpty else { return nil }
+        switch Int(event.keyCode) {
+        case kVK_LeftArrow: return .left
+        case kVK_RightArrow: return .right
+        case kVK_UpArrow: return .up
+        case kVK_DownArrow: return .down
+        default: return nil
+        }
     }
 
     // MARK: NSWindowDelegate

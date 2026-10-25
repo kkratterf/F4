@@ -36,6 +36,14 @@ final class DeckModel: ObservableObject {
         results.indices.contains(selection) ? results[selection] : nil
     }
 
+    /// Moves the selection in the grid. Returns false when there is nothing to select.
+    @discardableResult
+    func move(_ direction: GridDirection) -> Bool {
+        guard !results.isEmpty else { return false }
+        selection = GridNavigation.move(direction, from: selection, count: results.count, columns: Self.columns)
+        return true
+    }
+
     /// Called when the panel opens: start from a clean search.
     func prepareForShow() {
         query = ""
