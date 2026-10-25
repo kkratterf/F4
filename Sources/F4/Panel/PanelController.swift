@@ -16,12 +16,14 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     private let panel: FloatingPanel
     private let library: MemeLibrary
+    private let model: DeckModel
 
     init(library: MemeLibrary) {
         self.library = library
+        model = DeckModel(library: library)
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
-        let deck = DeckView(library: library, onPick: { [weak self] meme in self?.pick(meme) })
+        let deck = DeckView(model: model, library: library, onPick: { [weak self] meme in self?.pick(meme) })
         let hosting = NSHostingView(rootView: deck)
         hosting.frame = NSRect(origin: .zero, size: Self.size)
         hosting.autoresizingMask = [.width, .height]
@@ -43,6 +45,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     func show() {
+        model.prepareForShow()
         position(on: screenWithMouse())
         panel.makeKeyAndOrderFront(nil)
     }

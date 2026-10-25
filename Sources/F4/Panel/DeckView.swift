@@ -3,10 +3,17 @@ import SwiftUI
 
 /// The content of the panel: the search field on top, the memes below.
 struct DeckView: View {
+    @ObservedObject var model: DeckModel
     @ObservedObject var library: MemeLibrary
     /// The primary action: copy the meme and hide the panel.
     let onPick: (Meme) -> Void
-    @State private var query = ""
+
+    @FocusState private var searchFocused: Bool
+
+    private let gridColumns = Array(
+        repeating: GridItem(.flexible(), spacing: 10),
+        count: DeckModel.columns
+    )
 
     var body: some View {
         VStack(spacing: 0) {
@@ -14,16 +21,16 @@ struct DeckView: View {
                 Image(systemName: "magnifyingglass")
                     .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(.secondary)
-                TextField("Search memes", text: $query)
+                TextField("Search memes", text: $model.query)
                     .textFieldStyle(.plain)
                     .font(.system(size: 24, weight: .regular))
+                    .focused($searchFocused)
+                    .onSubmit {
+                        if let meme = model.selectedMeme { onPick(meme) }
+                    }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
-            // Enter copies the best match until keyboard navigation picks another (#9).
-            .onSubmit {
-                if let first = results.first { onPick(first) }
-            }
 
             Divider()
 
@@ -32,10 +39,8 @@ struct DeckView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(VisualEffectBackground())
-    }
-
-    private var results: [Meme] {
-        FuzzySearch.filter(library.memes, query: query)
+        .onAppear { searchFocused = true }
+        .onChange(of: model.openCount) { searchFocused = true }
     }
 
     @ViewBuilder
@@ -52,15 +57,30 @@ struct DeckView: View {
                 systemImage: "photo.on.rectangle.angled",
                 description: Text("Drop GIFs, PNGs and JPEGs into \(library.folder.path(percentEncoded: false)).")
             )
-        } else if results.isEmpty {
-            ContentUnavailableView.search(text: query)
+        } else if model.results.isEmpty {
+            ContentUnavailableView.search(text: model.query)
         } else {
-            // The thumbnail grid replaces this list (#7).
-            List(results) { meme in
-                Button(meme.name) { onPick(meme) }
-                    .buttonStyle(.plain)
+            grid
+        }
+    }
+
+    private var grid: some View {
+        ScrollViewReader { proxy in
+            ScrollView {
+                LazyVGrid(columns: gridColumns, spacing: 10) {
+                    ForEach(Array(model.results.enumerated()), id: \.element.id) { index, meme in
+                        MemeCell(meme: meme, isSelected: index == model.selection)
+                            .id(meme.id)
+                            .onTapGesture { onPick(meme) }
+                    }
+                }
+                .padding(14)
             }
-            .scrollContentBackground(.hidden)
+            .onChange(of: model.selection) {
+                if let meme = model.selectedMeme {
+                    proxy.scrollTo(meme.id)
+                }
+            }
         }
     }
 }
