@@ -26,4 +26,13 @@ final class MemeKindTests: XCTestCase {
         XCTAssertEqual(MemeKind.png.typeIdentifier, "public.png")
         XCTAssertEqual(MemeKind.jpeg.typeIdentifier, "public.jpeg")
     }
+
+    func testPasteboardTypesKeepTheFileAndNeverAFlatImage() {
+        XCTAssertEqual(MemeKind.gif.pasteboardTypes, ["public.file-url", "com.compuserve.gif"])
+        for kind in MemeKind.allCases {
+            XCTAssertEqual(kind.pasteboardTypes.first, "public.file-url")
+            XCTAssertFalse(kind.pasteboardTypes.contains("public.tiff"))
+            XCTAssertFalse(kind.pasteboardTypes.contains("com.apple.NSImage"))
+        }
+    }
 }

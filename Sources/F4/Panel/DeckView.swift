@@ -4,6 +4,8 @@ import SwiftUI
 /// The content of the panel: the search field on top, the memes below.
 struct DeckView: View {
     @ObservedObject var library: MemeLibrary
+    /// The primary action: copy the meme and hide the panel.
+    let onPick: (Meme) -> Void
     @State private var query = ""
 
     var body: some View {
@@ -18,6 +20,10 @@ struct DeckView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
+            // Enter copies the best match until keyboard navigation picks another (#9).
+            .onSubmit {
+                if let first = results.first { onPick(first) }
+            }
 
             Divider()
 
@@ -51,7 +57,8 @@ struct DeckView: View {
         } else {
             // The thumbnail grid replaces this list (#7).
             List(results) { meme in
-                Text(meme.name)
+                Button(meme.name) { onPick(meme) }
+                    .buttonStyle(.plain)
             }
             .scrollContentBackground(.hidden)
         }

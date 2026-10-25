@@ -13,6 +13,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Sources/F4/App` | App entry point, `AppDelegate` |
 | `Sources/F4/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
 | `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` rescans on changes |
+| `Sources/F4/Clipboard` | `MemeClipboard`: copies the file URL + raw bytes, never an `NSImage` (keeps GIFs animated) |
 | `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckView` (SwiftUI content) |
 | `Tests/F4CoreTests` | XCTest for `F4Core` |
 | `Resources/Info.plist` | App bundle metadata, including the version and `LSUIElement` (no Dock icon) |
