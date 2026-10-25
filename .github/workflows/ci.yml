@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and test
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Swift version
+        run: swift --version
+
+      - name: Build
+        run: swift build -c debug
+
+      - name: Test
+        run: swift test
+
+      - name: Build the app bundle
+        run: scripts/build-app.sh release
+
+      - name: Check the app bundle
+        run: |
+          app=dist/ReactionDeck.app
+          lipo -archs "$app/Contents/MacOS/ReactionDeck"
+          codesign --verify --strict --verbose=1 "$app"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :LSUIElement' "$app/Contents/Info.plist")" = true
+          # Smoke test: the app must launch and stay up.
+          "$app/Contents/MacOS/ReactionDeck" &
+          pid=$!
+          sleep 8
+          if ! kill -0 "$pid" 2>/dev/null; then
+            wait "$pid" || true
+            echo "::error::ReactionDeck.app exited at launch"
+            exit 1
+          fi
+          kill "$pid"
+          echo "::notice::ReactionDeck.app $(lipo -archs "$app/Contents/MacOS/ReactionDeck"), bundle $(du -sk "$app" | cut -f1) KB"
+
+      - name: Upload ReactionDeck.app
+        uses: actions/upload-artifact@v4
+        with:
+          name: ReactionDeck-app
+          path: dist/*.zip
+          retention-days: 14
+
+  shellcheck:
+    name: Lint scripts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: ShellCheck
+        run: shellcheck scripts/*.sh
