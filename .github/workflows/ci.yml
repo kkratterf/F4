@@ -39,6 +39,7 @@ jobs:
           lipo -archs "$app/Contents/MacOS/F4"
           codesign --verify --strict --verbose=1 "$app"
           test "$(/usr/libexec/PlistBuddy -c 'Print :LSUIElement' "$app/Contents/Info.plist")" = true
+          plutil -convert json -o - "$app/Contents/Resources/it.lproj/Localizable.strings" | grep -q "Cerca meme"
           # Smoke test: the app must launch and stay up.
           "$app/Contents/MacOS/F4" &
           pid=$!
@@ -67,3 +68,6 @@ jobs:
 
       - name: ShellCheck
         run: shellcheck scripts/*.sh
+
+      - name: String Catalog
+        run: python3 scripts/check-strings.py

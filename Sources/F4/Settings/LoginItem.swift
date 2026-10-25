@@ -19,7 +19,7 @@ final class LoginItem: ObservableObject {
         let status = SMAppService.mainApp.status
         isEnabled = status == .enabled
         message = status == .requiresApproval
-            ? "Allow F4 in System Settings → General → Login Items."
+            ? String(localized: "Allow F4 in System Settings → General → Login Items.")
             : nil
     }
 

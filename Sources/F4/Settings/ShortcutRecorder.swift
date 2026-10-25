@@ -15,10 +15,16 @@ struct ShortcutRecorder: View {
     var body: some View {
         HStack {
             Button(action: toggleRecording) {
-                Text(verbatim: isRecording ? "Press the shortcut…" : combo.displayString)
-                    .frame(minWidth: 140)
+                Group {
+                    if isRecording {
+                        Text("Press the shortcut…")
+                    } else {
+                        Text(verbatim: combo.displayString)
+                    }
+                }
+                .frame(minWidth: 140)
             }
-            .help(isRecording ? "Esc to cancel" : "Click to record a new shortcut")
+            .help(isRecording ? LocalizedStringKey("Esc to cancel") : LocalizedStringKey("Click to record a new shortcut"))
             Button("Reset") { combo = defaultCombo }
                 .disabled(combo == defaultCombo || isRecording)
         }

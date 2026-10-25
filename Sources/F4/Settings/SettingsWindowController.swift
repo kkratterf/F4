@@ -21,7 +21,7 @@ final class SettingsWindowController {
     func show() {
         if window == nil {
             let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsRoot(settings: settings, state: state)))
-            window.title = "F4 Settings"
+            window.title = String(localized: "F4 Settings")
             window.styleMask = [.titled, .closable]
             window.isReleasedWhenClosed = false
             window.center()

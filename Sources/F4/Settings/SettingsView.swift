@@ -93,8 +93,8 @@ struct SettingsView: View {
         panel.canCreateDirectories = true
         panel.allowsMultipleSelection = false
         panel.directoryURL = settings.memeFolder
-        panel.prompt = "Use Folder"
-        panel.message = "Choose the folder with your memes"
+        panel.prompt = String(localized: "Use Folder")
+        panel.message = String(localized: "Choose the folder with your memes")
         if panel.runModal() == .OK, let url = panel.url {
             settings.memeFolder = url
         }

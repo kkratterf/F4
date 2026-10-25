@@ -78,7 +78,9 @@ struct DeckView: View {
                         .onTapGesture { onPick(meme) }
                         .contextMenu {
                             Button("Copy") { onPick(meme) }
-                            Button(model.usage.isFavourite(meme) ? "Remove from Favourites" : "Add to Favourites") {
+                            Button(model.usage.isFavourite(meme)
+                                ? LocalizedStringKey("Remove from Favourites")
+                                : LocalizedStringKey("Add to Favourites")) {
                                 model.usage.toggleFavourite(meme)
                             }
                             Divider()
