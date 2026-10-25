@@ -4,9 +4,21 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
+    @StateObject private var loginItem = LoginItem()
 
     var body: some View {
         Form {
+            Section("General") {
+                Toggle("Open F4 at login", isOn: Binding(
+                    get: { loginItem.isEnabled },
+                    set: { loginItem.setEnabled($0) }
+                ))
+                if let message = loginItem.message {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
             Section("Meme folder") {
                 LabeledContent("Folder") {
                     Text(settings.memeFolder.path(percentEncoded: false))
@@ -31,6 +43,10 @@ struct SettingsView: View {
             }
         }
         .formStyle(.grouped)
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+            // The user may have changed it in System Settings meanwhile.
+            loginItem.refresh()
+        }
         .frame(width: 520)
         .fixedSize(horizontal: false, vertical: true)
     }
