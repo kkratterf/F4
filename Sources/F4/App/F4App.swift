@@ -18,6 +18,7 @@ struct F4App: App {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
+    private var statusItem: StatusItemController?
     private let library = MemeLibrary()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -27,6 +28,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let panel = PanelController(library: library)
         self.panel = panel
         registerToggleShortcut()
+        statusItem = StatusItemController(
+            shortcut: HotKeyCombo.toggleDefault.displayString,
+            onOpen: { [weak self] in self?.panel?.show() },
+            onOpenFolder: { [weak self] in
+                guard let self else { return }
+                NSWorkspace.shared.open(self.library.folder)
+            }
+        )
         // Opening the app from Finder or Spotlight shows the panel right away.
         panel.show()
     }
