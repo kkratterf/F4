@@ -7,6 +7,7 @@ struct SettingsView: View {
     /// Set when macOS refused the shortcut, usually because another app owns it.
     let shortcutError: String?
     @StateObject private var loginItem = LoginItem()
+    @State private var isTrusted = AutoPaster.isTrusted
 
     var body: some View {
         Form {
@@ -27,6 +28,29 @@ struct SettingsView: View {
                     Text(message)
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                }
+            }
+            Section("Paste") {
+                Toggle("Paste into the front app after copying", isOn: Binding(
+                    get: { settings.pasteAfterCopy },
+                    set: { isOn in
+                        settings.pasteAfterCopy = isOn
+                        if isOn { isTrusted = AutoPaster.requestTrust() }
+                    }
+                ))
+                if settings.pasteAfterCopy && !isTrusted {
+                    HStack {
+                        Text("F4 needs Accessibility access to press ⌘V for you. Until then it only copies.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Open Settings") { AutoPaster.openAccessibilitySettings() }
+                    }
+                } else {
+                    Text("Off: F4 copies the meme and you paste it with ⌘V.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .opacity(settings.pasteAfterCopy ? 0 : 1)
                 }
             }
             Section("Meme folder") {
@@ -54,8 +78,9 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
-            // The user may have changed it in System Settings meanwhile.
+            // The user may have changed these in System Settings meanwhile.
             loginItem.refresh()
+            isTrusted = AutoPaster.isTrusted
         }
         .frame(width: 520)
         .fixedSize(horizontal: false, vertical: true)

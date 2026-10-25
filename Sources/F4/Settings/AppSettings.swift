@@ -10,6 +10,7 @@ final class AppSettings: ObservableObject {
         static let memeFolder = "memeFolderPath"
         static let shortcutKeyCode = "toggleShortcutKeyCode"
         static let shortcutModifiers = "toggleShortcutModifiers"
+        static let pasteAfterCopy = "pasteAfterCopy"
     }
 
     private let defaults: UserDefaults
@@ -27,8 +28,14 @@ final class AppSettings: ObservableObject {
         }
     }
 
+    /// Send ⌘V to the frontmost app after copying. Needs Accessibility; off by default.
+    @Published var pasteAfterCopy: Bool {
+        didSet { defaults.set(pasteAfterCopy, forKey: Key.pasteAfterCopy) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
         if let path = defaults.string(forKey: Key.memeFolder), !path.isEmpty {
             memeFolder = URL(fileURLWithPath: path, isDirectory: true)
         } else {
