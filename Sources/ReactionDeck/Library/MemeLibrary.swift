@@ -1,7 +1,8 @@
 import Foundation
 import ReactionDeckCore
 
-/// The memes the panel shows, read from the meme folder in the background.
+/// The memes the panel shows, read from the meme folder in the background
+/// and read again whenever the folder changes.
 @MainActor
 final class MemeLibrary: ObservableObject {
     @Published private(set) var memes: [Meme] = []
@@ -10,6 +11,7 @@ final class MemeLibrary: ObservableObject {
 
     let folder: URL
     private var scanTask: Task<Void, Never>?
+    private var watcher: FolderWatcher?
 
     init(folder: URL = MemeScanner.defaultFolder) {
         self.folder = folder
@@ -32,10 +34,26 @@ final class MemeLibrary: ObservableObject {
             case .success(let memes):
                 self.memes = memes
                 self.error = nil
+                self.watchIfNeeded()
             case .failure(let error):
                 self.memes = []
                 self.error = error.localizedDescription
             }
+        }
+    }
+
+    /// Starts the folder watcher once the folder exists (the first scan creates
+    /// it), and again if the folder was deleted and has been recreated since.
+    private func watchIfNeeded() {
+        if let watcher {
+            if !watcher.isWatching { watcher.start() }
+            return
+        }
+        let watcher = FolderWatcher(url: folder) { [weak self] in
+            Task { @MainActor in self?.reload() }
+        }
+        if watcher.start() {
+            self.watcher = watcher
         }
     }
 }

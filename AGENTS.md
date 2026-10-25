@@ -12,7 +12,7 @@ ReactionDeck is a native macOS app, a Spotlight-like floating panel to search a 
 | `Sources/ReactionDeckCore` | Pure logic: file kinds, search, grid navigation. No AppKit, fully unit-tested |
 | `Sources/ReactionDeck/App` | App entry point, `AppDelegate` |
 | `Sources/ReactionDeck/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
-| `Sources/ReactionDeck/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background |
+| `Sources/ReactionDeck/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` rescans on changes |
 | `Sources/ReactionDeck/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckView` (SwiftUI content) |
 | `Tests/ReactionDeckCoreTests` | XCTest for `ReactionDeckCore` |
 | `Resources/Info.plist` | App bundle metadata, including the version and `LSUIElement` (no Dock icon) |
