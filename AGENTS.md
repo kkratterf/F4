@@ -18,12 +18,13 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Sources/F4/Thumbnails` | `ThumbnailCache`: ImageIO thumbnails (first GIF frame) decoded off the main thread, in an `NSCache` |
 | `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckModel` (query, results, selection, arrow-key moves), `DeckView` + `MemeCell` (SwiftUI grid), `AnimatedImageView` (plays the hovered/selected GIF) |
 | `Tests/F4CoreTests` | XCTest for `F4Core` |
+| `Sources/F4/Resources` | `Localizable.xcstrings`: String Catalog, English keys with Italian translations |
 | `Resources/Info.plist` | App bundle metadata, including the version and `LSUIElement` (no Dock icon) |
 | `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and a zip |
 
 ## Language of the project
 
-Code, comments, doc comments, commit messages, issues, PR titles and PR descriptions: **English**.
+Code, comments, doc comments, commit messages, issues, PR titles and PR descriptions: **English**. The app UI is English with an Italian translation, used when macOS runs in Italian.
 
 ## Build and test
 
@@ -43,6 +44,7 @@ open dist/F4.app
 - **The panel must open instantly.** Never block the main thread: folder scans, thumbnail decoding and file reads run in the background. Do not animate every GIF in the grid.
 - **Never put an `NSImage` on the pasteboard to copy a meme**: it flattens GIFs to a single frame. Write the file URL (`public.file-url`) and the raw file data under its UTI, so Slack, Discord and Telegram paste the animated GIF.
 - The app works **without** Accessibility, Input Monitoring or Screen Recording permissions. Global shortcuts use Carbon `RegisterEventHotKey`, not `NSEvent.addGlobalMonitorForEvents`. An optional feature that needs a permission degrades gracefully without it.
+- **Every new UI string needs an Italian translation** in `Sources/F4/Resources/Localizable.xcstrings` (String Catalog, English source). SwiftUI literals (`Text("…")`, `Button("…")`) are looked up automatically; a plain `String` shown to the user must use `String(localized: "…")`; a ternary of literals needs `LocalizedStringKey(...)`. Text that must never be translated uses `Text(verbatim:)`. CI runs `scripts/check-strings.py`.
 - Keep PRs small and focused: one issue, one PR. Do not mix refactors with behaviour changes.
 - No third-party dependencies without a reason written in the PR description.
 - Match the style of the surrounding code.

@@ -37,16 +37,16 @@ final class StatusItemController: NSObject {
 
     private func makeMenu(shortcut: String) -> NSMenu {
         let menu = NSMenu()
-        let open = NSMenuItem(title: "Open F4", action: #selector(open(_:)), keyEquivalent: "")
+        let open = NSMenuItem(title: String(localized: "Open F4"), action: #selector(open(_:)), keyEquivalent: "")
         open.target = self
         // The shortcut is global (Carbon), not a menu key equivalent: this line only tells the user.
-        let shortcutHint = NSMenuItem(title: "Shortcut: \(shortcut)", action: nil, keyEquivalent: "")
+        let shortcutHint = NSMenuItem(title: String(localized: "Shortcut: \(shortcut)"), action: nil, keyEquivalent: "")
         shortcutHint.isEnabled = false
-        let folder = NSMenuItem(title: "Open Meme Folder", action: #selector(openFolder(_:)), keyEquivalent: "")
+        let folder = NSMenuItem(title: String(localized: "Open Meme Folder"), action: #selector(openFolder(_:)), keyEquivalent: "")
         folder.target = self
-        let settings = NSMenuItem(title: "Settings…", action: #selector(openSettings(_:)), keyEquivalent: ",")
+        let settings = NSMenuItem(title: String(localized: "Settings…"), action: #selector(openSettings(_:)), keyEquivalent: ",")
         settings.target = self
-        let quit = NSMenuItem(title: "Quit F4", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
+        let quit = NSMenuItem(title: String(localized: "Quit F4"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
         menu.items = [open, shortcutHint, .separator(), folder, settings, .separator(), quit]
         return menu
     }

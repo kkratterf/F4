@@ -1,0 +1,376 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ is taken by another app. Record a different shortcut.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ è già usata da un'altra app. Registra un'altra scorciatoia."
+          }
+        }
+      }
+    },
+    "Add to Favourites": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi ai preferiti"
+          }
+        }
+      }
+    },
+    "Allow F4 in System Settings → General → Login Items.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consenti F4 in Impostazioni di Sistema → Generali → Elementi login."
+          }
+        }
+      }
+    },
+    "Can't read the meme folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non riesco a leggere la cartella dei meme"
+          }
+        }
+      }
+    },
+    "Choose the folder with your memes": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli la cartella con i tuoi meme"
+          }
+        }
+      }
+    },
+    "Choose…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli…"
+          }
+        }
+      }
+    },
+    "Click to record a new shortcut": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai clic per registrare una nuova scorciatoia"
+          }
+        }
+      }
+    },
+    "Copy": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia"
+          }
+        }
+      }
+    },
+    "Drop GIFs, PNGs and JPEGs into %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina GIF, PNG e JPEG in %@."
+          }
+        }
+      }
+    },
+    "Esc to cancel": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esc per annullare"
+          }
+        }
+      }
+    },
+    "F4 Settings": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni di F4"
+          }
+        }
+      }
+    },
+    "F4 needs Accessibility access to press ⌘V for you. Until then it only copies.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 ha bisogno dell'accesso Accessibilità per premere ⌘V al posto tuo. Fino ad allora copia e basta."
+          }
+        }
+      }
+    },
+    "F4 shows the GIF, PNG and JPEG files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 mostra i file GIF, PNG e JPEG di questa cartella e delle sue sottocartelle, e si aggiorna quando ne aggiungi o togli uno. I nomi delle sottocartelle funzionano come categorie nella ricerca."
+          }
+        }
+      }
+    },
+    "Favourite": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferito"
+          }
+        }
+      }
+    },
+    "Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cartella"
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generali"
+          }
+        }
+      }
+    },
+    "Meme folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cartella dei meme"
+          }
+        }
+      }
+    },
+    "No memes yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessun meme"
+          }
+        }
+      }
+    },
+    "Off: F4 copies the meme and you paste it with ⌘V.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disattivato: F4 copia il meme e tu lo incolli con ⌘V."
+          }
+        }
+      }
+    },
+    "Open F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri F4"
+          }
+        }
+      }
+    },
+    "Open F4 at login": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri F4 all'avvio"
+          }
+        }
+      }
+    },
+    "Open Meme Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri la cartella dei meme"
+          }
+        }
+      }
+    },
+    "Open Settings": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Impostazioni"
+          }
+        }
+      }
+    },
+    "Paste": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla"
+          }
+        }
+      }
+    },
+    "Paste into the front app after copying": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla nell'app in primo piano dopo la copia"
+          }
+        }
+      }
+    },
+    "Press the shortcut…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premi la scorciatoia…"
+          }
+        }
+      }
+    },
+    "Quit F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esci da F4"
+          }
+        }
+      }
+    },
+    "Remove from Favourites": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Togli dai preferiti"
+          }
+        }
+      }
+    },
+    "Reset": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina"
+          }
+        }
+      }
+    },
+    "Search memes": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca meme"
+          }
+        }
+      }
+    },
+    "Settings…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni…"
+          }
+        }
+      }
+    },
+    "Shortcut: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scorciatoia: %@"
+          }
+        }
+      }
+    },
+    "Show and hide F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra e nascondi F4"
+          }
+        }
+      }
+    },
+    "Show in Finder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nel Finder"
+          }
+        }
+      }
+    },
+    "Space": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spazio"
+          }
+        }
+      }
+    },
+    "Use Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa cartella"
+          }
+        }
+      }
+    },
+    "Use ~/Pictures/Memes": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa ~/Immagini/Memes"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

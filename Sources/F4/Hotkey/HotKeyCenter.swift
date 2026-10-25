@@ -48,7 +48,7 @@ struct HotKeyCombo: Equatable {
             kVK_ANSI_U: "U", kVK_ANSI_V: "V", kVK_ANSI_W: "W", kVK_ANSI_X: "X",
             kVK_ANSI_Y: "Y", kVK_ANSI_Z: "Z",
             kVK_Delete: "⌫", kVK_ForwardDelete: "⌦", kVK_Escape: "⎋",
-            kVK_Return: "↩", kVK_Space: "Space", kVK_Tab: "⇥",
+            kVK_Return: "↩", kVK_Space: String(localized: "Space"), kVK_Tab: "⇥",
             kVK_ANSI_0: "0", kVK_ANSI_1: "1", kVK_ANSI_2: "2", kVK_ANSI_3: "3",
             kVK_ANSI_4: "4", kVK_ANSI_5: "5", kVK_ANSI_6: "6", kVK_ANSI_7: "7",
             kVK_ANSI_8: "8", kVK_ANSI_9: "9",

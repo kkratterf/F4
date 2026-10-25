@@ -32,6 +32,28 @@ echo "Architectures: $(lipo -archs "$APP/Contents/MacOS/F4" 2>/dev/null || echo 
 
 cp "$ROOT/Resources/Info.plist" "$APP/Contents/Info.plist"
 
+# Localizations: English is the source language, Italian comes from the String
+# Catalog. SwiftPM compiles it into the target's resource bundle; the .lproj
+# folders go into Contents/Resources so Bundle.main (SwiftUI Text,
+# String(localized:)) finds them. Falls back to xcstringstool if SwiftPM did not.
+CATALOG="$ROOT/Sources/F4/Resources/Localizable.xcstrings"
+RES="$APP/Contents/Resources"
+while IFS= read -r lproj; do
+  [ -n "$lproj" ] || continue
+  ditto "$lproj" "$RES/$(basename "$lproj")"
+done < <(find "$BIN_DIR" -path '*F4_F4.bundle*' -type d -name '*.lproj' 2>/dev/null)
+if [ ! -f "$RES/it.lproj/Localizable.strings" ]; then
+  echo "No compiled it.lproj in the SwiftPM bundle, compiling $CATALOG with xcstringstool"
+  xcrun xcstringstool compile "$CATALOG" --output-directory "$RES"
+fi
+# English strings are the keys themselves; the folder tells macOS the app speaks English.
+mkdir -p "$RES/en.lproj"
+if [ ! -f "$RES/it.lproj/Localizable.strings" ]; then
+  echo "error: it.lproj/Localizable.strings missing from $APP" >&2
+  exit 1
+fi
+echo "Localizations: $(find "$RES" -maxdepth 1 -name '*.lproj' -exec basename {} \; | sort | tr '\n' ' ')"
+
 # Ad-hoc by default: enough to run locally, not notarized.
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 if [ "$SIGN_IDENTITY" = "-" ]; then

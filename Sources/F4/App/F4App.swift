@@ -72,7 +72,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         } else {
             // Usually another app owns the combination.
             NSLog("F4: could not register %@, another app may be using it", combo.displayString)
-            settingsWindow.setShortcutError("\(combo.displayString) is taken by another app. Record a different shortcut.")
+            settingsWindow.setShortcutError(String(localized: "\(combo.displayString) is taken by another app. Record a different shortcut."))
         }
     }
 
