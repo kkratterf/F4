@@ -28,6 +28,10 @@ struct DeckView: View {
         .background(VisualEffectBackground())
     }
 
+    private var results: [Meme] {
+        FuzzySearch.filter(library.memes, query: query)
+    }
+
     @ViewBuilder
     private var content: some View {
         if let error = library.error {
@@ -42,9 +46,11 @@ struct DeckView: View {
                 systemImage: "photo.on.rectangle.angled",
                 description: Text("Drop GIFs, PNGs and JPEGs into \(library.folder.path(percentEncoded: false)).")
             )
+        } else if results.isEmpty {
+            ContentUnavailableView.search(text: query)
         } else {
             // The thumbnail grid replaces this list (#7).
-            List(library.memes) { meme in
+            List(results) { meme in
                 Text(meme.name)
             }
             .scrollContentBackground(.hidden)

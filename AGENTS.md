@@ -9,7 +9,7 @@ ReactionDeck is a native macOS app, a Spotlight-like floating panel to search a 
 
 | Path | What it is |
 | --- | --- |
-| `Sources/ReactionDeckCore` | Pure logic: file kinds, search, grid navigation. No AppKit, fully unit-tested |
+| `Sources/ReactionDeckCore` | Pure logic: file kinds, folder scan, fuzzy search (`FuzzySearch`), grid navigation. No AppKit, fully unit-tested |
 | `Sources/ReactionDeck/App` | App entry point, `AppDelegate` |
 | `Sources/ReactionDeck/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
 | `Sources/ReactionDeck/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` rescans on changes |
