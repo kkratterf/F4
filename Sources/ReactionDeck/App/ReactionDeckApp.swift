@@ -24,9 +24,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
         let panel = PanelController()
         self.panel = panel
+        registerToggleShortcut()
         // Opening the app from Finder or Spotlight shows the panel right away.
         panel.show()
     }
+
+    /// ⌘⇧M anywhere shows or hides the panel. Carbon hot keys need no
+    /// Accessibility or Input Monitoring permission and swallow the key press.
+    private func registerToggleShortcut() {
+        let combo = HotKeyCombo.toggleDefault
+        let registered = HotKeyCenter.shared.register(id: Self.toggleShortcutID, combo: combo) { [weak self] in
+            self?.panel?.toggle()
+        }
+        if !registered {
+            // Another app owns the combination. A shortcut recorder in the
+            // settings will let the user pick another one.
+            NSLog("ReactionDeck: could not register %@, another app may be using it", combo.displayString)
+        }
+    }
+
+    private static let toggleShortcutID = "togglePanel"
 
     /// Opening the app again while it runs shows the panel.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
