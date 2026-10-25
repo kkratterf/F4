@@ -13,6 +13,7 @@ struct MemeCell: View {
 
     let meme: Meme
     let isSelected: Bool
+    var isFavourite = false
 
     @State private var image: CGImage?
     @State private var isHovered = false
@@ -57,6 +58,16 @@ struct MemeCell: View {
                         .background(.black.opacity(0.55), in: RoundedRectangle(cornerRadius: 3))
                         .foregroundStyle(.white)
                         .padding(5)
+                }
+            }
+            .overlay(alignment: .topLeading) {
+                if isFavourite {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: 10, weight: .bold))
+                        .foregroundStyle(.yellow)
+                        .shadow(radius: 1)
+                        .padding(5)
+                        .accessibilityLabel("Favourite")
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 8))

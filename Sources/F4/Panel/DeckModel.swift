@@ -18,16 +18,16 @@ final class DeckModel: ObservableObject {
     @Published private(set) var openCount = 0
 
     let library: MemeLibrary
+    let usage: UsageStore
     private var cancellables: Set<AnyCancellable> = []
 
-    init(library: MemeLibrary) {
+    init(library: MemeLibrary, usage: UsageStore) {
         self.library = library
-        library.$memes
-            .dropFirst()
-            .sink { [weak self] _ in
-                // $memes fires before the value is stored; refresh on the next turn.
-                Task { @MainActor in self?.refresh() }
-            }
+        self.usage = usage
+        // The publishers fire before the new value is stored; refresh on the next turn.
+        library.$memes.dropFirst().map { _ in () }
+            .merge(with: usage.$favourites.dropFirst().map { _ in () })
+            .sink { [weak self] _ in Task { @MainActor in self?.refresh(keepSelection: true) } }
             .store(in: &cancellables)
         refresh()
     }
@@ -44,15 +44,27 @@ final class DeckModel: ObservableObject {
         return true
     }
 
-    /// Called when the panel opens: start from a clean search.
+    /// Called when the panel opens: start from a clean search, with the
+    /// latest recents on top.
     func prepareForShow() {
-        query = ""
+        if query.isEmpty { refresh() } else { query = "" }
         selection = 0
         openCount += 1
     }
 
-    private func refresh() {
-        results = FuzzySearch.filter(library.memes, query: query)
-        selection = 0
+    /// Recomputes the results: favourites and recents first while the query
+    /// is empty, best fuzzy matches otherwise.
+    private func refresh(keepSelection: Bool = false) {
+        let selected = selectedMeme
+        if query.trimmingCharacters(in: .whitespaces).isEmpty {
+            results = MemeOrdering.arrange(library.memes, favourites: usage.favourites, recents: usage.recents)
+        } else {
+            results = FuzzySearch.filter(library.memes, query: query)
+        }
+        if keepSelection, let selected, let index = results.firstIndex(of: selected) {
+            selection = index
+        } else {
+            selection = 0
+        }
     }
 }
