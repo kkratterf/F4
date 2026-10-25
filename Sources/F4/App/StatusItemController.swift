@@ -31,7 +31,7 @@ final class StatusItemController: NSObject {
     /// Shows a new shortcut in the tooltip and the menu.
     func update(shortcut: String) {
         self.shortcut = shortcut
-        statusItem.button?.toolTip = "F4 (\(shortcut))"
+        statusItem.button?.toolTip = "F4 · basito (\(shortcut))"
         statusItem.menu = makeMenu(shortcut: shortcut)
     }
 

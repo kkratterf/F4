@@ -53,11 +53,11 @@ export default function SearchMemes() {
   const pasteFirst = preferences.primaryAction === "paste";
 
   return (
-    <Grid columns={5} inset={Grid.Inset.Small} isLoading={memes === undefined} searchBarPlaceholder="Search memes">
+    <Grid columns={5} inset={Grid.Inset.Small} isLoading={memes === undefined} searchBarPlaceholder="Cerca un F4 basito...">
       {memes?.length === 0 && (
         <Grid.EmptyView
-          icon={Icon.Image}
-          title={error ? "Can't read the meme folder" : "No memes yet"}
+          icon={error ? Icon.Warning : "icon.png"}
+          title={error ? "Can't read the meme folder" : "F4. Basito. No memes yet"}
           description={error ?? `Drop GIFs, PNGs and JPEGs into ${folder}.`}
         />
       )}

@@ -77,8 +77,9 @@ final class PanelController: NSObject, NSWindowDelegate {
     private func startArrowKeys() {
         guard keyMonitor == nil else { return }
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
-            guard let self, event.window === self.panel,
-                  let direction = Self.direction(for: event) else { return event }
+            guard let self, event.window === self.panel else { return event }
+            self.model.feedKonami(Self.konamiKey(for: event))
+            guard let direction = Self.direction(for: event) else { return event }
             return self.model.move(direction) ? nil : event
         }
     }
@@ -86,6 +87,18 @@ final class PanelController: NSObject, NSWindowDelegate {
     private func stopArrowKeys() {
         if let keyMonitor { NSEvent.removeMonitor(keyMonitor) }
         keyMonitor = nil
+    }
+
+    private static func konamiKey(for event: NSEvent) -> KonamiCode.Key {
+        switch Int(event.keyCode) {
+        case kVK_UpArrow: return .up
+        case kVK_DownArrow: return .down
+        case kVK_LeftArrow: return .left
+        case kVK_RightArrow: return .right
+        case kVK_ANSI_B: return .b
+        case kVK_ANSI_A: return .a
+        default: return .other
+        }
     }
 
     private static func direction(for event: NSEvent) -> GridDirection? {

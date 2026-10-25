@@ -17,6 +17,14 @@ final class MemeLibrary: ObservableObject {
         self.folder = folder
     }
 
+    /// The user's own basito face for the empty states: a hidden
+    /// `.basito.png` (or `.gif`, `.jpg`, `.jpeg`) in the meme folder.
+    var customBasito: URL? {
+        ["png", "gif", "jpg", "jpeg"]
+            .map { folder.appendingPathComponent(".basito.\($0)") }
+            .first { FileManager.default.fileExists(atPath: $0.path) }
+    }
+
     /// Switches to another folder: stops watching the old one and scans the new one.
     func setFolder(_ url: URL) {
         guard url.standardizedFileURL != folder.standardizedFileURL else { return }

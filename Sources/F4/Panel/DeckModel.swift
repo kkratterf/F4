@@ -16,6 +16,11 @@ final class DeckModel: ObservableObject {
     @Published var selection = 0
     /// Bumped every time the panel opens, so the view focuses the search field.
     @Published private(set) var openCount = 0
+    /// The easter egg typed in the search field (or the Konami code), if any.
+    @Published private(set) var easterEgg: EasterEgg?
+
+    private var konami = KonamiCode()
+    private var konamiActive = false
 
     let library: MemeLibrary
     let usage: UsageStore
@@ -44,9 +49,18 @@ final class DeckModel: ObservableObject {
         return true
     }
 
+    /// Feeds every key press in the panel to the Konami code detector.
+    func feedKonami(_ key: KonamiCode.Key) {
+        guard konami.feed(key) else { return }
+        konamiActive = true
+        // The B and A went into the search field.
+        if query.isEmpty { refresh() } else { query = "" }
+    }
+
     /// Called when the panel opens: start from a clean search, with the
     /// latest recents on top.
     func prepareForShow() {
+        konamiActive = false
         if query.isEmpty { refresh() } else { query = "" }
         selection = 0
         openCount += 1
@@ -56,13 +70,27 @@ final class DeckModel: ObservableObject {
     /// is empty, best fuzzy matches otherwise.
     private func refresh(keepSelection: Bool = false) {
         let selected = selectedMeme
-        if query.trimmingCharacters(in: .whitespaces).isEmpty {
-            results = MemeOrdering.arrange(library.memes, favourites: usage.favourites, recents: usage.recents)
+        let egg = query.isEmpty && konamiActive ? EasterEggs.konami : EasterEggs.match(query)
+        if easterEgg != egg { easterEgg = egg }
+        let arranged = { MemeOrdering.arrange(self.library.memes, favourites: self.usage.favourites, recents: self.usage.recents) }
+        if let egg, egg.showsAllMemes {
+            switch egg.effect {
+            case .favouritesOnly:
+                results = arranged().filter { usage.favourites.contains($0.url) }
+            case .shuffle:
+                results = library.memes.shuffled()
+            default:
+                results = arranged()
+            }
+        } else if query.trimmingCharacters(in: .whitespaces).isEmpty {
+            results = arranged()
         } else {
             results = FuzzySearch.filter(library.memes, query: query)
         }
         if keepSelection, let selected, let index = results.firstIndex(of: selected) {
             selection = index
+        } else if egg?.effect == .randomPick, !results.isEmpty {
+            selection = Int.random(in: results.indices)
         } else {
             selection = 0
         }
