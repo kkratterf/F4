@@ -20,6 +20,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Tests/F4CoreTests` | XCTest for `F4Core` |
 | `Sources/F4/Resources` | `Localizable.xcstrings`: String Catalog, English keys with Italian translations |
 | `Resources/Info.plist` | App bundle metadata, including the version and `LSUIElement` (no Dock icon) |
+| `raycast/` | Raycast extension (TypeScript) that searches the same meme folder; built in CI with `ray build` |
 | `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and a zip |
 
 ## Language of the project
@@ -52,7 +53,7 @@ open dist/F4.app
 ## Docs, roadmap and planning
 
 - **Do not commit docs, roadmaps, plans, audits, reports or design notes to this repo.** No `ROADMAP.md`, `PLAN.md`, `docs/`, `notes/`. The roadmap lives outside the repo.
-- Allowed documentation: `README.md` (user-facing usage only), code comments, and this file plus `CLAUDE.md`.
+- Allowed documentation: `README.md` and `raycast/README.md` (user-facing usage only), code comments, and this file plus `CLAUDE.md`.
 - **Backlog = GitHub issues only.** No GitHub Projects, no milestones. Every issue carries labels:
   - area: `app`, `library`, `ecosystem`, `ci`, `bug`
   - priority: `P0`, `P1`, `P2`
