@@ -1,5 +1,5 @@
 import XCTest
-@testable import ReactionDeckCore
+@testable import F4Core
 
 final class FuzzySearchTests: XCTestCase {
     private func search(_ names: [String], _ query: String) -> [String] {

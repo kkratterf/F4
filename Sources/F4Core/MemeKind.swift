@@ -1,13 +1,13 @@
 import Foundation
 
-/// The image formats ReactionDeck shows and copies.
+/// The image formats F4 shows and copies.
 public enum MemeKind: String, CaseIterable, Sendable {
     case gif
     case png
     case jpeg
 
     /// The kind for a file URL, from its extension (case-insensitive), or nil
-    /// when the file is not a meme ReactionDeck handles.
+    /// when the file is not a meme F4 handles.
     public init?(url: URL) {
         switch url.pathExtension.lowercased() {
         case "gif": self = .gif

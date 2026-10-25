@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @main
-struct ReactionDeckApp: App {
+struct F4App: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
@@ -41,7 +41,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         if !registered {
             // Another app owns the combination. A shortcut recorder in the
             // settings will let the user pick another one.
-            NSLog("ReactionDeck: could not register %@, another app may be using it", combo.displayString)
+            NSLog("F4: could not register %@, another app may be using it", combo.displayString)
         }
     }
 

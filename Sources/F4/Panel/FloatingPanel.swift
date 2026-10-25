@@ -1,8 +1,8 @@
 import AppKit
 
-/// The borderless floating window ReactionDeck lives in, like Spotlight or Raycast.
+/// The borderless floating window F4 lives in, like Spotlight or Raycast.
 ///
-/// A non-activating panel: it takes keyboard focus without bringing ReactionDeck
+/// A non-activating panel: it takes keyboard focus without bringing F4
 /// to the front, so the app the user is in stays active and gets focus back
 /// when the panel hides. It joins every Space and floats over full-screen apps.
 final class FloatingPanel: NSPanel {

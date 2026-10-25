@@ -1,5 +1,5 @@
 import Foundation
-import ReactionDeckCore
+import F4Core
 
 /// The memes the panel shows, read from the meme folder in the background
 /// and read again whenever the folder changes.
