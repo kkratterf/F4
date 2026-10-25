@@ -7,6 +7,7 @@ final class StatusItemController: NSObject {
     private let onOpen: () -> Void
     private let onOpenFolder: () -> Void
     private let onSettings: () -> Void
+    private var shortcut: String
 
     /// - Parameter shortcut: shown next to "Open F4", e.g. "⌘⇧M".
     init(
@@ -18,12 +19,19 @@ final class StatusItemController: NSObject {
         self.onOpen = onOpen
         self.onOpenFolder = onOpenFolder
         self.onSettings = onSettings
+        self.shortcut = shortcut
         super.init()
         if let button = statusItem.button {
             button.image = NSImage(systemSymbolName: "face.smiling", accessibilityDescription: "F4")
             button.image?.isTemplate = true
-            button.toolTip = "F4 (\(shortcut))"
         }
+        update(shortcut: shortcut)
+    }
+
+    /// Shows a new shortcut in the tooltip and the menu.
+    func update(shortcut: String) {
+        self.shortcut = shortcut
+        statusItem.button?.toolTip = "F4 (\(shortcut))"
         statusItem.menu = makeMenu(shortcut: shortcut)
     }
 

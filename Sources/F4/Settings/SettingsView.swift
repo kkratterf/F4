@@ -4,11 +4,21 @@ import SwiftUI
 
 struct SettingsView: View {
     @ObservedObject var settings: AppSettings
+    /// Set when macOS refused the shortcut, usually because another app owns it.
+    let shortcutError: String?
     @StateObject private var loginItem = LoginItem()
 
     var body: some View {
         Form {
             Section("General") {
+                LabeledContent("Show and hide F4") {
+                    ShortcutRecorder(combo: $settings.toggleShortcut, defaultCombo: .toggleDefault)
+                }
+                if let shortcutError {
+                    Text(shortcutError)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
                 Toggle("Open F4 at login", isOn: Binding(
                     get: { loginItem.isEnabled },
                     set: { loginItem.setEnabled($0) }
