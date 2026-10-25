@@ -22,9 +22,9 @@ public enum FuzzySearch {
         return scored.map(\.item)
     }
 
-    /// Memes whose name matches `query`, best match first.
+    /// Memes whose name or subfolder matches `query`, best match first.
     public static func filter(_ memes: [Meme], query: String) -> [Meme] {
-        filter(memes, query: query, name: \.name)
+        filter(memes, query: query, name: \.searchText)
     }
 
     /// Score of `query` against `candidate`, or nil when it does not match.
