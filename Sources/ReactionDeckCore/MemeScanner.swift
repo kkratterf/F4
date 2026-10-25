@@ -17,7 +17,7 @@ public enum MemeScanner {
         let urls = try fileManager.contentsOfDirectory(
             at: folder,
             includingPropertiesForKeys: keys,
-            options: [.skipsHiddenFiles, .skipsPackageContents, .skipsSubdirectoryDescendants]
+            options: [.skipsHiddenFiles, .skipsPackageDescendants, .skipsSubdirectoryDescendants]
         )
         var memes: [Meme] = []
         for url in urls {
