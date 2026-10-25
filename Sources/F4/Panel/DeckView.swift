@@ -69,9 +69,23 @@ struct DeckView: View {
             ScrollView {
                 LazyVGrid(columns: gridColumns, spacing: 10) {
                     ForEach(Array(model.results.enumerated()), id: \.element.id) { index, meme in
-                        MemeCell(meme: meme, isSelected: index == model.selection)
-                            .id(meme.id)
-                            .onTapGesture { onPick(meme) }
+                        MemeCell(
+                            meme: meme,
+                            isSelected: index == model.selection,
+                            isFavourite: model.usage.isFavourite(meme)
+                        )
+                        .id(meme.id)
+                        .onTapGesture { onPick(meme) }
+                        .contextMenu {
+                            Button("Copy") { onPick(meme) }
+                            Button(model.usage.isFavourite(meme) ? "Remove from Favourites" : "Add to Favourites") {
+                                model.usage.toggleFavourite(meme)
+                            }
+                            Divider()
+                            Button("Show in Finder") {
+                                NSWorkspace.shared.activateFileViewerSelecting([meme.url])
+                            }
+                        }
                     }
                 }
                 .padding(14)

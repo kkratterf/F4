@@ -20,9 +20,12 @@ final class PanelController: NSObject, NSWindowDelegate {
     private let model: DeckModel
     private var keyMonitor: Any?
 
-    init(library: MemeLibrary) {
+    private let usage: UsageStore
+
+    init(library: MemeLibrary, usage: UsageStore) {
         self.library = library
-        model = DeckModel(library: library)
+        self.usage = usage
+        model = DeckModel(library: library, usage: usage)
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
         let deck = DeckView(model: model, library: library, onPick: { [weak self] meme in self?.pick(meme) })
@@ -36,7 +39,7 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     /// Copies the meme and gets out of the way, so the user can paste right away.
     private func pick(_ meme: Meme) {
-        MemeClipboard.copy(meme)
+        if MemeClipboard.copy(meme) { usage.recordCopy(meme) }
         hide()
     }
 

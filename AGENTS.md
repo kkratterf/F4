@@ -9,10 +9,10 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 
 | Path | What it is |
 | --- | --- |
-| `Sources/F4Core` | Pure logic: file kinds, folder scan with subfolders as categories, fuzzy search (`FuzzySearch`), grid navigation. No AppKit, fully unit-tested |
+| `Sources/F4Core` | Pure logic: file kinds, folder scan with subfolders as categories, recents/favourites order (`MemeOrdering`), fuzzy search (`FuzzySearch`), grid navigation. No AppKit, fully unit-tested |
 | `Sources/F4/App` | App entry point, `AppDelegate`, `StatusItemController` (menu bar icon) |
 | `Sources/F4/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
-| `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` (FSEvents) rescans on changes |
+| `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` (FSEvents) rescans on changes; `UsageStore` (favourites, recents) |
 | `Sources/F4/Clipboard` | `MemeClipboard`: copies the file URL + raw bytes, never an `NSImage` (keeps GIFs animated) |
 | `Sources/F4/Settings` | `AppSettings` (UserDefaults), `LoginItem` (`SMAppService`), `ShortcutRecorder`, `SettingsView`, `SettingsWindowController` |
 | `Sources/F4/Thumbnails` | `ThumbnailCache`: ImageIO thumbnails (first GIF frame) decoded off the main thread, in an `NSCache` |

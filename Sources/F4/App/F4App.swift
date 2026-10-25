@@ -34,7 +34,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .removeDuplicates()
             .sink { [weak self] url in self?.library.setFolder(url) }
             .store(in: &cancellables)
-        let panel = PanelController(library: library)
+        let panel = PanelController(library: library, usage: UsageStore())
         self.panel = panel
         registerToggleShortcut()
         statusItem = StatusItemController(
