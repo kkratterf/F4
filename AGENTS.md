@@ -87,7 +87,8 @@ Agent platforms that assign their own branch names (e.g. `claude/...`) are fine;
 
 - SemVer, tags `vX.Y.Z`.
 - Minor release = a version label, cut when all `P0` issues of that version are closed and `main` is green. Patch release when a user-facing fix lands.
-- First a version-bump PR (`chore(release): vX.Y.Z`) that updates `CFBundleShortVersionString` and bumps `CFBundleVersion` in `Resources/Info.plist`.
+- First a version-bump PR (`chore(release): vX.Y.Z`) that updates `CFBundleShortVersionString` and bumps `CFBundleVersion` in `Resources/Info.plist`; the release workflow checks it.
+- The release is created by the manual `release.yml` workflow (`workflow_dispatch`, with a `dry_run` option), which tests, builds the ad-hoc signed `F4.app`, tags and publishes the zip with notes grouped by label.
 - **No `CHANGELOG.md`.** The changelog lives only in GitHub Release notes.
 
 ## Merging
