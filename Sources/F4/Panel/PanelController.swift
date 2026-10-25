@@ -39,8 +39,15 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     /// Copies the meme and gets out of the way, so the user can paste right away.
     private func pick(_ meme: Meme) {
-        if MemeClipboard.copy(meme) { usage.recordCopy(meme) }
+        guard MemeClipboard.copy(meme) else {
+            hide()
+            return
+        }
+        usage.recordCopy(meme)
         hide()
+        if AppSettings.shared.pasteAfterCopy {
+            AutoPaster.pasteSoon()
+        }
     }
 
     var isVisible: Bool { panel.isVisible }

@@ -13,7 +13,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Sources/F4/App` | App entry point, `AppDelegate`, `StatusItemController` (menu bar icon) |
 | `Sources/F4/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
 | `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` (FSEvents) rescans on changes; `UsageStore` (favourites, recents) |
-| `Sources/F4/Clipboard` | `MemeClipboard`: copies the file URL + raw bytes, never an `NSImage` (keeps GIFs animated) |
+| `Sources/F4/Clipboard` | `MemeClipboard`: copies the file URL + raw bytes, never an `NSImage` (keeps GIFs animated); `AutoPaster`: optional ⌘V (Accessibility) |
 | `Sources/F4/Settings` | `AppSettings` (UserDefaults), `LoginItem` (`SMAppService`), `ShortcutRecorder`, `SettingsView`, `SettingsWindowController` |
 | `Sources/F4/Thumbnails` | `ThumbnailCache`: ImageIO thumbnails (first GIF frame) decoded off the main thread, in an `NSCache` |
 | `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckModel` (query, results, selection, arrow-key moves), `DeckView` + `MemeCell` (SwiftUI grid), `AnimatedImageView` (plays the hovered/selected GIF) |
