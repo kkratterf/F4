@@ -1,0 +1,54 @@
+{
+  "$schema": "https://www.raycast.com/schemas/extension.json",
+  "name": "f4",
+  "title": "F4",
+  "description": "Search your meme folder and copy memes that paste as files, so GIFs stay animated in Slack, Discord and Telegram.",
+  "icon": "icon.png",
+  "author": "kkratterf",
+  "license": "MIT",
+  "categories": ["Productivity", "Media"],
+  "commands": [
+    {
+      "name": "search-memes",
+      "title": "Search Memes",
+      "subtitle": "F4",
+      "description": "Search the memes in your meme folder and copy or paste one.",
+      "mode": "view"
+    }
+  ],
+  "preferences": [
+    {
+      "name": "folder",
+      "title": "Meme Folder",
+      "description": "The folder with your memes. Leave empty for ~/Pictures/Memes, the same folder the F4 app uses.",
+      "type": "directory",
+      "required": false
+    },
+    {
+      "name": "primaryAction",
+      "title": "Primary Action",
+      "description": "What Enter does.",
+      "type": "dropdown",
+      "required": false,
+      "default": "copy",
+      "data": [
+        { "title": "Copy to Clipboard", "value": "copy" },
+        { "title": "Paste in Active App", "value": "paste" }
+      ]
+    }
+  ],
+  "dependencies": {
+    "@raycast/api": "^2.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.0.0",
+    "typescript": "^5.6.0"
+  },
+  "scripts": {
+    "build": "ray build",
+    "dev": "ray develop",
+    "typecheck": "tsc --noEmit",
+    "publish": "npx @raycast/api@latest publish"
+  }
+}
