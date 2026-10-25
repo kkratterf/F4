@@ -15,7 +15,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` rescans on changes |
 | `Sources/F4/Clipboard` | `MemeClipboard`: copies the file URL + raw bytes, never an `NSImage` (keeps GIFs animated) |
 | `Sources/F4/Thumbnails` | `ThumbnailCache`: ImageIO thumbnails (first GIF frame) decoded off the main thread, in an `NSCache` |
-| `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckView` (SwiftUI content) |
+| `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide), `DeckModel` (query, results, selection), `DeckView` + `MemeCell` (SwiftUI grid) |
 | `Tests/F4CoreTests` | XCTest for `F4Core` |
 | `Resources/Info.plist` | App bundle metadata, including the version and `LSUIElement` (no Dock icon) |
 | `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and a zip |
