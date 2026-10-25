@@ -1,3 +1,4 @@
+import AppKit
 import F4Core
 import SwiftUI
 
@@ -5,7 +6,7 @@ import SwiftUI
 ///
 /// Shows the cached thumbnail at once if there is one, otherwise decodes it
 /// in the background (`ThumbnailCache`). Thumbnails are static: a GIF shows
-/// its first frame.
+/// its first frame, and plays only while the cell is hovered or selected.
 struct MemeCell: View {
     /// Pixels for a 128 pt cell on a Retina display.
     static let thumbnailPixels = 256
@@ -15,12 +16,20 @@ struct MemeCell: View {
 
     @State private var image: CGImage?
     @State private var isHovered = false
+    /// The full GIF, loaded only while the cell is hovered or selected.
+    @State private var animation: NSImage?
+
+    private var shouldAnimate: Bool {
+        meme.kind.isAnimated && (isHovered || isSelected)
+    }
 
     var body: some View {
         Color.clear
             .aspectRatio(1, contentMode: .fit)
             .overlay {
-                if let image {
+                if let animation, shouldAnimate {
+                    AnimatedImageView(image: animation)
+                } else if let image {
                     Image(decorative: image, scale: 2)
                         .resizable()
                         .scaledToFill()
@@ -68,6 +77,19 @@ struct MemeCell: View {
                 }
                 image = nil
                 image = await ThumbnailCache.shared.thumbnail(for: meme, maxPixelSize: Self.thumbnailPixels)
+            }
+            .task(id: shouldAnimate) {
+                guard shouldAnimate else {
+                    animation = nil
+                    return
+                }
+                let url = meme.url
+                // Read the file off the main thread; NSImageView decodes frames as it plays.
+                let data = await Task.detached(priority: .userInitiated) {
+                    try? Data(contentsOf: url, options: .mappedIfSafe)
+                }.value
+                guard !Task.isCancelled, let data else { return }
+                animation = NSImage(data: data)
             }
     }
 }
