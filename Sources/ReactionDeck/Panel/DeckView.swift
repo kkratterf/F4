@@ -1,7 +1,9 @@
+import ReactionDeckCore
 import SwiftUI
 
 /// The content of the panel: the search field on top, the memes below.
 struct DeckView: View {
+    @ObservedObject var library: MemeLibrary
     @State private var query = ""
 
     var body: some View {
@@ -19,15 +21,34 @@ struct DeckView: View {
 
             Divider()
 
-            ContentUnavailableView(
-                "No memes yet",
-                systemImage: "photo.on.rectangle.angled",
-                description: Text("Your memes will show up here.")
-            )
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(VisualEffectBackground())
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if let error = library.error {
+            ContentUnavailableView(
+                "Can't read the meme folder",
+                systemImage: "exclamationmark.triangle",
+                description: Text(error)
+            )
+        } else if library.memes.isEmpty {
+            ContentUnavailableView(
+                "No memes yet",
+                systemImage: "photo.on.rectangle.angled",
+                description: Text("Drop GIFs, PNGs and JPEGs into \(library.folder.path(percentEncoded: false)).")
+            )
+        } else {
+            // The thumbnail grid replaces this list (#7).
+            List(library.memes) { meme in
+                Text(meme.name)
+            }
+            .scrollContentBackground(.hidden)
+        }
     }
 }
 

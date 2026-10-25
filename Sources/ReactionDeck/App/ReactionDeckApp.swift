@@ -18,11 +18,13 @@ struct ReactionDeckApp: App {
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
+    private let library = MemeLibrary()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // No Dock icon and no menu bar of our own (also set via LSUIElement in the bundle).
         NSApp.setActivationPolicy(.accessory)
-        let panel = PanelController()
+        library.reload()
+        let panel = PanelController(library: library)
         self.panel = panel
         registerToggleShortcut()
         // Opening the app from Finder or Spotlight shows the panel right away.

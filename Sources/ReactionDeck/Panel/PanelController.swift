@@ -14,11 +14,13 @@ final class PanelController: NSObject, NSWindowDelegate {
     static let size = NSSize(width: 720, height: 460)
 
     private let panel: FloatingPanel
+    private let library: MemeLibrary
 
-    override init() {
+    init(library: MemeLibrary) {
+        self.library = library
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
-        let hosting = NSHostingView(rootView: DeckView())
+        let hosting = NSHostingView(rootView: DeckView(library: library))
         hosting.frame = NSRect(origin: .zero, size: Self.size)
         hosting.autoresizingMask = [.width, .height]
         panel.contentView = hosting
