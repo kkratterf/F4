@@ -38,7 +38,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self.panel = panel
         registerToggleShortcut()
         statusItem = StatusItemController(
-            shortcut: HotKeyCombo.toggleDefault.displayString,
+            shortcut: settings.toggleShortcut.displayString,
             onOpen: { [weak self] in self?.panel?.show() },
             onOpenFolder: { [weak self] in
                 guard let self else { return }
@@ -50,17 +50,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.show()
     }
 
-    /// ⌘⇧M anywhere shows or hides the panel. Carbon hot keys need no
-    /// Accessibility or Input Monitoring permission and swallow the key press.
+    /// The shortcut (⌘⇧M by default) shows or hides the panel from anywhere.
+    /// Carbon hot keys need no Accessibility or Input Monitoring permission and
+    /// swallow the key press. Re-registered whenever the user records a new one.
     private func registerToggleShortcut() {
-        let combo = HotKeyCombo.toggleDefault
+        apply(settings.toggleShortcut)
+        settings.$toggleShortcut
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] combo in self?.apply(combo) }
+            .store(in: &cancellables)
+    }
+
+    private func apply(_ combo: HotKeyCombo) {
         let registered = HotKeyCenter.shared.register(id: Self.toggleShortcutID, combo: combo) { [weak self] in
             self?.panel?.toggle()
         }
-        if !registered {
-            // Another app owns the combination. A shortcut recorder in the
-            // settings will let the user pick another one.
+        statusItem?.update(shortcut: combo.displayString)
+        if registered {
+            settingsWindow.setShortcutError(nil)
+        } else {
+            // Usually another app owns the combination.
             NSLog("F4: could not register %@, another app may be using it", combo.displayString)
+            settingsWindow.setShortcutError("\(combo.displayString) is taken by another app. Record a different shortcut.")
         }
     }
 
