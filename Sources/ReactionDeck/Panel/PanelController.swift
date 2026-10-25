@@ -5,18 +5,25 @@ import SwiftUI
 ///
 /// The panel and its SwiftUI content are created once at launch and only
 /// ordered in and out afterwards, so showing it never waits for a view to load.
+///
+/// It hides on Esc and as soon as the panel loses key status, which is what
+/// happens when the user clicks outside it or switches app. The panel never
+/// activates ReactionDeck, so the app the user was in keeps the focus.
 @MainActor
-final class PanelController {
+final class PanelController: NSObject, NSWindowDelegate {
     static let size = NSSize(width: 720, height: 460)
 
     private let panel: FloatingPanel
 
-    init() {
+    override init() {
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
+        super.init()
         let hosting = NSHostingView(rootView: DeckView())
         hosting.frame = NSRect(origin: .zero, size: Self.size)
         hosting.autoresizingMask = [.width, .height]
         panel.contentView = hosting
+        panel.delegate = self
+        panel.onCancel = { [weak self] in self?.hide() }
     }
 
     var isVisible: Bool { panel.isVisible }
@@ -32,6 +39,12 @@ final class PanelController {
 
     func hide() {
         panel.orderOut(nil)
+    }
+
+    // MARK: NSWindowDelegate
+
+    func windowDidResignKey(_ notification: Notification) {
+        hide()
     }
 
     /// Centred horizontally and a little above the middle, where Spotlight sits.
