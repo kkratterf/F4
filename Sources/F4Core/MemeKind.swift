@@ -26,6 +26,16 @@ public enum MemeKind: String, CaseIterable, Sendable {
         }
     }
 
+    /// Pasteboard types to write when copying a meme of this kind, in order of
+    /// preference: the file URL first (Slack, Discord and Telegram upload the
+    /// file itself), then the raw file bytes under the file's own UTI.
+    ///
+    /// Never an image type like `public.tiff` or an `NSImage`: those flatten
+    /// a GIF to its first frame, and apps prefer them when they are present.
+    public var pasteboardTypes: [String] {
+        ["public.file-url", typeIdentifier]
+    }
+
     /// Whether the file can hold more than one frame.
     public var isAnimated: Bool { self == .gif }
 }

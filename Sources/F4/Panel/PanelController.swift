@@ -1,4 +1,5 @@
 import AppKit
+import F4Core
 import SwiftUI
 
 /// Owns the floating panel and shows or hides it.
@@ -20,12 +21,19 @@ final class PanelController: NSObject, NSWindowDelegate {
         self.library = library
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
-        let hosting = NSHostingView(rootView: DeckView(library: library))
+        let deck = DeckView(library: library, onPick: { [weak self] meme in self?.pick(meme) })
+        let hosting = NSHostingView(rootView: deck)
         hosting.frame = NSRect(origin: .zero, size: Self.size)
         hosting.autoresizingMask = [.width, .height]
         panel.contentView = hosting
         panel.delegate = self
         panel.onCancel = { [weak self] in self?.hide() }
+    }
+
+    /// Copies the meme and gets out of the way, so the user can paste right away.
+    private func pick(_ meme: Meme) {
+        MemeClipboard.copy(meme)
+        hide()
     }
 
     var isVisible: Bool { panel.isVisible }
