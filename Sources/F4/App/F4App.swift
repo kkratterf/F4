@@ -44,8 +44,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 guard let self else { return }
                 NSWorkspace.shared.open(self.library.folder)
             },
-            onSettings: { [weak self] in self?.settingsWindow.show() }
+            onSettings: { [weak self] in self?.settingsWindow.show() },
+            onCheckForUpdates: AppUpdater.shared.isAvailable
+                ? { AppUpdater.shared.checkForUpdates() }
+                : nil
         )
+        // Auto-update; a no-op until Info.plist has a real Sparkle public key.
+        AppUpdater.shared.start()
         // Opening the app from Finder or Spotlight shows the panel right away.
         panel.show()
     }

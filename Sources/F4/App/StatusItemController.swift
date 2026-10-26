@@ -7,18 +7,24 @@ final class StatusItemController: NSObject {
     private let onOpen: () -> Void
     private let onOpenFolder: () -> Void
     private let onSettings: () -> Void
+    private let onCheckForUpdates: (() -> Void)?
     private var shortcut: String
 
-    /// - Parameter shortcut: shown next to "Open F4", e.g. "⌘⇧M".
+    /// - Parameters:
+    ///   - shortcut: shown next to "Open F4", e.g. "⌘⇧M".
+    ///   - onCheckForUpdates: nil in builds where the updater is unavailable,
+    ///     which leaves the menu item out entirely.
     init(
         shortcut: String,
         onOpen: @escaping () -> Void,
         onOpenFolder: @escaping () -> Void,
-        onSettings: @escaping () -> Void
+        onSettings: @escaping () -> Void,
+        onCheckForUpdates: (() -> Void)? = nil
     ) {
         self.onOpen = onOpen
         self.onOpenFolder = onOpenFolder
         self.onSettings = onSettings
+        self.onCheckForUpdates = onCheckForUpdates
         self.shortcut = shortcut
         super.init()
         if let button = statusItem.button {
@@ -47,11 +53,22 @@ final class StatusItemController: NSObject {
         let settings = NSMenuItem(title: String(localized: "Settings…"), action: #selector(openSettings(_:)), keyEquivalent: ",")
         settings.target = self
         let quit = NSMenuItem(title: String(localized: "Quit F4"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        menu.items = [open, shortcutHint, .separator(), folder, settings, .separator(), quit]
+        menu.items = [open, shortcutHint, .separator(), folder, settings]
+        if onCheckForUpdates != nil {
+            let updates = NSMenuItem(
+                title: String(localized: "Check for Updates…"),
+                action: #selector(checkForUpdates(_:)),
+                keyEquivalent: ""
+            )
+            updates.target = self
+            menu.items.append(updates)
+        }
+        menu.items.append(contentsOf: [.separator(), quit])
         return menu
     }
 
     @objc private func open(_ sender: Any?) { onOpen() }
     @objc private func openFolder(_ sender: Any?) { onOpenFolder() }
     @objc private func openSettings(_ sender: Any?) { onSettings() }
+    @objc private func checkForUpdates(_ sender: Any?) { onCheckForUpdates?() }
 }

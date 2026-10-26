@@ -7,6 +7,7 @@ struct SettingsView: View {
     /// Set when macOS refused the shortcut, usually because another app owns it.
     let shortcutError: String?
     @StateObject private var loginItem = LoginItem()
+    @ObservedObject private var updater = AppUpdater.shared
     @State private var isTrusted = AutoPaster.isTrusted
 
     var body: some View {
@@ -74,6 +75,20 @@ struct SettingsView: View {
                 Text("F4 shows the GIF, PNG and JPEG files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            }
+            // Hidden in builds without a real Sparkle key (see AppUpdater).
+            if updater.isAvailable {
+                Section("Updates") {
+                    Toggle("Check for updates automatically", isOn: $updater.automaticallyChecksForUpdates)
+                    HStack {
+                        Text("F4 updates itself: new versions are downloaded from the release feed and installed in one click. This is the only request F4 makes to the network.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Check Now") { updater.checkForUpdates() }
+                            .disabled(!updater.canCheckForUpdates)
+                    }
+                }
             }
         }
         .formStyle(.grouped)
