@@ -14,6 +14,7 @@ final class AppSettings: ObservableObject {
         static let showStarterPack = "showStarterPack"
         static let searchGiphy = "searchGiphy"
         static let giphyAPIKey = "giphyAPIKey"
+        static let showInMenuBar = "showInMenuBar"
     }
 
     private let defaults: UserDefaults
@@ -52,12 +53,19 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(giphyAPIKey, forKey: Key.giphyAPIKey) }
     }
 
+    /// The menu bar icon. On by default; with it off, opening F4 again
+    /// (Finder, Spotlight) shows Settings, so the user can always get back.
+    @Published var showInMenuBar: Bool {
+        didSet { defaults.set(showInMenuBar, forKey: Key.showInMenuBar) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         showStarterPack = defaults.object(forKey: Key.showStarterPack) as? Bool ?? true
         searchGiphy = defaults.object(forKey: Key.searchGiphy) as? Bool ?? true
         giphyAPIKey = defaults.string(forKey: Key.giphyAPIKey) ?? ""
         pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
+        showInMenuBar = defaults.object(forKey: Key.showInMenuBar) as? Bool ?? true
         if let path = defaults.string(forKey: Key.memeFolder), !path.isEmpty {
             memeFolder = URL(fileURLWithPath: path, isDirectory: true)
         } else {

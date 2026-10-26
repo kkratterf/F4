@@ -47,7 +47,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. This is the only feature that needs the Accessibility permission, and it is off by default. |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. |
-| 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, the meme folder, the settings and the update check. |
+| 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, copies one of your last 5 memes in a click, and leads to the meme folder, the settings and the update check. You can hide it in Settings. |
 | 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Settings → Updates). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
 | 🧩 **Raycast** | A [Raycast extension](raycast) searches the same folder, if that is where your hands already are. |
@@ -58,7 +58,7 @@ The empty state draws the basito face in code. Drop a `.basito.png` (or `.gif`, 
 
 ### Settings
 
-From the menu bar icon: the shortcut, the meme folder, open at login, auto-paste, and automatic update checks.
+From the menu bar icon: the shortcut, open at login, show in the menu bar, the meme folder, auto-paste, and automatic update checks.
 
 ---
 

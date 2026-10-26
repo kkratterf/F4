@@ -90,7 +90,7 @@ F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and i
 
 ### Menu bar menu
 
-Open F4 · Shortcut: (the current shortcut, as a reminder) · Open Meme Folder · Settings… (Command-,) · Check for Updates… · Quit F4 (Command-Q).
+Open F4 · Shortcut: (the current shortcut, as a reminder) · Recent Memes (the last 5 copied, with a thumbnail; a click copies one again without opening the panel) · Open Meme Folder · Settings… (Command-,) · Check for Updates… · Quit F4 (Command-Q).
 
 ### Settings
 
@@ -98,13 +98,14 @@ Open F4 · Shortcut: (the current shortcut, as a reminder) · Open Meme Folder �
 | --- | --- | --- |
 | General | Show and hide F4: the global shortcut, recorded by pressing a new combination. A function key (F1 to F20) can be used alone; any other key needs Command, Option or Control | F4 |
 | General | Open F4 at login (a macOS login item) | Off |
+| General | Show F4 in the menu bar. With the icon hidden, opening F4 again from Finder or Spotlight shows Settings | On |
 | Paste | Paste into the front app after copying: F4 presses Command-V for you | Off |
 | Meme folder | Folder: Choose…, Show in Finder, Use ~/Pictures/Memes | `~/Pictures/Memes` |
 | Updates | Check for updates automatically, and Check Now | On |
 
 Auto-paste needs the Accessibility permission (System Settings > Privacy & Security > Accessibility > F4). Without it F4 only copies, and Settings shows a button to open that pane. Nothing else in F4 needs a permission: the global shortcut uses Carbon `RegisterEventHotKey`, which needs no Accessibility, Input Monitoring or Screen Recording.
 
-Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Preferences/com.kkratterf.f4.plist`): `memeFolderPath`, `toggleShortcutKeyCode`, `toggleShortcutModifiers`, `pasteAfterCopy`, `panelPosition` (where the panel was dragged, as fractions of the screen), `favouriteMemes`, `recentMemes` (file paths). Change them in Settings rather than with `defaults write` while F4 is running.
+Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Preferences/com.kkratterf.f4.plist`): `memeFolderPath`, `toggleShortcutKeyCode`, `toggleShortcutModifiers`, `pasteAfterCopy`, `showInMenuBar`, `panelPosition` (where the panel was dragged, as fractions of the screen), `favouriteMemes`, `recentMemes` (file paths). Change them in Settings rather than with `defaults write` while F4 is running.
 
 ### Easter eggs
 
