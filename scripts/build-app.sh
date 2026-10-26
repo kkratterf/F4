@@ -54,6 +54,21 @@ if [ ! -f "$RES/it.lproj/Localizable.strings" ]; then
 fi
 echo "Localizations: $(find "$RES" -maxdepth 1 -name '*.lproj' -exec basename {} \; | sort | tr '\n' ' ')"
 
+# App icon: drawn in code by scripts/make-icon.swift, so no binary is
+# committed. A failure here only costs the icon, never the build.
+ICON_DIR="$ROOT/.build/icon"
+rm -rf "$ICON_DIR"
+mkdir -p "$ICON_DIR"
+if swift "$ROOT/scripts/make-icon.swift" "$ICON_DIR/AppIcon.iconset" \
+  && iconutil -c icns "$ICON_DIR/AppIcon.iconset" -o "$ICON_DIR/AppIcon.icns"; then
+  cp "$ICON_DIR/AppIcon.icns" "$RES/AppIcon.icns"
+  /usr/libexec/PlistBuddy -c "Set :CFBundleIconFile AppIcon" "$APP/Contents/Info.plist" 2>/dev/null \
+    || /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$APP/Contents/Info.plist"
+  echo "Added the app icon ($(wc -c < "$RES/AppIcon.icns" | tr -d ' ') bytes)"
+else
+  echo "warning: could not draw the app icon, building without it" >&2
+fi
+
 # Ad-hoc by default: enough to run locally, not notarized.
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 if [ "$SIGN_IDENTITY" = "-" ]; then

@@ -40,6 +40,8 @@ jobs:
           codesign --verify --strict --verbose=1 "$app"
           test "$(/usr/libexec/PlistBuddy -c 'Print :LSUIElement' "$app/Contents/Info.plist")" = true
           plutil -convert json -o - "$app/Contents/Resources/it.lproj/Localizable.strings" | grep -q "Cerca meme"
+          test -s "$app/Contents/Resources/AppIcon.icns" || { echo "::error::AppIcon.icns missing from F4.app"; exit 1; }
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$app/Contents/Info.plist")" = AppIcon
           # Smoke test: the app must launch and stay up.
           "$app/Contents/MacOS/F4" &
           pid=$!
