@@ -88,6 +88,7 @@ python3 -m http.server -d site 8000   # preview the website at http://localhost:
 - **No network requests** other than Sparkle's update check. No analytics, no telemetry, no account. The README, the site and `llms.txt` promise this.
 - **Every new UI string needs an Italian translation** in `Sources/F4/Resources/Localizable.xcstrings` (String Catalog, English source). SwiftUI literals (`Text("…")`, `Button("…")`) are looked up automatically; a plain `String` shown to the user must use `String(localized: "…")`; a ternary of literals needs `LocalizedStringKey(...)`. Text that must never be translated uses `Text(verbatim:)`. CI runs `scripts/check-strings.py`.
 - **No copyrighted stills, memes or GIFs in the repo**, not even for the basito face, the icon or the website: draw them in code. Users bring their own memes (and their own `.basito.png`).
+- **The website may show real memes, but never from the repo.** It links GIFs from the shows' official channels on GIPHY (`media.giphy.com/media/<id>/...`), each one linked to its GIPHY page, with the credit line in the footer kept up to date. Never from fan uploads, never a GIF downloaded into `site/`. The one exception is the site favicon (`favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`): the real "F4, basito" still, committed on the maintainer's explicit request; the app icon and the panel face stay drawn in code. A missing GIF must leave a coloured tile, not a broken layout.
 - Keep PRs small and focused: one issue, one PR. Do not mix refactors with behaviour changes.
 - No third-party dependencies without a reason written in the PR description (and in a comment in `Package.swift`, as for Sparkle).
 - Match the style of the surrounding code.
@@ -99,7 +100,7 @@ python3 -m http.server -d site 8000   # preview the website at http://localhost:
 - **A new setting:** a `Key` and a `@Published` property in `AppSettings` (stored in `UserDefaults`), a control in `SettingsView`, strings translated, the setting listed in the README "Settings" section and in `llms-full.txt`.
 - **A new file type:** a case in `MemeKind` (extension → UTI), tests in `Tests/F4CoreTests`, check that `ThumbnailCache` can decode it and `MemeClipboard` writes it under the right UTI, then update the supported types in the Settings caption, the README, the site FAQ and both `llms` files.
 - **A new easter egg:** an entry in the table in `EasterEggs.swift` (the key is matched after normalisation), a test, and, if it has a new effect, the effect in the panel. The docs only say easter eggs exist; do not list them.
-- **The website:** edit `site/` directly; `pages.yml` deploys it when the PR lands. Keep the `og:`/`twitter:` tags, the JSON-LD and `sitemap.xml` consistent with any change of title, URL or description. Never edit `site/appcast.xml` by hand: the release workflow owns it.
+- **The website:** edit `site/` directly (a new GIF follows the GIPHY rule above); `pages.yml` deploys it when the PR lands. Keep the `og:`/`twitter:` tags, the JSON-LD and `sitemap.xml` consistent with any change of title, URL or description. Never edit `site/appcast.xml` by hand: the release workflow owns it.
 - **The release pipeline:** a change to `release.yml` is checked with a dry run (Actions → Release → Run workflow → `dry_run`) before it is relied on.
 
 ## Docs, roadmap and planning

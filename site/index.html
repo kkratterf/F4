@@ -22,11 +22,14 @@
   <meta name="twitter:description" content="Press a shortcut, type a few letters, hit Enter: the meme is on your clipboard, GIF animation included.">
   <meta name="twitter:image" content="https://kkratterf.github.io/f4/og.png">
 
-  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <!-- The favicon is the real "F4, basito" still, the maintainer's choice; the app icon stays drawn in code. -->
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700..800&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="preconnect" href="https://media.giphy.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
 
   <script type="application/ld+json">
@@ -48,10 +51,18 @@
   </script>
 </head>
 <body>
-  <header>
+  <!--
+    The GIFs on this page are not in the repo. They load from GIPHY, from the
+    official channels of the shows they come from, and each one links back to
+    its GIPHY page (AGENTS.md: never commit memes, not even for the website).
+    The id is the part after /media/ in GIPHY's URLs.
+  -->
+  <header class="top">
     <div class="wrap bar">
-      <img src="favicon.svg" alt="" width="40" height="40">
-      <span class="name">F4</span>
+      <a class="brand" href="./" aria-label="F4 home">
+        <img src="favicon.svg" alt="" width="36" height="36">
+        <span>F4</span>
+      </a>
       <nav>
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
@@ -59,54 +70,119 @@
         <a href="#faq">FAQ</a>
         <a href="https://github.com/kkratterf/f4">GitHub</a>
       </nav>
+      <a class="btn btn-small" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">Download</a>
     </div>
   </header>
 
   <main>
-    <div class="wrap hero">
-      <div>
-        <span class="tag">Free · Open source · macOS</span>
-        <h1>Spotlight, but for your memes.</h1>
-        <p class="lede">Press a shortcut, type a few letters, hit Enter. The meme is on your clipboard — GIF animation included — ready to paste into Slack, Discord or Telegram.</p>
-        <div class="cta">
-          <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg" id="download">⬇︎ Download for macOS</a>
-          <a class="btn btn-ghost" href="https://github.com/kkratterf/f4">Source on GitHub</a>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <span class="sticker">Free · Open source · macOS</span>
+          <h1>Spotlight, but for your <mark>memes</mark>.</h1>
+          <p class="lede">Press <kbd>⌘</kbd><kbd>⇧</kbd><kbd>M</kbd>, type a few letters, hit <kbd>Enter</kbd>. The meme is on your clipboard, GIF animation included, ready to paste into Slack, Discord or Telegram.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg" id="download">⬇︎ Download for macOS</a>
+            <a class="btn btn-ghost" href="https://github.com/kkratterf/f4">Source on GitHub</a>
+          </div>
+          <p class="fineprint">Always the latest version · macOS 14 Sonoma or later · Apple Silicon and Intel · no account, no tracking. <a href="https://github.com/kkratterf/f4/releases">All releases</a></p>
         </div>
-        <p class="fineprint">Always the latest version · macOS 14 Sonoma or later · Apple Silicon and Intel · no account, no tracking. <a href="https://github.com/kkratterf/f4/releases">All releases</a></p>
-      </div>
-      <div class="panel" aria-hidden="true">
-        <div class="search">basito</div>
-        <div class="grid">
-          <div class="cell on">😳</div>
-          <div class="cell">🤌</div>
-          <div class="cell">🙃</div>
-          <div class="cell">🥲</div>
-          <div class="cell">🫠</div>
-          <div class="cell">😶‍🌫️</div>
-          <div class="cell">🤡</div>
-          <div class="cell">💀</div>
+
+        <div class="stage">
+          <div class="panel" id="demo" aria-label="The F4 panel searching a meme folder">
+            <div class="search">
+              <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+              <span class="query" id="query">no</span><span class="caret" aria-hidden="true"></span>
+            </div>
+            <div class="grid" id="grid">
+              <a class="cell on" data-name="michael scott no" href="https://giphy.com/gifs/h2Ro4j4LBwhyw8G92g"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" data-still="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-anim="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="Michael Scott saying no, The Office" width="200" height="150"><span>michael-scott-no.gif</span></a>
+              <a class="cell" data-name="cool cool cool" href="https://giphy.com/gifs/l41lNp8dHpfaJE25O"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-still="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-anim="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150"><span>cool-cool-cool.gif</span></a>
+              <a class="cell" data-name="this is the worst" href="https://giphy.com/gifs/E2EhD5Z7d4fLhjeW6O"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-still="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-anim="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp" alt="This is the worst, Parks and Recreation" width="200" height="150"><span>this-is-the-worst.gif</span></a>
+              <a class="cell" data-name="mocking spongebob" href="https://giphy.com/gifs/fB938PbR1ulsA"><img src="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-still="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-anim="https://media.giphy.com/media/fB938PbR1ulsA/200w.webp" alt="Mocking SpongeBob" width="200" height="150"><span>mocking-spongebob.gif</span></a>
+              <a class="cell" data-name="awkward" href="https://giphy.com/gifs/NdIdKr94h0FyPCYnEQ"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-still="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-anim="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp" alt="An awkward moment, The Office" width="200" height="150"><span>awkward.gif</span></a>
+              <a class="cell" data-name="happy dance" href="https://giphy.com/gifs/3o7WIIvYXQNlNXq0XS"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-still="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-anim="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="200" height="150"><span>happy-dance.gif</span></a>
+              <a class="cell" data-name="fake typing" href="https://giphy.com/gifs/gSzVFkOj0Te7gojAhM"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-still="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-anim="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="200" height="150"><span>fake-typing.gif</span></a>
+              <a class="cell" data-name="idk" href="https://giphy.com/gifs/9D5gyxpkQj5hZDOkwt"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-still="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-anim="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="200" height="150"><span>idk.gif</span></a>
+            </div>
+            <div class="status">
+              <span id="picked">michael-scott-no.gif</span>
+              <span class="hint"><kbd>↩</kbd> copy</span>
+            </div>
+            <div class="toast" id="toast" role="status">Copied. Paste it anywhere, still animated.</div>
+          </div>
+          <span class="tape">only the selected GIF plays, like in the app</span>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="paste">
+      <div class="wrap paste-grid">
+        <div>
+          <h2>It pastes the GIF, not a screenshot of it.</h2>
+          <p>Most apps flatten a GIF into one sad frame when you copy it. F4 copies the file itself, so the animation lands in Slack, Discord, Telegram, WhatsApp and Messages exactly as it should.</p>
+          <p class="small">Your memes stay yours: F4 reads one folder on your Mac and uploads nothing.</p>
+        </div>
+        <div class="chat" aria-label="A chat where a GIF was pasted with F4">
+          <div class="chat-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b># team</b></div>
+          <div class="msg">
+            <span class="avatar a1">G</span>
+            <div>
+              <p class="who">Giulia <time>17:58</time></p>
+              <p>deploying to prod on a friday, what could go wrong</p>
+            </div>
+          </div>
+          <div class="msg">
+            <span class="avatar a2">M</span>
+            <div>
+              <p class="who">Marco <time>17:58</time></p>
+              <a class="pasted" href="https://giphy.com/gifs/h2Ro4j4LBwhyw8G92g"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/giphy.webp" alt="Michael Scott saying no, The Office" width="320" height="240" loading="lazy"></a>
+              <p class="via">⌘⇧M · “no” · ↩ · ⌘V — 2 seconds</p>
+            </div>
+          </div>
+          <div class="msg">
+            <span class="avatar a1">G</span>
+            <div>
+              <p class="who">Giulia <time>17:59</time></p>
+              <a class="pasted" href="https://giphy.com/gifs/fB938PbR1ulsA"><img src="https://media.giphy.com/media/fB938PbR1ulsA/giphy.webp" alt="Mocking SpongeBob" width="320" height="240" loading="lazy"></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wall" aria-label="A few reaction GIFs">
+      <div class="marquee">
+        <div class="track">
+          <a href="https://giphy.com/gifs/HBeTEfNfTUpcF5GwVC"><img src="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w.webp" alt="Shocked, The Office" width="200" height="150" loading="lazy"><span>shocked.gif</span></a>
+          <a href="https://giphy.com/gifs/3ohzAu2U1tOafteBa0"><img src="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w.webp" alt="An excited SpongeBob" width="200" height="150" loading="lazy"><span>excited.gif</span></a>
+          <a href="https://giphy.com/gifs/l41lNp8dHpfaJE25O"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"><span>cool-cool-cool.gif</span></a>
+          <a href="https://giphy.com/gifs/J0BUyA0CPnDTP6iALR"><img src="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w.webp" alt="Michael Scott: I'll do it myself, The Office" width="200" height="150" loading="lazy"><span>ill-do-it-myself.gif</span></a>
+          <a href="https://giphy.com/gifs/E2EhD5Z7d4fLhjeW6O"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp" alt="This is the worst, Parks and Recreation" width="200" height="150" loading="lazy"><span>this-is-the-worst.gif</span></a>
+          <a href="https://giphy.com/gifs/xoV4JZ3cBaSGngdxxl"><img src="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w.webp" alt="Excited, The Office" width="200" height="150" loading="lazy"><span>so-excited.gif</span></a>
+          <a href="https://giphy.com/gifs/9D5gyxpkQj5hZDOkwt"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"><span>idk.gif</span></a>
+          <a href="https://giphy.com/gifs/3o7WIIvYXQNlNXq0XS"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="200" height="150" loading="lazy"><span>happy-dance.gif</span></a>
+        </div>
+      </div>
+    </section>
 
     <section id="how">
       <div class="wrap">
         <h2>Three steps, no thinking</h2>
-        <p>F4 reads one folder on your Mac. Your memes stay yours: nothing is uploaded anywhere.</p>
-        <div class="steps">
-          <div class="step">
+        <p class="section-lede">F4 reads one folder on your Mac. Your memes stay yours: nothing is uploaded anywhere.</p>
+        <ol class="steps">
+          <li>
             <h3>Put your memes in a folder</h3>
             <p><code>~/Pictures/Memes</code> by default, or any folder you pick. Subfolders become categories.</p>
-          </div>
-          <div class="step">
+          </li>
+          <li>
             <h3>Press <kbd>⌘</kbd><kbd>⇧</kbd><kbd>M</kbd></h3>
             <p>From any app. The panel floats above everything, even full-screen apps, and opens instantly.</p>
-          </div>
-          <div class="step">
+          </li>
+          <li>
             <h3>Type, then <kbd>Enter</kbd></h3>
-            <p>The meme is copied. Paste it with <kbd>⌘</kbd><kbd>V</kbd> — or let F4 paste it for you.</p>
-          </div>
-        </div>
+            <p>The meme is copied. Paste it with <kbd>⌘</kbd><kbd>V</kbd>, or let F4 paste it for you.</p>
+          </li>
+        </ol>
       </div>
     </section>
 
@@ -114,15 +190,20 @@
       <div class="wrap">
         <h2>What is in it</h2>
         <div class="features">
-          <div class="feature">
-            <span class="emoji">🎞️</span>
+          <div class="feature big">
+            <a class="reaction" href="https://giphy.com/gifs/3o7WIIvYXQNlNXq0XS"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="200" height="150" loading="lazy"></a>
             <h3>GIFs stay animated</h3>
             <p>F4 copies the file itself, never a flattened image, so Slack, Discord and Telegram get the animation.</p>
           </div>
-          <div class="feature">
-            <span class="emoji">⚡️</span>
+          <div class="feature big">
+            <a class="reaction" href="https://giphy.com/gifs/gSzVFkOj0Te7gojAhM"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="200" height="150" loading="lazy"></a>
             <h3>Instant</h3>
             <p>Folder scans and thumbnails run in the background. The panel never waits, however many memes you have.</p>
+          </div>
+          <div class="feature big">
+            <a class="reaction" href="https://giphy.com/gifs/l41lNp8dHpfaJE25O"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></a>
+            <h3>No permissions</h3>
+            <p>The global shortcut needs no Accessibility or Input Monitoring. Auto-paste is optional and degrades gracefully.</p>
           </div>
           <div class="feature">
             <span class="emoji">🔎</span>
@@ -133,11 +214,6 @@
             <span class="emoji">🗂️</span>
             <h3>Categories</h3>
             <p>Subfolders show up as categories you can search, so a thousand files stay findable.</p>
-          </div>
-          <div class="feature">
-            <span class="emoji">🔐</span>
-            <h3>No permissions</h3>
-            <p>The global shortcut needs no Accessibility or Input Monitoring. Auto-paste is optional and degrades gracefully.</p>
           </div>
           <div class="feature">
             <span class="emoji">🧩</span>
@@ -161,57 +237,70 @@
     <section id="install">
       <div class="wrap">
         <h2>Install</h2>
-        <p>Needs macOS 14 Sonoma or later. Pick whichever you like.</p>
+        <p class="section-lede">Needs macOS 14 Sonoma or later. Pick whichever you like.</p>
         <div class="ways">
-          <div class="feature">
+          <div class="way">
             <h3>The app</h3>
             <p><a href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">Download the DMG</a>, open it and drag F4 onto Applications.</p>
+            <a class="btn btn-primary btn-block" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">⬇︎ F4.dmg</a>
           </div>
-          <div class="feature">
+          <div class="way">
             <h3>One line in Terminal</h3>
             <pre><code>curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh</code></pre>
           </div>
-          <div class="feature">
+          <div class="way">
             <h3>Homebrew</h3>
             <pre><code>brew tap kkratterf/f4 https://github.com/kkratterf/f4
 brew install --cask f4</code></pre>
           </div>
         </div>
-        <p style="margin-top:22px">F4 updates itself: it checks for new versions and installs them in one click, so you only do this once.</p>
+        <p class="note">F4 updates itself: it checks for new versions and installs them in one click, so you only do this once.</p>
       </div>
     </section>
 
     <section id="faq">
+      <div class="wrap faq-grid">
+        <div>
+          <h2>Questions</h2>
+          <a class="reaction faq-gif" href="https://giphy.com/gifs/9D5gyxpkQj5hZDOkwt"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/giphy.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="320" height="240" loading="lazy"></a>
+        </div>
+        <div>
+          <details>
+            <summary>macOS says it cannot verify the developer. Now what?</summary>
+            <p>F4 is not notarized by Apple yet. Open it once, close the warning, then go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>. Or run <code>xattr -dr com.apple.quarantine /Applications/F4.app</code> in Terminal. The install script does it for you.</p>
+          </details>
+          <details>
+            <summary>Where do the memes come from?</summary>
+            <p>From you. F4 ships with no images at all: no copyrighted stills, no GIF packs. Point it at a folder of your own and it indexes what is there. The GIFs on this page are shared by the shows' official channels on GIPHY and load from there.</p>
+          </details>
+          <details>
+            <summary>Does it send anything anywhere?</summary>
+            <p>No. No analytics, no account, no server. Your files are read locally; the only network request is the update check against the release feed on this site.</p>
+          </details>
+          <details>
+            <summary>Which files does it understand?</summary>
+            <p>GIF, PNG and JPEG today. WebP, HEIC and short videos are on the <a href="https://github.com/kkratterf/f4/issues">roadmap</a>.</p>
+          </details>
+          <details>
+            <summary>Can I change the shortcut?</summary>
+            <p>Yes, in Settings, from the menu bar icon. <kbd>⌘</kbd><kbd>⇧</kbd><kbd>M</kbd> is only the default.</p>
+          </details>
+          <details>
+            <summary>Why "F4"?</summary>
+            <p>From <em>"F4, basito"</em>, the face Stanis makes in the Italian series Boris. The face in the icon is drawn in code; put a <code>.basito.png</code> in your meme folder to use your own.</p>
+          </details>
+          <details>
+            <summary>Can an AI assistant or a script use F4?</summary>
+            <p>That is being built (a URL scheme, Shortcuts actions, a command line tool and an MCP server). Facts for AI assistants live in <a href="llms.txt">llms.txt</a>, and the full reference in <a href="llms-full.txt">llms-full.txt</a>.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="outro-cta">
       <div class="wrap">
-        <h2>Questions</h2>
-        <details>
-          <summary>macOS says it cannot verify the developer. Now what?</summary>
-          <p>F4 is not notarized by Apple yet. Open it once, close the warning, then go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>. Or run <code>xattr -dr com.apple.quarantine /Applications/F4.app</code> in Terminal. The install script does it for you.</p>
-        </details>
-        <details>
-          <summary>Where do the memes come from?</summary>
-          <p>From you. F4 ships with no images at all — no copyrighted stills, no GIF packs. Point it at a folder of your own and it indexes what is there.</p>
-        </details>
-        <details>
-          <summary>Does it send anything anywhere?</summary>
-          <p>No. No analytics, no account, no server. Your files are read locally; the only network request is the update check against the release feed on this site.</p>
-        </details>
-        <details>
-          <summary>Which files does it understand?</summary>
-          <p>GIF, PNG and JPEG today. WebP, HEIC and short videos are on the <a href="https://github.com/kkratterf/f4/issues">roadmap</a>.</p>
-        </details>
-        <details>
-          <summary>Can I change the shortcut?</summary>
-          <p>Yes, in Settings, from the menu bar icon. <kbd>⌘</kbd><kbd>⇧</kbd><kbd>M</kbd> is only the default.</p>
-        </details>
-        <details>
-          <summary>Why "F4"?</summary>
-          <p>From <em>"F4, basito"</em>, the face Stanis makes in the Italian series Boris. The face in the icon is drawn in code — put a <code>.basito.png</code> in your meme folder to use your own.</p>
-        </details>
-        <details>
-          <summary>Can an AI assistant or a script use F4?</summary>
-          <p>That is being built (a URL scheme, Shortcuts actions, a command line tool and an MCP server). Facts for AI assistants live in <a href="llms.txt">llms.txt</a>, and the full reference in <a href="llms-full.txt">llms-full.txt</a>.</p>
-        </details>
+        <h2>Your next reply is three keys away.</h2>
+        <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">⬇︎ Download for macOS</a>
       </div>
     </section>
   </main>
@@ -227,7 +316,91 @@ brew install --cask f4</code></pre>
         <a href="llms-full.txt">llms-full.txt</a>
       </div>
       <p>MIT licensed. Made with Claude, and a face that has seen things.</p>
+      <p class="credits">GIFs powered by <a href="https://giphy.com">GIPHY</a>, from the official channels of <a href="https://giphy.com/theoffice">The Office</a>, <a href="https://giphy.com/parksandrec">Parks and Recreation</a>, <a href="https://giphy.com/nbc">NBC</a>, <a href="https://giphy.com/brooklynninenine">Brooklyn Nine-Nine</a> and <a href="https://giphy.com/spongebob">SpongeBob SquarePants</a>. They belong to their owners, load from GIPHY and are not part of F4. Click one to see its source.</p>
     </div>
   </footer>
+
+  <script>
+    // The hero demo: types a query, moves the selection to the matching meme
+    // and plays only that one, the way the real panel does.
+    (function () {
+      var grid = document.getElementById("grid");
+      var query = document.getElementById("query");
+      var picked = document.getElementById("picked");
+      var toast = document.getElementById("toast");
+      if (!grid || !query) return;
+      var cells = Array.prototype.slice.call(grid.querySelectorAll(".cell"));
+      var steps = ["no", "cool", "worst", "mock", "dance", "idk"];
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      function matches(name, q) {
+        var i = 0;
+        for (var c = 0; c < name.length && i < q.length; c++) {
+          if (name[c] === q[i]) i++;
+        }
+        return i === q.length;
+      }
+
+      function select(q) {
+        var first = null;
+        cells.forEach(function (cell) {
+          var hit = matches(cell.dataset.name, q);
+          cell.classList.toggle("dim", !hit);
+          if (hit && !first) first = cell;
+        });
+        cells.forEach(function (cell) {
+          var img = cell.querySelector("img");
+          var on = cell === first;
+          cell.classList.toggle("on", on);
+          img.src = on ? img.dataset.anim : img.dataset.still;
+        });
+        if (first) picked.textContent = first.querySelector("span").textContent;
+      }
+
+      select("no");
+      if (reduce) return;
+
+      // The meme wall scrolls by half its width, so it needs a second copy.
+      var track = document.querySelector(".track");
+      if (track) {
+        Array.prototype.slice.call(track.children).forEach(function (item) {
+          var copy = item.cloneNode(true);
+          copy.setAttribute("aria-hidden", "true");
+          copy.tabIndex = -1;
+          track.appendChild(copy);
+        });
+      }
+
+      var step = 0;
+      function type(word, done) {
+        var n = 0;
+        query.textContent = "";
+        var timer = setInterval(function () {
+          n++;
+          query.textContent = word.slice(0, n);
+          select(query.textContent);
+          if (n >= word.length) {
+            clearInterval(timer);
+            done();
+          }
+        }, 140);
+      }
+
+      function next() {
+        step = (step + 1) % steps.length;
+        type(steps[step], function () {
+          setTimeout(function () {
+            toast.classList.add("show");
+            setTimeout(function () {
+              toast.classList.remove("show");
+              setTimeout(next, 500);
+            }, 1400);
+          }, 1600);
+        });
+      }
+
+      setTimeout(next, 2600);
+    })();
+  </script>
 </body>
 </html>
