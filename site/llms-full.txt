@@ -71,6 +71,7 @@ In the panel:
 | Command-D | Add the selected meme to Favourites, or remove it |
 | Right-click a meme | Copy, Add to Favourites / Remove from Favourites, Show in Finder |
 | The global shortcut again | Hide the panel |
+| Drag the search bar or the bottom bar | Move the panel. It snaps to the screen's centre lines and to its default height, with a guide line, and reopens where it was left (on the screen with the mouse, at the same relative place). Drag it back to the default spot to reset |
 
 Order of results: with an empty search, favourites first, then recently copied memes (the last 30, most recent first), then the rest in folder order. While typing, the best matches come first (consecutive letters and word starts score higher), and equal matches keep that order. Only the selected or hovered GIF animates; the others show their first frame.
 
@@ -96,7 +97,7 @@ Open F4 · Shortcut: (the current shortcut, as a reminder) · Open Meme Folder �
 
 Auto-paste needs the Accessibility permission (System Settings > Privacy & Security > Accessibility > F4). Without it F4 only copies, and Settings shows a button to open that pane. Nothing else in F4 needs a permission: the global shortcut uses Carbon `RegisterEventHotKey`, which needs no Accessibility, Input Monitoring or Screen Recording.
 
-Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Preferences/com.kkratterf.f4.plist`): `memeFolderPath`, `toggleShortcutKeyCode`, `toggleShortcutModifiers`, `pasteAfterCopy`, `favouriteMemes`, `recentMemes` (file paths). Change them in Settings rather than with `defaults write` while F4 is running.
+Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Preferences/com.kkratterf.f4.plist`): `memeFolderPath`, `toggleShortcutKeyCode`, `toggleShortcutModifiers`, `pasteAfterCopy`, `panelPosition` (where the panel was dragged, as fractions of the screen), `favouriteMemes`, `recentMemes` (file paths). Change them in Settings rather than with `defaults write` while F4 is running.
 
 ### Easter eggs
 
