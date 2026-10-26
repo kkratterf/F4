@@ -82,6 +82,30 @@ jobs:
           hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
           exit $status
 
+      - name: Screenshot the installer window
+        # Opens the DMG in Finder like a user would and captures the window
+        # at the bounds set by build-dmg.sh, so the look can be checked
+        # without a Mac. Best effort: a runner without a display just skips it.
+        continue-on-error: true
+        run: |
+          dmg=$(ls dist/F4-*.dmg)
+          mnt=$(hdiutil attach -noverify "$dmg" | grep -E 'Apple_HFS' | sed -E 's/^.*Apple_HFS[[:space:]]+//' | head -n 1)
+          open "$mnt"
+          sleep 5
+          mkdir -p dist/screenshots
+          screencapture -x -o -R 240,100,380,560 dist/screenshots/dmg-window.png
+          hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
+
+      - name: Upload the installer screenshot
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: F4-dmg-window
+          path: dist/screenshots/*.png
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Upload the DMG
         uses: actions/upload-artifact@v4
         with:

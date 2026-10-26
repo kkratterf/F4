@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 # Builds dist/F4-<version>.dmg: a styled installer window with
-# F4.app on the left, an Applications shortcut on the right and a
-# background drawn in code by scripts/make-dmg-background.swift.
+# F4.app on top, in the F4 slot of a dark keyboard, an Applications
+# shortcut underneath and a background drawn in code by
+# scripts/make-dmg-background.swift.
 #
 # Usage: scripts/build-dmg.sh [--rebuild]
 #   Reuses dist/F4.app when it exists (so a signed app is kept),
@@ -23,13 +24,15 @@ SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 VOLNAME="F4"
 
 # Window geometry: must match scripts/make-dmg-background.swift.
-WIN_W=660
-WIN_H=400
-WIN_X=200
-WIN_Y=120
-ICON_SIZE=128
-APP_POS="165, 200"
-APPS_POS="495, 200"
+# A tall window, like a keyboard seen from above: the app sits in the
+# keyboard's F4 slot at the top, Applications waits underneath.
+WIN_W=380
+WIN_H=560
+WIN_X=240
+WIN_Y=100
+ICON_SIZE=112
+APP_POS="190, 214"
+APPS_POS="190, 424"
 
 warn() {
   if [ -n "${GITHUB_ACTIONS:-}" ]; then

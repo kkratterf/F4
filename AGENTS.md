@@ -25,7 +25,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Resources/Info.plist` | App bundle metadata: the version (`CFBundleShortVersionString`, the single source of truth for releases), `LSUIElement` (no Dock icon), the Sparkle feed (`SUFeedURL`) and public key (`SUPublicEDKey`) |
 | `raycast/` | Raycast extension (TypeScript) that searches the same meme folder; built in CI with `ray build` |
 | `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and `dist/F4-x.y.z.zip`: universal binary, icon, Sparkle framework, localizations, signature |
-| `scripts/build-dmg.sh` | Builds `dist/F4-x.y.z.dmg` from `dist/F4.app`: a styled drag-to-Applications window |
+| `scripts/build-dmg.sh` | Builds `dist/F4-x.y.z.dmg` from `dist/F4.app`: a tall drag-to-Applications window, the app in the F4 slot of a keyboard drawn by `make-dmg-background.swift` |
 | `scripts/make-icon.swift`, `scripts/make-dmg-background.swift` | Draw the app icon and the DMG background in code; no image is committed |
 | `scripts/check-strings.py` | CI check: every string in the String Catalog has an Italian translation |
 | `scripts/update-appcast.py` | Adds a release to the Sparkle appcast (`site/appcast.xml`) |
@@ -73,7 +73,7 @@ python3 -m http.server -d site 8000   # preview the website at http://localhost:
 
 | Job | Runs on | Checks |
 | --- | --- | --- |
-| Build and test | macOS | `swift build`, `swift test`, builds `F4.app` and checks it (universal binary, signature, `LSUIElement`, Italian strings, icon, Sparkle framework and rpath, launches and stays up for 8 seconds), builds the DMG and mounts it to check the layout. Uploads the zip and the DMG as artifacts |
+| Build and test | macOS | `swift build`, `swift test`, builds `F4.app` and checks it (universal binary, signature, `LSUIElement`, Italian strings, icon, Sparkle framework and rpath, launches and stays up for 8 seconds), builds the DMG, mounts it to check the layout and screenshots its Finder window. Uploads the zip, the DMG and the screenshot (`F4-dmg-window`) as artifacts |
 | Lint scripts | Linux | ShellCheck on `scripts/*.sh` and `install.sh`, `check-strings.py`, a round trip of `update-appcast.py` |
 | Raycast extension | Linux | `npm ci` and `ray build` in `raycast/` |
 | Homebrew cask | macOS | `brew style` and an offline `brew audit --strict` of `Casks/f4.rb` |
