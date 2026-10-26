@@ -21,7 +21,13 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Sources/F4/Resources` | `Localizable.xcstrings`: String Catalog, English keys with Italian translations |
 | `Resources/Info.plist` | App bundle metadata, including the version and `LSUIElement` (no Dock icon) |
 | `raycast/` | Raycast extension (TypeScript) that searches the same meme folder; built in CI with `ray build` |
-| `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and a zip |
+| `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and a zip (icon, Sparkle framework, localizations, signature) |
+| `scripts/build-dmg.sh` | Builds `dist/F4-x.y.z.dmg`: a styled drag-to-Applications window |
+| `scripts/make-icon.swift`, `scripts/make-dmg-background.swift` | Draw the app icon and the DMG background in code; no image is committed |
+| `scripts/update-appcast.py` | Adds a release to the Sparkle appcast (`site/appcast.xml`) |
+| `site/` | The project website (static HTML and CSS), deployed to GitHub Pages by `.github/workflows/pages.yml`; it also hosts `appcast.xml` and `llms.txt` |
+| `Casks/f4.rb` | Homebrew cask, bumped by the release workflow |
+| `install.sh` | One-line installer and uninstaller |
 
 ## Language of the project
 
@@ -35,8 +41,11 @@ Needs macOS 14+ and Xcode 15+ (Swift 5.9). These mirror CI (`.github/workflows/c
 swift build
 swift test
 scripts/build-app.sh release   # dist/F4.app
+scripts/build-dmg.sh           # dist/F4-x.y.z.dmg
 open dist/F4.app
 ```
+
+The website has no build step: preview it with `python3 -m http.server -d site 8000` and open http://localhost:8000.
 
 ## Rules for changes
 
@@ -54,7 +63,7 @@ open dist/F4.app
 ## Docs, roadmap and planning
 
 - **Do not commit docs, roadmaps, plans, audits, reports or design notes to this repo.** No `ROADMAP.md`, `PLAN.md`, `docs/`, `notes/`. The roadmap lives outside the repo.
-- Allowed documentation: `README.md` and `raycast/README.md` (user-facing usage only), code comments, and this file plus `CLAUDE.md`.
+- Allowed documentation: `README.md` and `raycast/README.md` (user-facing usage only), `CONTRIBUTING.md`, `SECURITY.md`, the GitHub issue and pull request templates, the website in `site/` (including `llms.txt`), code comments, and this file plus `CLAUDE.md`.
 - **Backlog = GitHub issues only.** No GitHub Projects, no milestones. Every issue carries labels:
   - area: `app`, `library`, `ecosystem`, `ci`, `bug`
   - priority: `P0`, `P1`, `P2`
@@ -69,7 +78,7 @@ open dist/F4.app
 
 - Summary in English, imperative mood, lower case, no trailing period, ≤ 72 characters.
 - Types: `feat`, `fix`, `perf`, `refactor`, `test`, `docs` (README/comments only), `ci`, `build`, `chore`, `revert`.
-- Scopes: `core`, `app`, `panel`, `hotkey`, `grid`, `search`, `library` (folder scan and watch), `thumbnails`, `clipboard`, `settings`, `raycast`, `ci`, `release`.
+- Scopes: `core`, `app`, `panel`, `hotkey`, `grid`, `search`, `library` (folder scan and watch), `thumbnails`, `clipboard`, `settings`, `updater`, `site`, `raycast`, `ci`, `release`.
 - Breaking changes: `feat(core)!: ...` plus a `BREAKING CHANGE:` footer.
 - Body explains *why*, wrapped at 72 columns.
 
@@ -92,6 +101,7 @@ Agent platforms that assign their own branch names (e.g. `claude/...`) are fine;
 - SemVer, tags `vX.Y.Z`.
 - Minor release = a version label, cut when all `P0` issues of that version are closed and `main` is green. Patch release when a user-facing fix lands.
 - First a version-bump PR (`chore(release): vX.Y.Z`) that updates `CFBundleShortVersionString` and bumps `CFBundleVersion` in `Resources/Info.plist`; the release workflow checks it.
+- Updates reach users through Sparkle: the release workflow signs the zip with `SPARKLE_ED_PRIVATE_KEY` and adds it to `site/appcast.xml`, which GitHub Pages serves. The public half lives in `SUPublicEDKey` in `Resources/Info.plist`; without a real key the updater stays hidden.
 - The release is created by the manual `release.yml` workflow (`workflow_dispatch`, with a `dry_run` option), which tests, builds the ad-hoc signed `F4.app`, tags and publishes the zip with notes grouped by label.
 - **No `CHANGELOG.md`.** The changelog lives only in GitHub Release notes.
 

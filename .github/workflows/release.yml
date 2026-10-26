@@ -4,13 +4,24 @@ name: Release
 # The version must already be set in Resources/Info.plist (CFBundleShortVersionString):
 # merge a `chore(release): vX.Y.Z` PR first.
 #
-# Tests, builds the ad-hoc signed F4.app, and publishes F4-<version>.zip and
-# SHA256SUMS.txt on a new vX.Y.Z tag, with release notes grouped by PR label
-# (.github/release.yml).
+# Tests, builds the ad-hoc signed F4.app, and publishes F4-<version>.zip,
+# F4-<version>.dmg and SHA256SUMS.txt on a new vX.Y.Z tag, with release notes
+# grouped by PR label (.github/release.yml), then (for stable releases) bumps
+# version and sha256 in Casks/f4.rb on main.
 #
 # Dry run (dry_run: true): runs the whole pipeline but creates no tag or
-# release; the zip, the checksums and the notes are uploaded as the
+# release and pushes nothing to main; the zip, the DMG, the checksums, the
+# notes, appcast.xml, the cask and their diffs are uploaded as the
 # "f4-<version>-dry-run" artifact and the notes are shown in the job summary.
+#
+# Auto-update with Sparkle (optional). When the SPARKLE_ED_PRIVATE_KEY secret
+# is set, the zip is signed with Sparkle's sign_update and, for non-pre-release
+# versions, added to site/appcast.xml, committed to main and deployed to
+# GitHub Pages (https://kkratterf.github.io/f4/appcast.xml). Without the secret
+# these steps are skipped with a warning and the app simply does not update
+# itself.
+#   SPARKLE_ED_PRIVATE_KEY   private EdDSA key (Sparkle's `generate_keys -x`);
+#                            its public half is SUPublicEDKey in Resources/Info.plist
 on:
   workflow_dispatch:
     inputs:
@@ -46,6 +57,9 @@ jobs:
     runs-on: macos-15
     permissions:
       contents: write
+      # To start the Pages deploy after the appcast commit (pushes made with
+      # GITHUB_TOKEN do not trigger workflows on their own).
+      actions: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,12 +93,94 @@ jobs:
       - name: Build F4.app
         run: scripts/build-app.sh release
 
+      - name: Build the DMG
+        run: scripts/build-dmg.sh
+
       - name: Checksums
         run: |
           cd dist
           test -f "F4-$VERSION.zip"
-          shasum -a 256 "F4-$VERSION.zip" > SHA256SUMS.txt
+          test -f "F4-$VERSION.dmg"
+          shasum -a 256 "F4-$VERSION.zip" "F4-$VERSION.dmg" > SHA256SUMS.txt
           cat SHA256SUMS.txt
+
+      - name: Sign the update for Sparkle
+        id: sparkle
+        env:
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
+        run: |
+          if [ -z "$SPARKLE_ED_PRIVATE_KEY" ]; then
+            echo "enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::SPARKLE_ED_PRIVATE_KEY is not set: the update is not signed and the appcast is not updated"
+            exit 0
+          fi
+          # Sparkle's tools come with the SwiftPM artifact; download them if
+          # this SwiftPM version did not keep them.
+          sign_update=$(find .build/artifacts -type f -name sign_update -perm -u+x 2>/dev/null | head -n 1)
+          if [ -z "$sign_update" ]; then
+            sparkle_version=$(python3 -c "import json; pins = json.load(open('Package.resolved'))['pins']; print([p['state']['version'] for p in pins if p['identity'] == 'sparkle'][0])")
+            curl -fsSL -o "$RUNNER_TEMP/sparkle.zip" \
+              "https://github.com/sparkle-project/Sparkle/releases/download/$sparkle_version/Sparkle-for-Swift-Package-Manager.zip"
+            unzip -q -o "$RUNNER_TEMP/sparkle.zip" 'bin/*' -d "$RUNNER_TEMP/sparkle"
+            sign_update="$RUNNER_TEMP/sparkle/bin/sign_update"
+          fi
+          zip_signature=$(printf '%s' "$SPARKLE_ED_PRIVATE_KEY" | "$sign_update" --ed-key-file - "dist/F4-$VERSION.zip")
+          echo "zip: $zip_signature"
+          echo "enabled=true" >> "$GITHUB_OUTPUT"
+          echo "zip_signature=$zip_signature" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare the appcast and cask updates
+        id: updates
+        env:
+          PRERELEASE: ${{ inputs.prerelease }}
+          SPARKLE_ENABLED: ${{ steps.sparkle.outputs.enabled }}
+          ZIP_SIGNATURE: ${{ steps.sparkle.outputs.zip_signature }}
+        run: |
+          # Both edits are committed on a local branch from the latest main;
+          # "Push the updates to main" publishes it, except in a dry run.
+          out="$RUNNER_TEMP/release-out"
+          mkdir -p "$out"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin main
+          git checkout -B release-updates origin/main
+          base=$(git rev-parse HEAD)
+          appcast=false
+          if [ "$PRERELEASE" = "true" ]; then
+            echo "::notice::Pre-release: the appcast and the Homebrew cask keep the previous version"
+          else
+            if [ "$SPARKLE_ENABLED" = "true" ]; then
+              python3 scripts/update-appcast.py \
+                --appcast site/appcast.xml \
+                --version "$VERSION" \
+                --url "https://github.com/$GITHUB_REPOSITORY/releases/download/$TAG/F4-$VERSION.zip" \
+                --signature "$ZIP_SIGNATURE"
+              git add site/appcast.xml
+              git commit -m "chore(release): add F4 $VERSION to the appcast"
+              git diff HEAD~1 HEAD -- site/appcast.xml > "$out/appcast.diff"
+              cp site/appcast.xml "$out/appcast.xml"
+              appcast=true
+            else
+              echo "::notice::No Sparkle key: the appcast is not updated"
+            fi
+            sha=$(shasum -a 256 "dist/F4-$VERSION.dmg" | cut -d' ' -f1)
+            sed -i '' -E \
+              -e "s/^  version \".*\"$/  version \"$VERSION\"/" \
+              -e "s/^  sha256 .*$/  sha256 \"$sha\"/" \
+              Casks/f4.rb
+            git add Casks/f4.rb
+            if git diff --cached --quiet; then
+              echo "::notice::The Homebrew cask is already at $VERSION"
+            else
+              git commit -m "chore(release): bump the Homebrew cask to $VERSION"
+              git diff HEAD~1 HEAD -- Casks/f4.rb > "$out/cask.diff"
+            fi
+            cp Casks/f4.rb "$out/f4.rb"
+          fi
+          commits=$(git rev-list --count "$base"..HEAD)
+          echo "commits=$commits" >> "$GITHUB_OUTPUT"
+          echo "appcast=$appcast" >> "$GITHUB_OUTPUT"
+          git log --oneline "$base"..HEAD
 
       - name: Release notes
         env:
@@ -98,7 +194,7 @@ jobs:
             echo
             echo "## Install"
             echo
-            echo "Download \`F4-$VERSION.zip\`, unzip it and move **F4.app** to Applications."
+            echo "Download \`F4-$VERSION.dmg\`, open it and drag **F4** onto Applications."
             echo "F4 is not notarized yet: the first time, open it, then go to **System Settings → Privacy & Security** and click **Open Anyway**."
             echo "Or, in Terminal: \`xattr -dr com.apple.quarantine /Applications/F4.app\`."
           } >> dist/notes.md
@@ -111,8 +207,10 @@ jobs:
           name: f4-${{ inputs.version }}-dry-run
           path: |
             dist/F4-${{ inputs.version }}.zip
+            dist/F4-${{ inputs.version }}.dmg
             dist/SHA256SUMS.txt
             dist/notes.md
+            ${{ runner.temp }}/release-out/
 
       - name: Publish the release
         if: ${{ !inputs.dry_run }}
@@ -124,7 +222,25 @@ jobs:
           if [ "$PRERELEASE" = "true" ]; then flags+=(--prerelease); fi
           gh release create "$TAG" \
             --target "$GITHUB_SHA" \
-            --title "F4 $VERSION" \
+            --title "$TAG" \
             --notes-file dist/notes.md \
             ${flags[@]+"${flags[@]}"} \
-            "dist/F4-$VERSION.zip" dist/SHA256SUMS.txt
+            "dist/F4-$VERSION.zip" "dist/F4-$VERSION.dmg" dist/SHA256SUMS.txt
+
+      # After the release, so the appcast and the cask never point at missing assets.
+      - name: Push the updates to main
+        if: ${{ !inputs.dry_run && steps.updates.outputs.commits != '0' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          APPCAST: ${{ steps.updates.outputs.appcast }}
+        run: |
+          for attempt in 1 2 3; do
+            if git push origin HEAD:main; then break; fi
+            if [ "$attempt" = 3 ]; then echo "::error::Could not push the appcast and cask updates to main"; exit 1; fi
+            sleep $((attempt * 5))
+            git fetch origin main
+            git rebase origin/main
+          done
+          if [ "$APPCAST" = "true" ] && ! gh workflow run pages.yml --ref main; then
+            echo "::warning::Could not start the Pages deploy: run the Pages workflow by hand to publish appcast.xml"
+          fi

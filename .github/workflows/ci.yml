@@ -42,6 +42,9 @@ jobs:
           plutil -convert json -o - "$app/Contents/Resources/it.lproj/Localizable.strings" | grep -q "Cerca meme"
           test -s "$app/Contents/Resources/AppIcon.icns" || { echo "::error::AppIcon.icns missing from F4.app"; exit 1; }
           test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIconFile' "$app/Contents/Info.plist")" = AppIcon
+          test -d "$app/Contents/Frameworks/Sparkle.framework"
+          otool -L "$app/Contents/MacOS/F4" | grep Sparkle
+          otool -l "$app/Contents/MacOS/F4" | grep -A2 LC_RPATH
           # Smoke test: the app must launch and stay up.
           "$app/Contents/MacOS/F4" &
           pid=$!
@@ -61,6 +64,31 @@ jobs:
           path: dist/*.zip
           retention-days: 14
 
+      - name: Build the DMG
+        run: scripts/build-dmg.sh
+
+      - name: Check the DMG
+        run: |
+          dmg=$(ls dist/F4-*.dmg)
+          mnt=$(mktemp -d)
+          hdiutil attach -readonly -nobrowse -noverify -mountpoint "$mnt" "$dmg" >/dev/null
+          ls -la "$mnt"
+          status=0
+          [ -d "$mnt/F4.app" ] || { echo "::error::F4.app missing from the DMG"; status=1; }
+          [ -L "$mnt/Applications" ] || { echo "::error::Applications link missing from the DMG"; status=1; }
+          [ -f "$mnt/.background/background.tiff" ] || echo "::warning::no background in the DMG"
+          [ -f "$mnt/.DS_Store" ] || echo "::warning::no Finder layout (.DS_Store) in the DMG"
+          codesign --verify --verbose=1 "$mnt/F4.app" || status=1
+          hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
+          exit $status
+
+      - name: Upload the DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: F4-dmg
+          path: dist/*.dmg
+          retention-days: 14
+
   shellcheck:
     name: Lint scripts
     runs-on: ubuntu-latest
@@ -69,10 +97,23 @@ jobs:
         uses: actions/checkout@v4
 
       - name: ShellCheck
-        run: shellcheck scripts/*.sh
+        run: |
+          shellcheck scripts/*.sh
+          shellcheck --shell=sh install.sh
+          sh -n install.sh
 
       - name: String Catalog
         run: python3 scripts/check-strings.py
+
+      - name: Appcast script
+        run: |
+          tmp=$(mktemp -d)
+          python3 scripts/update-appcast.py --appcast "$tmp/appcast.xml" --version 0.2.0 \
+            --url https://example.com/F4-0.2.0.zip --signature 'sparkle:edSignature="AAAA" length="10"'
+          python3 scripts/update-appcast.py --appcast "$tmp/appcast.xml" --version 0.3.0 \
+            --url https://example.com/F4-0.3.0.zip --signature 'sparkle:edSignature="BBBB" length="20"'
+          cat "$tmp/appcast.xml"
+          test "$(grep -c '<item>' "$tmp/appcast.xml")" = 2
 
   raycast:
     name: Raycast extension
@@ -95,3 +136,34 @@ jobs:
 
       - name: Build
         run: npx ray build -e dist
+
+  cask:
+    name: Homebrew cask
+    runs-on: macos-15
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: "1"
+      HOMEBREW_NO_INSTALL_CLEANUP: "1"
+      HOMEBREW_NO_ENV_HINTS: "1"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: brew style
+        run: brew style Casks/f4.rb
+
+      # The audit runs offline (no --online, no --new): those checks download the
+      # DMG and query GitHub, and the version in the cask may point at a release
+      # that has no DMG yet (it is bumped by release.yml).
+      - name: brew audit
+        run: |
+          brew tap-new --no-git f4/ci
+          tap="$(brew --repository)/Library/Taps/f4/homebrew-ci"
+          mkdir -p "$tap/Casks"
+          cp Casks/f4.rb "$tap/Casks/f4.rb"
+          if ! brew audit --cask --strict f4/ci/f4 > audit.log 2>&1; then
+            cat audit.log
+            # Surface the findings as annotations, so they show on the PR.
+            grep -v '^$' audit.log | while IFS= read -r line; do echo "::error file=Casks/f4.rb::$line"; done
+            exit 1
+          fi
+          cat audit.log
