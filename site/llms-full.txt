@@ -52,12 +52,12 @@ Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/F4.app`. The inst
 
 ### Where is it after installing?
 
-F4 has no Dock icon and no window at launch. Press Command-Shift-M, or click the F4 face in the menu bar, top right. To start it at login, turn on "Open F4 at login" in Settings.
+F4 has no Dock icon and no window at launch. Press F4 (fn-F4 on a Mac keyboard, see Settings below), or click the F4 key icon in the menu bar, top right. To start it at login, turn on "Open F4 at login" in Settings.
 
 ## Use
 
 1. Put memes in a folder: `~/Pictures/Memes` by default, or any folder chosen in Settings. Supported files: GIF, PNG, JPEG (`.gif`, `.png`, `.jpg`, `.jpeg`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
-2. Press Command-Shift-M in any app. The panel appears centred on the screen with the mouse, above every window, including full-screen apps.
+2. Press F4 (fn-F4 on a Mac keyboard) in any app. The panel appears centred on the screen with the mouse, above every window, including full-screen apps.
 3. Type to search, then press Enter. The meme is on the clipboard; paste it with Command-V wherever you want it.
 
 In the panel:
@@ -87,7 +87,7 @@ Open F4 · Shortcut: (the current shortcut, as a reminder) · Open Meme Folder �
 
 | Section | Setting | Default |
 | --- | --- | --- |
-| General | Show and hide F4: the global shortcut, recorded by pressing a new combination | Command-Shift-M |
+| General | Show and hide F4: the global shortcut, recorded by pressing a new combination. A function key (F1 to F20) can be used alone; any other key needs Command, Option or Control | F4 |
 | General | Open F4 at login (a macOS login item) | Off |
 | Paste | Paste into the front app after copying: F4 presses Command-V for you | Off |
 | Meme folder | Folder: Choose…, Show in Finder, Use ~/Pictures/Memes | `~/Pictures/Memes` |
@@ -121,7 +121,8 @@ It quits F4, deletes `F4.app` and its settings (`defaults delete com.kkratterf.f
 
 ## Troubleshooting
 
-- "Nothing happens when I press Command-Shift-M": check F4 is running (the face in the menu bar). Another app may already own the shortcut; record another one in Settings > General.
+- "Nothing happens when I press F4", or F4 opens Spotlight or Launchpad: on a Mac keyboard the top row sends media keys unless fn is held. Press fn-F4, or turn on "Use F1, F2, etc. keys as standard function keys" in System Settings > Keyboard > Keyboard Shortcuts > Function Keys, or record another shortcut in Settings > General (Settings shows this hint under the shortcut). Also check F4 is running (the F4 key icon in the menu bar); another app may already own the shortcut.
+- Upgrading from 0.2 or earlier: the old default was Command-Shift-M. A shortcut the user recorded themselves is kept; otherwise the new default, F4, applies.
 - "The panel says No memes yet": the folder is empty, missing, or holds only unsupported files. Open it from the menu (Open Meme Folder) or pick another in Settings > Meme folder.
 - "The GIF pastes as a still image": the receiving app takes only images. Most chat apps paste the animation; try pasting into a message field rather than an image editor.
 - "Auto-paste does not paste": grant Accessibility to F4 in System Settings > Privacy & Security > Accessibility, then try again. After an update macOS may need the permission toggled off and on.

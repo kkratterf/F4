@@ -1,3 +1,5 @@
+<p align="center"><img src="site/logo.svg" width="128" height="128" alt="The F4 logo: an F4 key"></p>
+
 # F4
 
 **Spotlight, but for your memes.**
@@ -7,7 +9,7 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](#license)
 [![Website](https://img.shields.io/badge/website-kkratterf.github.io%2Ff4-FFC43D)](https://kkratterf.github.io/f4/)
 
-Press a shortcut, type a few letters, hit Enter: the meme is on your clipboard — GIF animation included — ready to paste into Slack, Discord or Telegram. A native macOS app in Swift (SwiftUI and AppKit), free and open source, no account and no tracking.
+Press **F4**, type a few letters, hit Enter: the meme is on your clipboard — GIF animation included — ready to paste into Slack, Discord or Telegram. A native macOS app in Swift (SwiftUI and AppKit), free and open source, no account and no tracking.
 
 *F4, basito.* Named after the most famous face in [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)).
 
@@ -26,7 +28,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 ## How it works
 
 1. Put your memes, GIFs and stickers in a folder. `~/Pictures/Memes` by default, or any folder you pick in Settings. Subfolders become categories.
-2. Press **⌘⇧M** from any app. The panel floats above everything, full-screen apps included, and opens instantly.
+2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The meme is copied; paste it with ⌘V, or let F4 paste it for you.
 
 **Esc**, or a click outside, closes the panel.
@@ -111,7 +113,7 @@ The install script does this for you. You only need to do it once per version.
 
 ### 5. Where is it?
 
-F4 has no Dock icon. Press **⌘⇧M**, or look for the face in the **menu bar**, top right. To start it at login, turn on **Open F4 at login** in Settings.
+F4 has no Dock icon. Press **F4** (**fn F4** on a Mac keyboard), or look for the F4 key in the **menu bar**, top right. To start it at login, turn on **Open F4 at login** in Settings.
 
 ### 6. Updating
 
@@ -156,7 +158,9 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 **Where do the memes come from?** From you. F4 ships with no images at all: no stills, no GIF packs, nothing copyrighted.
 
-**Can I change the shortcut?** Yes, in Settings. ⌘⇧M is only the default.
+**Can I change the shortcut?** Yes, in Settings. F4 is only the default: any function key works on its own, any other key with ⌘, ⌥ or ⌃.
+
+**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works. Or record another shortcut in Settings.
 
 **Can a script or an AI assistant use F4?** Not yet, but it is being built: a `f4://` URL scheme, Shortcuts actions, a command line tool and an MCP server. Until then, facts for AI assistants live in [llms.txt](https://kkratterf.github.io/f4/llms.txt) and the full reference in [llms-full.txt](https://kkratterf.github.io/f4/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
 

@@ -55,7 +55,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         panel.show()
     }
 
-    /// The shortcut (⌘⇧M by default) shows or hides the panel from anywhere.
+    /// The shortcut (the F4 key by default) shows or hides the panel from anywhere.
     /// Carbon hot keys need no Accessibility or Input Monitoring permission and
     /// swallow the key press. Re-registered whenever the user records a new one.
     private func registerToggleShortcut() {

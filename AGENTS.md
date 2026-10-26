@@ -12,7 +12,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | Path | What it is |
 | --- | --- |
 | `Package.swift` | SwiftPM manifest: `F4Core` (library), `F4` (the app executable, depends on Sparkle), `F4CoreTests` |
-| `Sources/F4Core` | Pure logic: file kinds (`MemeKind`), folder scan with subfolders as categories (`MemeScanner`), recents/favourites order (`MemeOrdering`), easter eggs and the Konami code (`EasterEggs`), fuzzy search (`FuzzySearch`), grid navigation (`GridNavigation`), updater checks (`UpdaterConfiguration`). No AppKit, fully unit-tested |
+| `Sources/F4Core` | Pure logic: file kinds (`MemeKind`), folder scan with subfolders as categories (`MemeScanner`), recents/favourites order (`MemeOrdering`), easter eggs and the Konami code (`EasterEggs`), fuzzy search (`FuzzySearch`), grid navigation (`GridNavigation`), updater checks (`UpdaterConfiguration`), which keys can be the global shortcut (`ShortcutRules`). No AppKit, fully unit-tested |
 | `Sources/F4/App` | App entry point (`F4App`, with the `AppDelegate`), `StatusItemController` (menu bar icon and menu), `AppUpdater` (wraps Sparkle's `SPUStandardUpdaterController`) |
 | `Sources/F4/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
 | `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` (FSEvents) rescans on changes; `UsageStore` (favourites, recents) |
@@ -26,10 +26,10 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `raycast/` | Raycast extension (TypeScript) that searches the same meme folder; built in CI with `ray build` |
 | `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and `dist/F4-x.y.z.zip`: universal binary, icon, Sparkle framework, localizations, signature |
 | `scripts/build-dmg.sh` | Builds `dist/F4-x.y.z.dmg` from `dist/F4.app`: a styled drag-to-Applications window |
-| `scripts/make-icon.swift`, `scripts/make-dmg-background.swift` | Draw the app icon and the DMG background in code; no image is committed |
+| `scripts/make-icon.swift`, `scripts/make-dmg-background.swift` | Draw the app icon (the F4 keycap logo) and the DMG background in code; no image is committed |
 | `scripts/check-strings.py` | CI check: every string in the String Catalog has an Italian translation |
 | `scripts/update-appcast.py` | Adds a release to the Sparkle appcast (`site/appcast.xml`) |
-| `site/` | The project website (static HTML and CSS, no build step), deployed to GitHub Pages; it also hosts `appcast.xml`, `llms.txt` and `llms-full.txt` |
+| `site/` | The project website (static HTML and CSS, no build step), deployed to GitHub Pages; it also hosts `appcast.xml`, `llms.txt`, `llms-full.txt` and `logo.svg` (the logo, also used by the README) |
 | `Casks/f4.rb` | Homebrew cask (the repo is its own tap), bumped by the release workflow |
 | `install.sh` | One-line installer and uninstaller (POSIX `sh`, checked with ShellCheck) |
 | `.github/workflows/ci.yml` | CI on every PR and push to `main` (see below) |
@@ -86,6 +86,8 @@ python3 -m http.server -d site 8000   # preview the website at http://localhost:
 - **Never put an `NSImage` on the pasteboard to copy a meme**: it flattens GIFs to a single frame. Write the file URL (`public.file-url`) and the raw file data under its UTI, so Slack, Discord and Telegram paste the animated GIF.
 - The app works **without** Accessibility, Input Monitoring or Screen Recording permissions. Global shortcuts use Carbon `RegisterEventHotKey`, not `NSEvent.addGlobalMonitorForEvents`. An optional feature that needs a permission degrades gracefully without it.
 - **No network requests** other than Sparkle's update check. No analytics, no telemetry, no account. The README, the site and `llms.txt` promise this.
+- **The logo is an F4 keycap**, the default shortcut. `scripts/make-icon.swift` (app icon) and `site/logo.svg` share the same geometry; change them together, then regenerate `site/og.png` and `raycast/assets/icon.png` from the SVG. The menu bar icon is the same key, drawn as a template image in `StatusItemController`.
+- **The default shortcut is F4 alone.** A function key can be a shortcut without modifiers; any other key needs ⌘, ⌥ or ⌃ (`ShortcutRules`). On Mac keyboards F4 needs fn unless the user turned on standard function keys: every place that names the shortcut says so.
 - **Every new UI string needs an Italian translation** in `Sources/F4/Resources/Localizable.xcstrings` (String Catalog, English source). SwiftUI literals (`Text("…")`, `Button("…")`) are looked up automatically; a plain `String` shown to the user must use `String(localized: "…")`; a ternary of literals needs `LocalizedStringKey(...)`. Text that must never be translated uses `Text(verbatim:)`. CI runs `scripts/check-strings.py`.
 - **No copyrighted stills, memes or GIFs in the repo**, not even for the basito face, the icon or the website: draw them in code. Users bring their own memes (and their own `.basito.png`).
 - **The website may show real memes, but never from the repo.** It links GIFs from the shows' official channels on GIPHY (`media.giphy.com/media/<id>/...`), each one linked to its GIPHY page, with the credit line in the footer kept up to date. Never from fan uploads, never a GIF downloaded into `site/`. The one exception is the site favicon (`favicon.ico`, `favicon-32.png`, `apple-touch-icon.png`): the real "F4, basito" still, committed on the maintainer's explicit request; the app icon and the panel face stay drawn in code. A missing GIF must leave a coloured tile, not a broken layout.
