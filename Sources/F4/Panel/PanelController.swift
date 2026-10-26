@@ -26,14 +26,16 @@ final class PanelController: NSObject, NSWindowDelegate {
     init(library: MemeLibrary, usage: UsageStore) {
         self.library = library
         self.usage = usage
-        model = DeckModel(library: library, usage: usage)
+        model = DeckModel(library: library, usage: usage, giphy: .shared)
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
         let deck = DeckView(
             model: model,
             library: library,
             onPick: { [weak self] meme in self?.pick(meme) },
-            onAdd: { [weak self] in self?.chooseFiles() }
+            onAdd: { [weak self] in self?.chooseFiles() },
+            onPickWeb: { [weak self] result in self?.pick(result) },
+            onPinWeb: { [weak self] result in self?.pin(result) }
         )
         let hosting = DropHostingView(rootView: deck)
         hosting.onDragChange = { [weak self] inside in self?.dragIsInside = inside }
@@ -134,6 +136,42 @@ final class PanelController: NSObject, NSWindowDelegate {
     private func failed(_ error: Error) {
         model.show(notice: error.localizedDescription)
         if panel.isVisible { panel.makeKeyAndOrderFront(nil) }
+    }
+
+    // MARK: GIPHY
+
+    /// Copies a GIPHY result: downloaded once to the cache, then copied as a
+    /// file like any meme, so it pastes animated.
+    private func pick(_ result: Giphy.Result) {
+        model.show(notice: String(localized: "Downloading from GIPHY…"))
+        Task {
+            do {
+                let file = try await model.giphy.file(for: result)
+                let meme = Meme(url: file, kind: .gif, modificationDate: Date())
+                guard MemeClipboard.copy(meme) else { return hide() }
+                hide()
+                if AppSettings.shared.pasteAfterCopy { AutoPaster.pasteSoon() }
+            } catch {
+                model.show(notice: String(localized: "Couldn't download the GIF from GIPHY."))
+            }
+        }
+    }
+
+    /// Saves a GIPHY result in the meme folder (GIFs/ or Stickers/) as a
+    /// favourite: from then on it is local, instant and offline.
+    private func pin(_ result: Giphy.Result) {
+        let folder = library.folder
+        let tab = model.tab
+        Task {
+            do {
+                let file = try await model.giphy.file(for: result)
+                let url = try await MemeImporter.pin(file, name: result.name, into: folder, tab: tab)
+                usage.addFavourite(url)
+                added([url])
+            } catch {
+                failed(error)
+            }
+        }
     }
 
     var isVisible: Bool { panel.isVisible }

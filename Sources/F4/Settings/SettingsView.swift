@@ -87,12 +87,26 @@ struct SettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            Section("GIPHY") {
+                Toggle("Search GIPHY in the GIFs and Stickers tabs", isOn: $settings.searchGiphy)
+                TextField("Your API key", text: $settings.giphyAPIKey, prompt: Text("Optional"))
+                    .textFieldStyle(.roundedBorder)
+                if GiphyClient.shared.hasKey {
+                    Text("Powered by GIPHY. F4 asks GIPHY only while you are in the GIFs or Stickers tab: trending when the search is empty, your search otherwise. Press ⌘D on a result to pin it to your folder as a favourite.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("This build has no GIPHY key. Create a free one at developers.giphy.com and paste it here to search GIPHY.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
             // Hidden in builds without a real Sparkle key (see AppUpdater).
             if updater.isAvailable {
                 Section("Updates") {
                     Toggle("Check for updates automatically", isOn: $updater.automaticallyChecksForUpdates)
                     HStack {
-                        Text("F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online to download a link you paste or drop.")
+                        Text("F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online for GIPHY and to download a link you paste or drop.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer()

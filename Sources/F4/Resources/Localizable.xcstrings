@@ -184,12 +184,32 @@
         }
       }
     },
+    "Couldn't download the GIF from GIPHY.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile scaricare la GIF da GIPHY."
+          }
+        }
+      }
+    },
     "Couldn't download the image: %@": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Impossibile scaricare l'immagine: %@"
+          }
+        }
+      }
+    },
+    "Downloading from GIPHY…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download da GIPHY…"
           }
         }
       }
@@ -244,13 +264,13 @@
         }
       }
     },
-    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online to download a link you paste or drop.": {
+    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online for GIPHY and to download a link you paste or drop.": {
       "extractionState": "manual",
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "F4 si aggiorna da sola: le nuove versioni vengono scaricate dal feed delle release e installate in un clic. Oltre a questo, F4 va in rete solo per scaricare un link che incolli o trascini."
+            "value": "F4 si aggiorna da sola: le nuove versioni vengono scaricate dal feed delle release e installate in un clic. Oltre a questo, F4 va in rete solo per GIPHY e per scaricare un link che incolli o trascini."
           }
         }
       }
@@ -281,6 +301,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "GIF"
+          }
+        }
+      }
+    },
+    "GIPHY": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GIPHY"
           }
         }
       }
@@ -405,6 +435,26 @@
         }
       }
     },
+    "Open on GIPHY": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri su GIPHY"
+          }
+        }
+      }
+    },
+    "Optional": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativa"
+          }
+        }
+      }
+    },
     "Paste": {
       "localizations": {
         "it": {
@@ -445,6 +495,26 @@
         }
       }
     },
+    "Pin to F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi a F4"
+          }
+        }
+      }
+    },
+    "Powered by GIPHY. F4 asks GIPHY only while you are in the GIFs or Stickers tab: trending when the search is empty, your search otherwise. Press ⌘D on a result to pin it to your folder as a favourite.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powered by GIPHY. F4 interroga GIPHY solo mentre sei nella scheda GIF o Sticker: le tendenze a ricerca vuota, la tua ricerca altrimenti. Premi ⌘D su un risultato per salvarlo nella tua cartella tra i preferiti."
+          }
+        }
+      }
+    },
     "Press the shortcut…": {
       "localizations": {
         "it": {
@@ -481,6 +551,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ripristina"
+          }
+        }
+      }
+    },
+    "Search GIPHY in the GIFs and Stickers tabs": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca su GIPHY nelle schede GIF e Sticker"
           }
         }
       }
@@ -575,6 +655,16 @@
         }
       }
     },
+    "This build has no GIPHY key. Create a free one at developers.giphy.com and paste it here to search GIPHY.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa build non ha una chiave GIPHY. Creane una gratis su developers.giphy.com e incollala qui per cercare su GIPHY."
+          }
+        }
+      }
+    },
     "Updates": {
       "extractionState": "manual",
       "localizations": {
@@ -602,6 +692,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usa ~/Immagini/Memes"
+          }
+        }
+      }
+    },
+    "Your API key": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua chiave API"
           }
         }
       }

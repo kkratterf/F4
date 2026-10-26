@@ -9,6 +9,10 @@ struct DeckView: View {
     let onPick: (Meme) -> Void
     /// The + button: pick files to add.
     let onAdd: () -> Void
+    /// Enter or a click on a GIPHY result: download it, copy it, hide the panel.
+    let onPickWeb: (Giphy.Result) -> Void
+    /// ⌘D or "Pin to F4" on a GIPHY result: save it in the meme folder as a favourite.
+    let onPinWeb: (Giphy.Result) -> Void
 
     @FocusState private var searchFocused: Bool
     /// Degrees the panel content has spun for "do a barrel roll".
@@ -34,7 +38,11 @@ struct DeckView: View {
                     .font(.system(size: 24, weight: .regular))
                     .focused($searchFocused)
                     .onSubmit {
-                        if let meme = model.selectedMeme { onPick(meme) }
+                        if let meme = model.selectedMeme {
+                            onPick(meme)
+                        } else if let result = model.selectedWebResult {
+                            onPickWeb(result)
+                        }
                     }
             }
             .padding(.horizontal, 20)
@@ -125,6 +133,32 @@ struct DeckView: View {
                         KeyHint(key: "↵")
                     }
                 }
+            } else if let result = model.selectedWebResult {
+                Text(verbatim: "GIPHY · \(result.name)")
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 12)
+                Button {
+                    onPinWeb(result)
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Pin to F4")
+                        KeyHint(key: "⌘D")
+                    }
+                }
+                .keyboardShortcut("d", modifiers: .command)
+                Divider()
+                    .frame(height: 16)
+                Button {
+                    onPickWeb(result)
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Copy")
+                            .fontWeight(.medium)
+                        KeyHint(key: "↵")
+                    }
+                }
             } else {
                 Spacer()
             }
@@ -144,7 +178,7 @@ struct DeckView: View {
                 systemImage: "exclamationmark.triangle",
                 description: Text(error)
             )
-        } else if library.memes.isEmpty {
+        } else if library.memes.isEmpty && model.webResults.isEmpty {
             ContentUnavailableView {
                 VStack(spacing: 10) {
                     BasitoFace(size: 120, custom: library.customBasito)
@@ -157,7 +191,7 @@ struct DeckView: View {
                     Text("Paste a GIF, a sticker or a link with ⌘V, drop files here, or click Add. They are saved in \(library.folder.path(percentEncoded: false)).")
                 }
             }
-        } else if model.results.isEmpty {
+        } else if model.results.isEmpty && model.webResults.isEmpty {
             if model.easterEgg?.effect == .basito {
                 ContentUnavailableView {
                     BasitoFace(size: 140, custom: library.customBasito)
@@ -249,12 +283,38 @@ struct DeckView: View {
                             }
                         }
                     }
+                    ForEach(Array(model.webResults.enumerated()), id: \.element.id) { offset, result in
+                        WebMemeCell(
+                            result: result,
+                            giphy: model.giphy,
+                            isSelected: model.results.count + offset == model.selection
+                        )
+                        .id(result.id)
+                        .onTapGesture { onPickWeb(result) }
+                        .contextMenu {
+                            Button("Copy") { onPickWeb(result) }
+                            Button("Pin to F4") { onPinWeb(result) }
+                            if let page = result.pageURL {
+                                Divider()
+                                Button("Open on GIPHY") { NSWorkspace.shared.open(page) }
+                            }
+                        }
+                    }
                 }
                 .padding(14)
+                if !model.webResults.isEmpty {
+                    // GIPHY's terms ask for this line wherever its results show.
+                    Text(verbatim: "Powered by GIPHY")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.bottom, 12)
+                }
             }
             .onChange(of: model.selection) {
                 if let meme = model.selectedMeme {
                     proxy.scrollTo(meme.id)
+                } else if let result = model.selectedWebResult {
+                    proxy.scrollTo(result.id)
                 }
             }
         }

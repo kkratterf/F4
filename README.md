@@ -42,6 +42,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (⌘D, or right-click a meme) and the ones you used last come first. |
 | 🗂️ **GIFs and stickers** | Tabs split the panel into All, GIFs and Stickers (Tab or ⌘1–⌘3). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
 | 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), listed after your memes. Turn them off in Settings. |
+| 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one, **⌘D** pins it into your folder as a favourite, so next time it is local and instant. |
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied GIF, sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. GIFs go into `GIFs/`, stickers into `Stickers/` in your folder. No Finder needed. |
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. This is the only feature that needs the Accessibility permission, and it is off by default. |
@@ -153,7 +154,7 @@ open dist/F4.app
 
 ## Privacy
 
-F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for two things only: the update check against the release feed on [the website](https://kkratterf.github.io/f4/appcast.xml), which you can turn off in Settings, and downloading an image link you paste or drop into the panel yourself.
+F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://kkratterf.github.io/f4/appcast.xml); GIPHY, only while you are in the GIFs or Stickers tab of the open panel; and downloading an image link you paste or drop into the panel yourself. Both the update check and GIPHY can be turned off in Settings.
 
 ## FAQ
 

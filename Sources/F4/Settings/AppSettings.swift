@@ -12,6 +12,8 @@ final class AppSettings: ObservableObject {
         static let shortcutModifiers = "toggleShortcutModifiers"
         static let pasteAfterCopy = "pasteAfterCopy"
         static let showStarterPack = "showStarterPack"
+        static let searchGiphy = "searchGiphy"
+        static let giphyAPIKey = "giphyAPIKey"
     }
 
     private let defaults: UserDefaults
@@ -39,9 +41,22 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(showStarterPack, forKey: Key.showStarterPack) }
     }
 
+    /// Show the GIPHY row in the GIFs and Stickers tabs. On by default; it
+    /// only appears when the build (or the user) has a GIPHY API key.
+    @Published var searchGiphy: Bool {
+        didSet { defaults.set(searchGiphy, forKey: Key.searchGiphy) }
+    }
+
+    /// The user's own GIPHY API key, used instead of the built-in one. Empty for none.
+    @Published var giphyAPIKey: String {
+        didSet { defaults.set(giphyAPIKey, forKey: Key.giphyAPIKey) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         showStarterPack = defaults.object(forKey: Key.showStarterPack) as? Bool ?? true
+        searchGiphy = defaults.object(forKey: Key.searchGiphy) as? Bool ?? true
+        giphyAPIKey = defaults.string(forKey: Key.giphyAPIKey) ?? ""
         pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
         if let path = defaults.string(forKey: Key.memeFolder), !path.isEmpty {
             memeFolder = URL(fileURLWithPath: path, isDirectory: true)

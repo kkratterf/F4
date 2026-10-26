@@ -14,7 +14,8 @@ Key facts:
 - A Raycast extension in the same repository searches the same folder.
 - A starter pack is built in, so the panel is never empty: animated emoji GIFs (Google Noto Emoji, CC BY 4.0) and F4's own stickers, listed after the user's memes, never copied into the folder. Settings → Starter pack hides it.
 - Add memes from the panel: ⌘V adds a copied image, sticker, file or image link (WhatsApp/Telegram: right-click a sticker → Copy, then ⌘V in F4), files can be dropped on the panel, and Add opens a file picker. They are saved in `GIFs/` or `Stickers/` in the meme folder.
-- F4 updates itself with Sparkle, checking the appcast on this site. Besides that it only downloads image links the user pastes or drops: no analytics, no account, no server.
+- In the GIFs and Stickers tabs, GIPHY results follow the local ones (trending when the search is empty). Enter copies one; ⌘D pins it into the meme folder as a favourite.
+- F4 updates itself with Sparkle, checking the appcast on this site. Besides that it only talks to GIPHY while the user is in the GIFs or Stickers tab, and downloads image links the user pastes or drops: no analytics, no account, no server.
 
 ## Install
 
