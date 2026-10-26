@@ -13,7 +13,7 @@ import SwiftUI
 /// activates F4, so the app the user was in keeps the focus.
 @MainActor
 final class PanelController: NSObject, NSWindowDelegate {
-    static let size = NSSize(width: 720, height: 460)
+    static let size = NSSize(width: 720, height: 500)
 
     private let panel: FloatingPanel
     private let library: MemeLibrary
@@ -61,6 +61,8 @@ final class PanelController: NSObject, NSWindowDelegate {
         position(on: screenWithMouse())
         startArrowKeys()
         panel.makeKeyAndOrderFront(nil)
+        // The shadow follows the content's rounded shape once it is drawn.
+        DispatchQueue.main.async { [panel] in panel.invalidateShadow() }
     }
 
     func hide() {

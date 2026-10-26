@@ -52,11 +52,18 @@ struct DeckView: View {
 
             content
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+            Divider()
+
+            footer
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.spring(duration: 0.3), value: model.easterEgg)
         .rotationEffect(.degrees(roll))
-        .background(VisualEffectBackground())
+        .background(VisualEffectBackground(cornerRadius: FloatingPanel.cornerRadius))
+        .clipShape(panelShape)
+        // A hairline around the edge, as Raycast and Spotlight draw it.
+        .overlay(panelShape.strokeBorder(Color.primary.opacity(0.12), lineWidth: 1))
         .onAppear { searchFocused = true }
         .onChange(of: model.openCount) { searchFocused = true }
         .onChange(of: model.easterEgg) {
@@ -64,6 +71,54 @@ struct DeckView: View {
                 withAnimation(.easeInOut(duration: 1.1)) { roll += 360 }
             }
         }
+    }
+
+    private var panelShape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: FloatingPanel.cornerRadius, style: .continuous)
+    }
+
+    /// The bar at the bottom, like Raycast's: the selected meme on the left,
+    /// what the keys do with it on the right.
+    private var footer: some View {
+        HStack(spacing: 10) {
+            if let meme = model.selectedMeme {
+                Text(verbatim: meme.category.map { "\($0)/\(meme.name)" } ?? meme.name)
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 12)
+                Button {
+                    model.usage.toggleFavourite(meme)
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(model.usage.isFavourite(meme)
+                            ? LocalizedStringKey("Remove from Favourites")
+                            : LocalizedStringKey("Add to Favourites"))
+                        KeyHint(key: "⌘D")
+                    }
+                }
+                .keyboardShortcut("d", modifiers: .command)
+                Divider()
+                    .frame(height: 16)
+                // Enter is handled by the search field; this is for the mouse.
+                Button {
+                    onPick(meme)
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Copy")
+                            .fontWeight(.medium)
+                        KeyHint(key: "↵")
+                    }
+                }
+            } else {
+                Spacer()
+            }
+        }
+        .buttonStyle(.plain)
+        .font(.system(size: 12))
+        .padding(.horizontal, 14)
+        .frame(height: 40)
+        .background(Color.primary.opacity(0.03))
     }
 
     @ViewBuilder
@@ -165,15 +220,53 @@ struct DeckView: View {
     }
 }
 
-/// The translucent HUD material behind the panel content.
+/// A key as the footer shows it: "↵", "⌘D".
+private struct KeyHint: View {
+    let key: String
+
+    var body: some View {
+        Text(verbatim: key)
+            .font(.system(size: 11, weight: .medium))
+            .foregroundStyle(.secondary)
+            .frame(minWidth: 20, minHeight: 20)
+            .padding(.horizontal, key.count > 1 ? 4 : 0)
+            .background(Color.primary.opacity(0.08), in: RoundedRectangle(cornerRadius: 5, style: .continuous))
+    }
+}
+
+/// The translucent HUD material behind the panel content, cut to the
+/// panel's rounded shape.
+///
+/// A behind-window material ignores layer masks and SwiftUI clipping; its
+/// `maskImage` is the one shape it follows. The mask is a small rounded
+/// square whose corners stay fixed while its middle stretches.
 private struct VisualEffectBackground: NSViewRepresentable {
+    let cornerRadius: CGFloat
+
     func makeNSView(context: Context) -> NSVisualEffectView {
         let view = NSVisualEffectView()
         view.material = .hudWindow
         view.blendingMode = .behindWindow
         view.state = .active
+        view.maskImage = Self.mask(cornerRadius: cornerRadius)
         return view
     }
 
     func updateNSView(_ nsView: NSVisualEffectView, context: Context) {}
+
+    private static func mask(cornerRadius radius: CGFloat) -> NSImage {
+        // A continuous corner curves further along each edge than its radius.
+        let cap = ceil(radius * 1.6)
+        let side = cap * 2 + 1
+        let image = NSImage(size: NSSize(width: side, height: side), flipped: false) { rect in
+            guard let context = NSGraphicsContext.current?.cgContext else { return false }
+            context.addPath(RoundedRectangle(cornerRadius: radius, style: .continuous).path(in: rect).cgPath)
+            context.setFillColor(NSColor.black.cgColor)
+            context.fillPath()
+            return true
+        }
+        image.capInsets = NSEdgeInsets(top: cap, left: cap, bottom: cap, right: cap)
+        image.resizingMode = .stretch
+        return image
+    }
 }
