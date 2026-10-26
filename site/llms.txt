@@ -12,7 +12,8 @@ Key facts:
 - Auto-paste (a simulated Command-V into the frontmost app) is optional and the only feature that needs the Accessibility permission; everything else works without any permission, because the global shortcut uses Carbon `RegisterEventHotKey`.
 - The empty state draws the "F4, basito" face from the Italian series Boris in code; a `.basito.png`, `.gif` or `.jpg` in the meme folder replaces it. The app ships with no images of its own. Typing some Boris or The Office lines, or the Konami code, in the search field triggers easter eggs.
 - A Raycast extension in the same repository searches the same folder.
-- F4 updates itself with Sparkle, checking the appcast on this site. No other network request is made: no analytics, no account, no server.
+- Add memes from the panel: ⌘V adds a copied image, sticker, file or image link (WhatsApp/Telegram: right-click a sticker → Copy, then ⌘V in F4), files can be dropped on the panel, and Add opens a file picker. They are saved in `GIFs/` or `Stickers/` in the meme folder.
+- F4 updates itself with Sparkle, checking the appcast on this site. Besides that it only downloads image links the user pastes or drops: no analytics, no account, no server.
 
 ## Install
 

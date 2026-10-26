@@ -86,7 +86,7 @@ struct SettingsView: View {
                 Section("Updates") {
                     Toggle("Check for updates automatically", isOn: $updater.automaticallyChecksForUpdates)
                     HStack {
-                        Text("F4 updates itself: new versions are downloaded from the release feed and installed in one click. This is the only request F4 makes to the network.")
+                        Text("F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online to download a link you paste or drop.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer()

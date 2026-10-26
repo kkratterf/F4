@@ -27,6 +27,13 @@ final class DeckModel: ObservableObject {
     /// The easter egg typed in the search field (or the Konami code), if any.
     @Published private(set) var easterEgg: EasterEgg?
 
+    /// A short message under the search field ("Added to Stickers", or why
+    /// an import failed). Clears itself after a few seconds.
+    @Published private(set) var notice: String?
+    private var noticeTask: Task<Void, Never>?
+    /// A meme just added from the panel, selected as soon as the scan sees it.
+    private var pendingReveal: URL?
+
     private var konami = KonamiCode()
     private var konamiActive = false
 
@@ -59,6 +66,26 @@ final class DeckModel: ObservableObject {
         guard !results.isEmpty else { return false }
         selection = GridNavigation.move(direction, from: selection, count: results.count, columns: Self.columns)
         return true
+    }
+
+    /// Shows `message` under the search field for a few seconds.
+    func show(notice message: String) {
+        notice = message
+        noticeTask?.cancel()
+        noticeTask = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(3))
+            guard !Task.isCancelled else { return }
+            self?.notice = nil
+        }
+    }
+
+    /// Selects `url` once it is in the library: called after an import, before
+    /// the folder watcher has picked the file up. Clears the search and
+    /// switches to All when the current tab would not show it.
+    func reveal(_ url: URL) {
+        pendingReveal = url.standardizedFileURL
+        if !query.isEmpty { query = "" }
+        refresh()
     }
 
     /// Tab and ⇧Tab: the next or previous tab.
@@ -104,6 +131,18 @@ final class DeckModel: ObservableObject {
             results = arranged()
         } else {
             results = FuzzySearch.filter(memes, query: query)
+        }
+        if let pendingReveal, let meme = library.memes.first(where: { $0.url.standardizedFileURL == pendingReveal }) {
+            if !tab.contains(meme) {
+                // Setting the tab refreshes again and lands in the branch below.
+                tab = .all
+                return
+            }
+            if let index = results.firstIndex(of: meme) {
+                self.pendingReveal = nil
+                selection = index
+                return
+            }
         }
         if keepSelection, let selected, let index = results.firstIndex(of: selected) {
             selection = index
