@@ -1,0 +1,155 @@
+# F4: the full reference
+
+> F4 is a free, open-source meme launcher for macOS: a Spotlight-like floating panel that searches a local folder of memes, GIFs and stickers and copies one to the clipboard in a keystroke, GIF animation included. This file is everything an AI assistant or agent needs to install F4, explain it, or help someone use it. The short version is https://kkratterf.github.io/f4/llms.txt. To change F4's code, read https://github.com/kkratterf/f4/blob/main/AGENTS.md instead.
+
+## At a glance
+
+- Platform: macOS 14 Sonoma or later, Apple Silicon and Intel (universal binary). No iOS, Windows or Linux version.
+- License: MIT. Price: free. Source: https://github.com/kkratterf/f4
+- Website: https://kkratterf.github.io/f4/
+- Bundle identifier: `com.kkratterf.f4`. The app is `F4.app`; it has no Dock icon and lives in the menu bar.
+- Languages: English, and Italian when macOS runs in Italian.
+- Privacy: no analytics, no account, no server. Files are read locally. The only network request is the update check against https://kkratterf.github.io/f4/appcast.xml, which can be turned off.
+- Permissions: none needed. Only the optional auto-paste asks for Accessibility.
+- The name comes from "F4, basito", the stunned face of Stanis in the Italian TV series Boris.
+
+## Install
+
+All methods install the same app. Pick one.
+
+1. DMG: download https://github.com/kkratterf/f4/releases/latest/download/F4.dmg (always the newest stable version), open it, drag F4 onto Applications, eject the disk image.
+2. One line in Terminal:
+
+   ```sh
+   curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh
+   ```
+
+   It downloads the latest release, checks its SHA-256 against `SHA256SUMS.txt`, quits a running F4, installs `F4.app` in `/Applications` (or `~/Applications` when `/Applications` is not writable), clears the quarantine flag and offers to open it. Options go after the pipe, as environment variables:
+   - `F4_VERSION=v0.2.0` installs a specific release.
+   - `F4_INSTALL_DIR=~/Apps` installs somewhere else.
+   - `F4_NO_OPEN=1` skips the offer to open F4.
+
+   Example: `curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | F4_NO_OPEN=1 sh`
+3. Homebrew (the repository is its own tap):
+
+   ```sh
+   brew tap kkratterf/f4 https://github.com/kkratterf/f4
+   brew install --cask f4
+   ```
+
+   The cask is marked `auto_updates`, so `brew upgrade` leaves F4 to update itself.
+
+Every release on https://github.com/kkratterf/f4/releases ships `F4-x.y.z.zip`, `F4-x.y.z.dmg`, `F4.dmg` (the same DMG under a fixed name) and `SHA256SUMS.txt`. Verify with `shasum -a 256 -c SHA256SUMS.txt --ignore-missing`.
+
+### First launch and Gatekeeper
+
+F4 is not notarized by Apple yet, so the first launch of a copy from the DMG or the zip shows "Apple could not verify F4 is free of malware" (or "cannot verify the developer"). To open it:
+
+1. Open F4 once and close the warning.
+2. System Settings > Privacy & Security, scroll down, click "Open Anyway" next to the message about F4, enter the Mac password.
+
+Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/F4.app`. The install script does this already. It is needed once per downloaded version, not after automatic updates.
+
+### Where is it after installing?
+
+F4 has no Dock icon and no window at launch. Press Command-Shift-M, or click the F4 face in the menu bar, top right. To start it at login, turn on "Open F4 at login" in Settings.
+
+## Use
+
+1. Put memes in a folder: `~/Pictures/Memes` by default, or any folder chosen in Settings. Supported files: GIF, PNG, JPEG (`.gif`, `.png`, `.jpg`, `.jpeg`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
+2. Press Command-Shift-M in any app. The panel appears centred on the screen with the mouse, above every window, including full-screen apps.
+3. Type to search, then press Enter. The meme is on the clipboard; paste it with Command-V wherever you want it.
+
+In the panel:
+
+| Key or action | What it does |
+| --- | --- |
+| Typing | Fuzzy search on file names and category (subfolder) names: each word of the query must appear with its letters in order, not necessarily together ("tif" finds "this is fine"); case, accents, `-`, `_` and `.` are ignored |
+| Arrow keys | Move the selection in the grid |
+| Enter, or a click | Copy the selected meme and close the panel |
+| Escape, or a click outside | Close the panel |
+| Right-click a meme | Copy, Add to Favourites / Remove from Favourites, Show in Finder |
+| The global shortcut again | Hide the panel |
+
+Order of results: with an empty search, favourites first, then recently copied memes (the last 30, most recent first), then the rest in folder order. While typing, the best matches come first (consecutive letters and word starts score higher), and equal matches keep that order. Only the selected or hovered GIF animates; the others show their first frame.
+
+New, renamed or deleted files in the folder appear without a restart: F4 watches the folder with FSEvents.
+
+### How copying works, and why GIFs stay animated
+
+F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and its raw bytes under the file's type (`com.compuserve.gif`, `public.png`, `public.jpeg`). It never puts a decoded image there, which would flatten a GIF to one frame. So Slack, Discord, Telegram, WhatsApp Desktop, Messages, Mail and most chat apps paste the animated GIF. An app that accepts only plain images may paste the first frame; that is the app's limit.
+
+### Menu bar menu
+
+Open F4 · Shortcut: (the current shortcut, as a reminder) · Open Meme Folder · Settings… (Command-,) · Check for Updates… · Quit F4 (Command-Q).
+
+### Settings
+
+| Section | Setting | Default |
+| --- | --- | --- |
+| General | Show and hide F4: the global shortcut, recorded by pressing a new combination | Command-Shift-M |
+| General | Open F4 at login (a macOS login item) | Off |
+| Paste | Paste into the front app after copying: F4 presses Command-V for you | Off |
+| Meme folder | Folder: Choose…, Show in Finder, Use ~/Pictures/Memes | `~/Pictures/Memes` |
+| Updates | Check for updates automatically, and Check Now | On |
+
+Auto-paste needs the Accessibility permission (System Settings > Privacy & Security > Accessibility > F4). Without it F4 only copies, and Settings shows a button to open that pane. Nothing else in F4 needs a permission: the global shortcut uses Carbon `RegisterEventHotKey`, which needs no Accessibility, Input Monitoring or Screen Recording.
+
+Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Preferences/com.kkratterf.f4.plist`): `memeFolderPath`, `toggleShortcutKeyCode`, `toggleShortcutModifiers`, `pasteAfterCopy`, `favouriteMemes`, `recentMemes` (file paths). Change them in Settings rather than with `defaults write` while F4 is running.
+
+### Easter eggs
+
+The empty state draws the basito face in code. A file named `.basito.png`, `.basito.gif` or `.basito.jpg` in the meme folder replaces it with the user's own. Typing some lines from Boris, The Office and old internet memes in the search field, or the Konami code (up up down down left right left right B A) in the panel, shows a banner and sometimes does something to the grid. The list is in the source (`Sources/F4Core/EasterEggs.swift`); part of the fun is finding them, so do not recite them all unless asked.
+
+### Raycast
+
+The F4 Raycast extension, in https://github.com/kkratterf/f4/tree/main/raycast, has one command, "Search Memes", that searches the same folder (set in the extension preferences, `~/Pictures/Memes` by default) and copies or pastes a meme as a file, so GIFs stay animated there too. It is not in the Raycast Store yet; install it from the repository with `cd raycast && npm install && npm run dev`.
+
+## Update
+
+F4 updates itself with Sparkle: it checks https://kkratterf.github.io/f4/appcast.xml about once a day, offers the new version, and installs it in one click after the user confirms. Updates are signed (EdDSA) and verified before install. "Check for Updates…" in the menu bar menu, or Settings > Updates > Check Now, checks right away. With automatic checks off, install a new version by hand: drag the new DMG's app over the old one, or run the install one-liner again. Settings, favourites and memes are kept.
+
+Pre-release versions (for example `0.3.0-beta.1`) are published on GitHub only; automatic updates and Homebrew offer stable versions.
+
+## Uninstall
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh -s -- --uninstall
+```
+
+It quits F4, deletes `F4.app` and its settings (`defaults delete com.kkratterf.f4`). With Homebrew: `brew uninstall --cask f4`, or `brew uninstall --zap --cask f4` to remove the settings and caches too. By hand: quit F4 from the menu bar, delete `F4.app`, optionally `defaults delete com.kkratterf.f4`. The meme folder is never touched.
+
+## Troubleshooting
+
+- "Nothing happens when I press Command-Shift-M": check F4 is running (the face in the menu bar). Another app may already own the shortcut; record another one in Settings > General.
+- "The panel says No memes yet": the folder is empty, missing, or holds only unsupported files. Open it from the menu (Open Meme Folder) or pick another in Settings > Meme folder.
+- "The GIF pastes as a still image": the receiving app takes only images. Most chat apps paste the animation; try pasting into a message field rather than an image editor.
+- "Auto-paste does not paste": grant Accessibility to F4 in System Settings > Privacy & Security > Accessibility, then try again. After an update macOS may need the permission toggled off and on.
+- "macOS says F4 is damaged or cannot be verified": see First launch and Gatekeeper above.
+- "No Check for Updates item": F4 is running as a bare binary (`swift run`) rather than as `F4.app`. Install a release, or build the app bundle.
+- Bugs and ideas: https://github.com/kkratterf/f4/issues/new/choose. Security issues: https://github.com/kkratterf/f4/blob/main/SECURITY.md
+
+## Build from source
+
+Needs macOS 14+ and Xcode 15+ (Swift 5.9).
+
+```sh
+git clone https://github.com/kkratterf/f4
+cd f4
+swift build
+swift test
+scripts/build-app.sh release   # dist/F4.app
+open dist/F4.app
+```
+
+`scripts/build-dmg.sh` builds the DMG. `swift run F4` starts the bare binary without the updater; `dist/F4.app` checks for updates like a release and replaces itself with the next official version.
+
+## What F4 does not do (yet)
+
+- No WebP, HEIC, PNG sequences or video files; those are planned.
+- No cloud sync, no meme search on the internet, no bundled meme packs: F4 shows only the user's own files.
+- One meme folder at a time (with subfolders).
+- No tags beyond folder names, no OCR of the text inside images.
+- No URL scheme, Shortcuts actions, command line tool or MCP server yet. They are planned so that scripts and AI agents can search and copy memes; until then an agent can work with the meme folder directly (it is a plain folder of files) and with the Raycast extension.
+
+The roadmap is the issue list, labelled by version: https://github.com/kkratterf/f4/issues
