@@ -240,9 +240,12 @@ struct DeckView: View {
                                 : LocalizedStringKey("Add to Favourites")) {
                                 model.usage.toggleFavourite(meme)
                             }
-                            Divider()
-                            Button("Show in Finder") {
-                                NSWorkspace.shared.activateFileViewerSelecting([meme.url])
+                            // Starter memes live inside the app bundle.
+                            if !library.isStarter(meme) {
+                                Divider()
+                                Button("Show in Finder") {
+                                    NSWorkspace.shared.activateFileViewerSelecting([meme.url])
+                                }
                             }
                         }
                     }

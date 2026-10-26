@@ -81,6 +81,16 @@
         }
       }
     },
+    "Animated emoji from Google's Noto Emoji (CC BY 4.0) and F4's own stickers, listed after your memes. They stay inside the app and are never copied into your folder.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emoji animate da Noto Emoji di Google (CC BY 4.0) e sticker di F4, elencati dopo i tuoi meme. Restano dentro l'app e non vengono mai copiati nella tua cartella."
+          }
+        }
+      }
+    },
     "Can't read the meme folder": {
       "localizations": {
         "it": {
@@ -525,12 +535,32 @@
         }
       }
     },
+    "Show the GIFs and stickers built into F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra le GIF e gli sticker inclusi in F4"
+          }
+        }
+      }
+    },
     "Space": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Spazio"
+          }
+        }
+      }
+    },
+    "Starter pack": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starter pack"
           }
         }
       }
