@@ -19,7 +19,7 @@ Press a shortcut, type a few letters, hit Enter: the meme is on your clipboard â
 curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh
 ```
 
-or download the DMG from the [latest release](https://github.com/kkratterf/f4/releases/latest), or use [Homebrew](#3-homebrew). F4 is not notarized yet: see [first launch](#4-first-launch-and-gatekeeper) if macOS blocks it.
+or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F4.dmg), or use [Homebrew](#3-homebrew). F4 is not notarized yet: see [first launch](#4-first-launch-and-gatekeeper) if macOS blocks it.
 
 ---
 
@@ -62,7 +62,7 @@ F4 needs **macOS 14 Sonoma or later** and no special permissions. Pick one of th
 
 ### 1. The DMG (drag and drop)
 
-1. Download `F4-x.y.z.dmg` from the [latest release](https://github.com/kkratterf/f4/releases/latest).
+1. [Download the latest DMG](https://github.com/kkratterf/f4/releases/latest/download/F4.dmg) (or pick a version from the [releases](https://github.com/kkratterf/f4/releases)).
 2. Open it and drag **F4** onto **Applications**.
 3. Eject the disk image.
 

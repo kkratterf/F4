@@ -16,7 +16,7 @@ Key facts:
 
 ## Install
 
-- Download the DMG from https://github.com/kkratterf/f4/releases/latest and drag F4 to Applications.
+- Download the latest DMG from https://github.com/kkratterf/f4/releases/latest/download/F4.dmg and drag F4 to Applications.
 - Or one line in Terminal: `curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh`
 - Or Homebrew: `brew tap kkratterf/f4 https://github.com/kkratterf/f4 && brew install --cask f4`
 - The app is not notarized by Apple yet. If macOS blocks the first launch, open System Settings > Privacy & Security and click "Open Anyway" next to the F4 message, or run `xattr -dr com.apple.quarantine /Applications/F4.app`. The install script does this for you.
