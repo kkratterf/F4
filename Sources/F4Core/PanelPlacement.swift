@@ -1,3 +1,4 @@
+import CoreGraphics
 import Foundation
 
 /// Where the panel sits on a screen, and how it snaps while the user drags it.
