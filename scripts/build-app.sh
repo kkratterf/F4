@@ -91,6 +91,19 @@ else
   echo "warning: could not draw the app icon, building without it" >&2
 fi
 
+# Starter pack (issue #92): what a new user sees before adding their own.
+# The GIFs are Google's Noto Animated Emoji (CC BY 4.0, credited in the app
+# and the README); the stickers are drawn in code like the icon. They stay in
+# the bundle and are never copied into the user's meme folder.
+STARTER="$RES/Starter"
+rm -rf "$STARTER"
+mkdir -p "$STARTER/GIFs"
+ditto "$ROOT/Resources/Starter/GIFs" "$STARTER/GIFs"
+if ! swift "$ROOT/scripts/make-stickers.swift" "$STARTER/Stickers"; then
+  echo "warning: could not draw the starter stickers, building without them" >&2
+fi
+echo "Starter pack: $(find "$STARTER/GIFs" -name '*.gif' | wc -l | tr -d ' ') GIFs, $(find "$STARTER" -path '*/Stickers/*.png' | wc -l | tr -d ' ') stickers"
+
 # Ad-hoc by default: enough to run locally, not notarized.
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 if [ "$SIGN_IDENTITY" = "-" ]; then

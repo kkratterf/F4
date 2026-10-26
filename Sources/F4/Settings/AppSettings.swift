@@ -11,6 +11,7 @@ final class AppSettings: ObservableObject {
         static let shortcutKeyCode = "toggleShortcutKeyCode"
         static let shortcutModifiers = "toggleShortcutModifiers"
         static let pasteAfterCopy = "pasteAfterCopy"
+        static let showStarterPack = "showStarterPack"
     }
 
     private let defaults: UserDefaults
@@ -33,8 +34,14 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(pasteAfterCopy, forKey: Key.pasteAfterCopy) }
     }
 
+    /// Show the GIFs and stickers built into F4 next to the user's own. On by default.
+    @Published var showStarterPack: Bool {
+        didSet { defaults.set(showStarterPack, forKey: Key.showStarterPack) }
+    }
+
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
+        showStarterPack = defaults.object(forKey: Key.showStarterPack) as? Bool ?? true
         pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
         if let path = defaults.string(forKey: Key.memeFolder), !path.isEmpty {
             memeFolder = URL(fileURLWithPath: path, isDirectory: true)

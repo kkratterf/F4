@@ -76,6 +76,8 @@ In the panel:
 | Right-click a meme | Copy, Add to Favourites / Remove from Favourites, Show in Finder |
 | The global shortcut again | Hide the panel |
 
+Starter pack: F4 ships with 26 animated emoji GIFs (Google's Noto Animated Emoji, CC BY 4.0, downscaled) and 13 stickers drawn in code ("basito", "dai dai dai", "smarmella", "lol", "ship it", the F4 keycap...). They live inside F4.app, are listed after the user's own memes (GIFs in the GIFs tab, stickers in the Stickers tab), can be copied and favourited like any meme, and are never copied into the meme folder. Settings → Starter pack → "Show the GIFs and stickers built into F4" hides them.
+
 Order of results: with an empty search, favourites first, then recently copied memes (the last 30, most recent first), then the rest in folder order. While typing, the best matches come first (consecutive letters and word starts score higher), and equal matches keep that order. Only the selected or hovered GIF animates; the others show their first frame.
 
 New, renamed or deleted files in the folder appear without a restart: F4 watches the folder with FSEvents.

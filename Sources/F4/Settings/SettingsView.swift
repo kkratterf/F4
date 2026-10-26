@@ -81,6 +81,12 @@ struct SettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+            Section("Starter pack") {
+                Toggle("Show the GIFs and stickers built into F4", isOn: $settings.showStarterPack)
+                Text("Animated emoji from Google's Noto Emoji (CC BY 4.0) and F4's own stickers, listed after your memes. They stay inside the app and are never copied into your folder.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
             // Hidden in builds without a real Sparkle key (see AppUpdater).
             if updater.isAvailable {
                 Section("Updates") {
