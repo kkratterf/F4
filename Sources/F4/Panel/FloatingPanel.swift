@@ -9,18 +9,10 @@ final class FloatingPanel: NSPanel {
     init(contentRect: NSRect) {
         super.init(
             contentRect: contentRect,
-            styleMask: [.nonactivatingPanel, .titled, .fullSizeContentView],
+            styleMask: [.nonactivatingPanel, .borderless],
             backing: .buffered,
             defer: false
         )
-        // A titled panel gets the rounded, shadowed window frame for free; the
-        // title bar itself is made invisible.
-        titleVisibility = .hidden
-        titlebarAppearsTransparent = true
-        standardWindowButton(.closeButton)?.isHidden = true
-        standardWindowButton(.miniaturizeButton)?.isHidden = true
-        standardWindowButton(.zoomButton)?.isHidden = true
-
         isFloatingPanel = true
         level = .floating
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
@@ -29,10 +21,15 @@ final class FloatingPanel: NSPanel {
         isReleasedWhenClosed = false
         animationBehavior = .utilityWindow
 
+        // Borderless and clear: the rounded shape is drawn by the content
+        // (`DeckView`), and the window server shapes the shadow after it.
         isOpaque = false
         backgroundColor = .clear
         hasShadow = true
     }
+
+    /// Corner radius of the panel, continuous like Raycast's and the Dock's.
+    static let cornerRadius: CGFloat = 16
 
     /// Called on Esc. The panel does not close itself: its controller decides.
     var onCancel: (() -> Void)?
@@ -43,7 +40,7 @@ final class FloatingPanel: NSPanel {
         onCancel?()
     }
 
-    // Borderless-looking panels refuse key status by default; the search field needs it.
+    // Borderless panels refuse key status by default; the search field needs it.
     override var canBecomeKey: Bool { true }
     override var canBecomeMain: Bool { false }
 }
