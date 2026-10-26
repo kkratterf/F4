@@ -58,7 +58,7 @@ export default function SearchMemes() {
         <Grid.EmptyView
           icon={error ? Icon.Warning : "icon.png"}
           title={error ? "Can't read the meme folder" : "F4. Basito. No memes yet"}
-          description={error ?? `Drop GIFs, PNGs and JPEGs into ${folder}.`}
+          description={error ?? `Drop GIFs, stickers and JPEGs into ${folder}.`}
         />
       )}
       {memes?.map((meme) => {
