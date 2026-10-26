@@ -12,14 +12,14 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | Path | What it is |
 | --- | --- |
 | `Package.swift` | SwiftPM manifest: `F4Core` (library), `F4` (the app executable, depends on Sparkle), `F4CoreTests` |
-| `Sources/F4Core` | Pure logic: file kinds (`MemeKind`), folder scan with subfolders as categories (`MemeScanner`), recents/favourites order (`MemeOrdering`), easter eggs and the Konami code (`EasterEggs`), fuzzy search (`FuzzySearch`), grid navigation (`GridNavigation`), updater checks (`UpdaterConfiguration`), which keys can be the global shortcut (`ShortcutRules`). No AppKit, fully unit-tested |
+| `Sources/F4Core` | Pure logic: file kinds (`MemeKind`), folder scan with subfolders as categories (`MemeScanner`), recents/favourites order (`MemeOrdering`), the All/GIFs/Stickers tabs (`MemeTab`), easter eggs and the Konami code (`EasterEggs`), fuzzy search (`FuzzySearch`), grid navigation (`GridNavigation`), updater checks (`UpdaterConfiguration`), which keys can be the global shortcut (`ShortcutRules`). No AppKit, fully unit-tested |
 | `Sources/F4/App` | App entry point (`F4App`, with the `AppDelegate`), `StatusItemController` (menu bar icon and menu), `AppUpdater` (wraps Sparkle's `SPUStandardUpdaterController`) |
 | `Sources/F4/Hotkey` | `HotKeyCenter`: system-wide shortcuts with Carbon `RegisterEventHotKey` (no permissions) |
 | `Sources/F4/Library` | `MemeLibrary`: the memes the panel shows, scanned in the background; `FolderWatcher` (FSEvents) rescans on changes; `UsageStore` (favourites, recents) |
 | `Sources/F4/Clipboard` | `MemeClipboard`: copies the file URL + raw bytes, never an `NSImage` (keeps GIFs animated); `AutoPaster`: optional ⌘V (Accessibility) |
 | `Sources/F4/Settings` | `AppSettings` (UserDefaults), `LoginItem` (`SMAppService`), `ShortcutRecorder`, `SettingsView`, `SettingsWindowController` |
 | `Sources/F4/Thumbnails` | `ThumbnailCache`: ImageIO thumbnails (first GIF frame) decoded off the main thread, in an `NSCache` |
-| `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide, arrow keys, Konami code), `DeckModel` (query, results, selection, arrow-key moves), `DeckView` + `MemeCell` (SwiftUI grid), `AnimatedImageView` (plays the hovered/selected GIF), `BasitoFace` (the F4 face, drawn in code) |
+| `Sources/F4/Panel` | `FloatingPanel` (the `NSPanel`), `PanelController` (show/hide, arrow keys, Konami code), `DeckModel` (tab, query, results, selection, arrow-key moves), `DeckView` + `MemeCell` (SwiftUI grid), `AnimatedImageView` (plays the hovered/selected GIF), `BasitoFace` (the F4 face, drawn in code) |
 | `Sources/F4/Resources` | `Localizable.xcstrings`: String Catalog, English keys with Italian translations |
 | `Tests/F4CoreTests` | XCTest for `F4Core` |
 | `Resources/Info.plist` | App bundle metadata: the version (`CFBundleShortVersionString`, the single source of truth for releases), `LSUIElement` (no Dock icon), the Sparkle feed (`SUFeedURL`) and public key (`SUPublicEDKey`) |

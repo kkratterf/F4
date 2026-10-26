@@ -13,7 +13,7 @@ export interface Meme {
   modified: number;
 }
 
-const EXTENSIONS = new Set([".gif", ".png", ".jpg", ".jpeg"]);
+const EXTENSIONS = new Set([".gif", ".png", ".jpg", ".jpeg", ".webp"]);
 /** Same depth as the app (MemeScanner.maxDepth). */
 const MAX_DEPTH = 4;
 
@@ -25,7 +25,7 @@ export function memeFolder(preference?: string): string {
 }
 
 /**
- * The GIF, PNG and JPEG files in `folder` and its subfolders, sorted like the
+ * The GIF, PNG, JPEG and WebP files in `folder` and its subfolders, sorted like the
  * app: top-level memes first, then each subfolder, names in Finder order.
  */
 export async function scanMemes(folder: string): Promise<Meme[]> {

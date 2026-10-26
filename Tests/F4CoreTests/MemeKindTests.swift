@@ -7,6 +7,8 @@ final class MemeKindTests: XCTestCase {
         XCTAssertEqual(MemeKind(url: URL(fileURLWithPath: "/m/cat.PNG")), .png)
         XCTAssertEqual(MemeKind(url: URL(fileURLWithPath: "/m/cat.jpg")), .jpeg)
         XCTAssertEqual(MemeKind(url: URL(fileURLWithPath: "/m/cat.JPEG")), .jpeg)
+        XCTAssertEqual(MemeKind(url: URL(fileURLWithPath: "/m/sticker.webp")), .webp)
+        XCTAssertEqual(MemeKind(url: URL(fileURLWithPath: "/m/sticker.WEBP")), .webp)
     }
 
     func testRejectsOtherFiles() {
@@ -19,12 +21,14 @@ final class MemeKindTests: XCTestCase {
         XCTAssertTrue(MemeKind.gif.isAnimated)
         XCTAssertFalse(MemeKind.png.isAnimated)
         XCTAssertFalse(MemeKind.jpeg.isAnimated)
+        XCTAssertFalse(MemeKind.webp.isAnimated)
     }
 
     func testTypeIdentifiers() {
         XCTAssertEqual(MemeKind.gif.typeIdentifier, "com.compuserve.gif")
         XCTAssertEqual(MemeKind.png.typeIdentifier, "public.png")
         XCTAssertEqual(MemeKind.jpeg.typeIdentifier, "public.jpeg")
+        XCTAssertEqual(MemeKind.webp.typeIdentifier, "org.webmproject.webp")
     }
 
     func testPasteboardTypesKeepTheFileAndNeverAFlatImage() {

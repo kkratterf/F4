@@ -39,7 +39,8 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | --- | --- |
 | 🎞️ **GIFs stay animated** | F4 writes the file URL (`public.file-url`) and the raw bytes under the file's UTI, never a decoded `NSImage`, so Slack, Discord and Telegram paste the animation. |
 | ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the hovered or selected GIF animates. |
-| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (right-click a meme) and the ones you used last come first. |
+| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (⌘D, or right-click a meme) and the ones you used last come first. |
+| 🗂️ **GIFs and stickers** | Tabs split the panel into All, GIFs and Stickers (Tab or ⌘1–⌘3). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. This is the only feature that needs the Accessibility permission, and it is off by default. |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. |
@@ -154,7 +155,7 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 ## FAQ
 
-**Which files does it understand?** GIF, PNG and JPEG today. WebP, HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
+**Which files does it understand?** GIF, PNG, JPEG and WebP (WhatsApp and Telegram stickers). HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
 
 **Where do the memes come from?** From you. F4 ships with no images at all: no stills, no GIF packs, nothing copyrighted.
 

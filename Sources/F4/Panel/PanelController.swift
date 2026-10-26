@@ -13,7 +13,7 @@ import SwiftUI
 /// activates F4, so the app the user was in keeps the focus.
 @MainActor
 final class PanelController: NSObject, NSWindowDelegate {
-    static let size = NSSize(width: 720, height: 460)
+    static let size = NSSize(width: 720, height: 500)
 
     private let panel: FloatingPanel
     private let library: MemeLibrary
@@ -61,6 +61,8 @@ final class PanelController: NSObject, NSWindowDelegate {
         position(on: screenWithMouse())
         startArrowKeys()
         panel.makeKeyAndOrderFront(nil)
+        // The shadow follows the content's rounded shape once it is drawn.
+        DispatchQueue.main.async { [panel] in panel.invalidateShadow() }
     }
 
     func hide() {
@@ -79,9 +81,25 @@ final class PanelController: NSObject, NSWindowDelegate {
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, event.window === self.panel else { return event }
             self.model.feedKonami(Self.konamiKey(for: event))
+            if self.switchTab(for: event) { return nil }
             guard let direction = Self.direction(for: event) else { return event }
             return self.model.move(direction) ? nil : event
         }
+    }
+
+    /// Tab / ⇧Tab cycle the tabs; ⌘1, ⌘2, ⌘3 jump to one. Returns true when
+    /// the key was taken. The search field has no use for Tab here.
+    private func switchTab(for event: NSEvent) -> Bool {
+        let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
+        if Int(event.keyCode) == kVK_Tab, modifiers.subtracting(.shift).isEmpty {
+            model.cycleTab(backwards: modifiers.contains(.shift))
+            return true
+        }
+        guard modifiers == .command else { return false }
+        let tabs: [Int: MemeTab] = [kVK_ANSI_1: .all, kVK_ANSI_2: .gifs, kVK_ANSI_3: .stickers]
+        guard let tab = tabs[Int(event.keyCode)] else { return false }
+        model.tab = tab
+        return true
     }
 
     private func stopArrowKeys() {
