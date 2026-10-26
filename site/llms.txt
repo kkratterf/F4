@@ -1,0 +1,34 @@
+# F4
+
+> F4 is a free, open-source meme launcher for macOS: a Spotlight-like floating panel that searches a local folder of memes, GIFs and stickers and copies one to the clipboard in a keystroke. Native Swift app (SwiftUI and AppKit), macOS 14 Sonoma or later, Apple Silicon and Intel, MIT license, no special permissions, no tracking, no account. The interface is English, with an Italian translation when macOS runs in Italian.
+
+Key facts:
+
+- The default shortcut is Command-Shift-M, from any app; it can be changed in Settings. The panel floats above everything, including full-screen apps, and has no Dock icon (the app lives in the menu bar).
+- It reads one folder, `~/Pictures/Memes` by default or any folder picked in Settings, and watches it with FSEvents so new files appear without a restart. Subfolders become categories you can search.
+- Supported files today: GIF, PNG, JPEG. WebP, HEIC and short videos are planned.
+- Type to search (fuzzy, on file names), arrow keys to move in the grid, Enter to copy, Escape to close. Favourites and recently used memes are ranked first.
+- Copying writes the file URL (`public.file-url`) and the raw file bytes under the file's UTI, never a decoded `NSImage`, so GIFs stay animated when pasted into Slack, Discord or Telegram.
+- Auto-paste (a simulated Command-V into the frontmost app) is optional and the only feature that needs the Accessibility permission; everything else works without any permission, because the global shortcut uses Carbon `RegisterEventHotKey`.
+- The empty state draws the "F4, basito" face from the Italian series Boris in code; a `.basito.png`, `.gif` or `.jpg` in the meme folder replaces it. The app ships with no images of its own. Typing some Boris or The Office lines, or the Konami code, in the search field triggers easter eggs.
+- A Raycast extension in the same repository searches the same folder.
+- F4 updates itself with Sparkle, checking the appcast on this site. No other network request is made: no analytics, no account, no server.
+
+## Install
+
+- Download the DMG from https://github.com/kkratterf/f4/releases/latest and drag F4 to Applications.
+- Or one line in Terminal: `curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh`
+- Or Homebrew: `brew tap kkratterf/f4 https://github.com/kkratterf/f4 && brew install --cask f4`
+- The app is not notarized by Apple yet. If macOS blocks the first launch, open System Settings > Privacy & Security and click "Open Anyway" next to the F4 message, or run `xattr -dr com.apple.quarantine /Applications/F4.app`. The install script does this for you.
+- Uninstall: `curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh -s -- --uninstall`, or `brew uninstall --zap --cask f4`.
+
+## Docs
+
+- [README](https://github.com/kkratterf/f4/blob/main/README.md): every feature, settings, shortcuts, install, privacy, FAQ, build from source
+- [Releases](https://github.com/kkratterf/f4/releases): downloads and release notes
+- [Issues](https://github.com/kkratterf/f4/issues): bugs, ideas and the roadmap (labels mark area, priority and version)
+
+## Optional
+
+- [Contributing rules](https://github.com/kkratterf/f4/blob/main/AGENTS.md): build, test, commit format, the rules a change must respect. Written for AI agents and humans alike.
+- [Raycast extension](https://github.com/kkratterf/f4/tree/main/raycast)
