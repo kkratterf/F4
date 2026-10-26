@@ -97,6 +97,18 @@ enum MemeImporter {
         return saved
     }
 
+    /// Copies a downloaded GIPHY file into the meme folder under `name`.
+    static func pin(_ file: URL, name: String, into folder: URL, tab: MemeTab) async throws -> URL {
+        let kind = MemeKind(url: file) ?? .gif
+        let target = destination(for: kind, in: folder, tab: tab)
+        return try await Task.detached(priority: .userInitiated) {
+            try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
+            let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
+            try FileManager.default.copyItem(at: file, to: url)
+            return url
+        }.value
+    }
+
     // MARK: Reading
 
     /// The best image representation of one pasteboard item: the file's own

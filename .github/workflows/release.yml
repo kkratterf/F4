@@ -118,6 +118,10 @@ jobs:
         run: swift test
 
       - name: Build F4.app
+        # The GIPHY key goes into the released app only (issue #93); without
+        # the secret the app ships without the GIPHY row.
+        env:
+          GIPHY_API_KEY: ${{ secrets.GIPHY_API_KEY }}
         run: scripts/build-app.sh release
 
       - name: Build the DMG
