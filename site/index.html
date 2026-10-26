@@ -26,12 +26,20 @@
   <link rel="icon" href="favicon.ico" sizes="any">
   <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <!-- For AI assistants: the facts about F4 in plain text. -->
+  <link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+  <link rel="alternate" type="text/plain" href="llms-full.txt" title="llms-full.txt">
+  <!-- For AI assistants: the facts about F4 in plain text. -->
+  <link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+  <link rel="alternate" type="text/plain" href="llms-full.txt" title="llms-full.txt">
+  <!-- For AI assistants: the facts about F4 in plain text. -->
+  <link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+  <link rel="alternate" type="text/plain" href="llms-full.txt" title="llms-full.txt">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://media.giphy.com">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link rel="stylesheet" href="styles.css">
-
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -53,41 +61,41 @@
 <body>
   <!--
     The GIFs on this page are not in the repo. They load from GIPHY, from the
-    official channels of the shows they come from, and each one links back to
-    its GIPHY page (AGENTS.md: never commit memes, not even for the website).
-    The id is the part after /media/ in GIPHY's URLs.
+    official channels of the shows they come from (AGENTS.md: never commit
+    memes, not even for the website). The id is the part after /media/.
   -->
   <header class="top">
-    <div class="wrap bar">
+    <div class="bar">
       <a class="brand" href="./" aria-label="F4 home">
-        <img src="logo.svg" alt="" width="34" height="34">
+        <img src="logo.svg" alt="" width="28" height="28">
         <span>F4</span>
       </a>
-      <nav>
+      <nav aria-label="Main">
         <a href="#memes">Memes</a>
         <a href="#features">Features</a>
-        <a href="#install">Install</a>
-        <a href="#faq">FAQ</a>
-        <a href="https://github.com/kkratterf/f4">GitHub</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://github.com/kkratterf/f4/releases">Releases</a>
       </nav>
-      <a class="btn btn-small" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">Download</a>
+      <div class="actions">
+        <a class="btn btn-icon" id="stars" href="https://github.com/kkratterf/f4" aria-label="F4 on GitHub"><svg viewBox="0 0 16 16" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="count" hidden><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .67.42l1.88 3.81 4.2.61a.75.75 0 0 1 .42 1.28l-3.04 2.96.72 4.19a.75.75 0 0 1-1.09.79L8 12.33l-3.76 1.98a.75.75 0 0 1-1.09-.79l.72-4.19L.83 6.37a.75.75 0 0 1 .42-1.28l4.2-.61L7.33.67A.75.75 0 0 1 8 .25Z"/></svg><b></b></span></a>
+        <a class="btn btn-small" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg"><svg class="apple" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> Download</a>
+      </div>
     </div>
   </header>
 
   <main>
     <section class="hero">
+      <div class="hero-bg" aria-hidden="true"><canvas data-grainient data-colors="#ffa726,#ff4d1f,#1c0805"></canvas></div>
       <div class="wrap">
-        <a class="pill" href="https://github.com/kkratterf/f4/releases/latest"><span>New</span> Free and open source, now with auto-updates →</a>
-        <h1>Your shortcut to every meme.</h1>
-        <p class="lede">A Spotlight-like launcher for the memes, GIFs and stickers on your Mac. Press F4, type a few letters, hit Enter: it is on your clipboard, still animated.</p>
+        <a class="pill" href="https://github.com/kkratterf/f4/releases/latest"><span>Free</span> Open source, updates itself →</a>
+        <h1>Your shortcut to every meme</h1>
+        <p class="lede">Press F4, type, hit Enter. The GIF is on your clipboard, still animated.</p>
         <div class="cta">
-          <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg" id="download"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> Download for Mac</a>
-          <a class="btn btn-ghost" href="https://github.com/kkratterf/f4">Source on GitHub</a>
+          <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg" id="download"><svg class="apple" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> Download for Mac</a>
         </div>
-        <p class="fineprint">Always the latest version · macOS 14 Sonoma or later · Apple Silicon and Intel · no account, no tracking · <a href="https://github.com/kkratterf/f4/releases">All releases</a></p>
+        <p class="fineprint">Free · macOS 14 or later · Apple Silicon and Intel</p>
 
         <div class="stage">
-          <div class="glow" aria-hidden="true"></div>
           <div class="panel" id="demo" aria-label="The F4 panel searching a meme folder">
             <div class="search">
               <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
@@ -95,20 +103,20 @@
               <span class="shortcut" aria-hidden="true"><kbd>F4</kbd></span>
             </div>
             <div class="grid" id="grid">
-              <a class="cell on" data-name="michael scott no" href="https://giphy.com/gifs/h2Ro4j4LBwhyw8G92g"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" data-still="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-anim="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="Michael Scott saying no, The Office" width="200" height="150"><span>michael-scott-no.gif</span></a>
-              <a class="cell" data-name="cool cool cool" href="https://giphy.com/gifs/l41lNp8dHpfaJE25O"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-still="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-anim="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150"><span>cool-cool-cool.gif</span></a>
-              <a class="cell" data-name="this is the worst" href="https://giphy.com/gifs/E2EhD5Z7d4fLhjeW6O"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-still="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-anim="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp" alt="This is the worst, Parks and Recreation" width="200" height="150"><span>this-is-the-worst.gif</span></a>
-              <a class="cell" data-name="mocking spongebob" href="https://giphy.com/gifs/fB938PbR1ulsA"><img src="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-still="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-anim="https://media.giphy.com/media/fB938PbR1ulsA/200w.webp" alt="Mocking SpongeBob" width="200" height="150"><span>mocking-spongebob.gif</span></a>
-              <a class="cell" data-name="awkward" href="https://giphy.com/gifs/NdIdKr94h0FyPCYnEQ"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-still="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-anim="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp" alt="An awkward moment, The Office" width="200" height="150"><span>awkward.gif</span></a>
-              <a class="cell" data-name="happy dance" href="https://giphy.com/gifs/3o7WIIvYXQNlNXq0XS"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-still="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-anim="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="200" height="150"><span>happy-dance.gif</span></a>
-              <a class="cell" data-name="fake typing" href="https://giphy.com/gifs/gSzVFkOj0Te7gojAhM"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-still="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-anim="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="200" height="150"><span>fake-typing.gif</span></a>
-              <a class="cell" data-name="idk" href="https://giphy.com/gifs/9D5gyxpkQj5hZDOkwt"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-still="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-anim="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="200" height="150"><span>idk.gif</span></a>
+              <div class="cell on" data-name="michael scott no"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" data-still="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-anim="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="Michael Scott saying no, The Office" width="200" height="150"><span>michael-scott-no.gif</span></div>
+              <div class="cell" data-name="cool cool cool"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-still="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-anim="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150"><span>cool-cool-cool.gif</span></div>
+              <div class="cell" data-name="this is the worst"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-still="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-anim="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp" alt="This is the worst, Parks and Recreation" width="200" height="150"><span>this-is-the-worst.gif</span></div>
+              <div class="cell" data-name="mocking spongebob"><img src="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-still="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-anim="https://media.giphy.com/media/fB938PbR1ulsA/200w.webp" alt="Mocking SpongeBob" width="200" height="150"><span>mocking-spongebob.gif</span></div>
+              <div class="cell" data-name="awkward"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-still="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-anim="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp" alt="An awkward moment, The Office" width="200" height="150"><span>awkward.gif</span></div>
+              <div class="cell" data-name="happy dance"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-still="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-anim="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="200" height="150"><span>happy-dance.gif</span></div>
+              <div class="cell" data-name="fake typing"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-still="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-anim="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="200" height="150"><span>fake-typing.gif</span></div>
+              <div class="cell" data-name="idk"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-still="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-anim="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="200" height="150"><span>idk.gif</span></div>
             </div>
             <div class="status">
-              <span id="picked">michael-scott-no.gif</span>
+              <span class="picked"><img src="logo.svg" alt="" width="16" height="16"><span id="picked">michael-scott-no.gif</span></span>
               <span class="hint">Copy <kbd>↩</kbd></span>
             </div>
-            <div class="toast" id="toast" role="status">Copied. Paste it anywhere, still animated.</div>
+            <div class="toast" id="toast" role="status">Copied, still animated</div>
           </div>
         </div>
       </div>
@@ -116,220 +124,144 @@
 
     <section class="why">
       <div class="wrap">
-        <h2 class="center">It's not about saving time.</h2>
-        <p class="center sub">It's about answering with the perfect GIF before the conversation moves on.</p>
+        <h2 class="center">It's not about saving time</h2>
+        <p class="center sub">It's about replying with the perfect GIF while the chat is still on it.</p>
         <div class="kb-wrap">
-          <div class="callout c1"><b>Fast.</b> The panel opens instantly, however many memes you have.</div>
-          <div class="callout c2"><b>Animated.</b> GIFs paste as GIFs, not as one sad frame.</div>
+          <div class="callout c1"><b>Fast</b> Opens instantly, however big your folder.</div>
+          <div class="callout c2"><b>Animated</b> GIFs paste as GIFs, not one sad frame.</div>
           <div class="keyboard" aria-hidden="true">
             <div class="krow frow"><span class="key mod wide">esc</span><span class="key">F1</span><span class="key">F2</span><span class="key">F3</span><span class="key hot">F4</span><span class="key">F5</span><span class="key">F6</span><span class="key">F7</span><span class="key">F8</span><span class="key">F9</span><span class="key">F10</span><span class="key">F11</span><span class="key">F12</span></div>
             <div class="krow"><span class="key mod">`</span><span class="key">1</span><span class="key">2</span><span class="key">3</span><span class="key">4</span><span class="key">5</span><span class="key">6</span><span class="key">7</span><span class="key">8</span><span class="key">9</span><span class="key">0</span><span class="key mod wide">⌫</span></div>
             <div class="krow"><span class="key mod wide">⇥</span><span class="key">Q</span><span class="key">W</span><span class="key">E</span><span class="key">R</span><span class="key">T</span><span class="key">Y</span><span class="key">U</span><span class="key">I</span><span class="key">O</span><span class="key">P</span><span class="key mod wide">⏎</span></div>
             <div class="krow"><span class="key mod wide">⇪</span><span class="key">A</span><span class="key">S</span><span class="key">D</span><span class="key">F</span><span class="key">G</span><span class="key">H</span><span class="key">J</span><span class="key">K</span><span class="key">L</span><span class="key mod">'</span></div>
             <div class="krow"><span class="key wide">⇧</span><span class="key">Z</span><span class="key">X</span><span class="key">C</span><span class="key">V</span><span class="key">B</span><span class="key">N</span><span class="key">M</span><span class="key">,</span><span class="key">.</span><span class="key wide">⇧</span></div>
-            <div class="krow"><span class="key mod">fn</span><span class="key mod">⌃</span><span class="key mod">⌥</span><span class="key">⌘</span><span class="key space"></span><span class="key">⌘</span><span class="key mod">⌥</span></div>
+            <div class="krow"><span class="key mod hint">fn</span><span class="key mod">⌃</span><span class="key mod">⌥</span><span class="key">⌘</span><span class="key space"></span><span class="key">⌘</span><span class="key mod">⌥</span></div>
           </div>
-          <div class="callout c3"><b>Private.</b> Your folder, your Mac. Nothing is uploaded.</div>
-          <div class="callout c4"><b>Free.</b> MIT licensed, no account, no telemetry.</div>
+          <div class="callout c3"><b>Private</b> Your folder, your Mac. Nothing leaves it.</div>
+          <div class="callout c4"><b>One key</b> F4. On a Mac keyboard, <kbd>fn</kbd> + <kbd>F4</kbd>.</div>
         </div>
       </div>
     </section>
 
     <section id="memes">
       <div class="wrap">
-        <h2 class="center">There's a meme for that.</h2>
-        <p class="center sub">F4 reads one folder. Subfolders become categories you can search, so a thousand files stay findable.</p>
+        <h2 class="center">There's a meme for that</h2>
+        <p class="center sub">Subfolders are categories. A thousand files stay one search away.</p>
         <div class="tabs" role="tablist" aria-label="Categories">
-          <button class="tab on" data-folder="" role="tab" aria-selected="true">All</button>
-          <button class="tab" data-folder="Reactions" role="tab" aria-selected="false">Reactions</button>
-          <button class="tab" data-folder="Work" role="tab" aria-selected="false">Work</button>
-          <button class="tab" data-folder="Celebrate" role="tab" aria-selected="false">Celebrate</button>
-          <button class="tab" data-folder="Nope" role="tab" aria-selected="false">Nope</button>
+          <button class="tab on" type="button" data-folder="" role="tab" aria-selected="true">All</button>
+          <button class="tab" type="button" data-folder="Reactions" role="tab" aria-selected="false">Reactions</button>
+          <button class="tab" type="button" data-folder="Work" role="tab" aria-selected="false">Work</button>
+          <button class="tab" type="button" data-folder="Celebrate" role="tab" aria-selected="false">Celebrate</button>
+          <button class="tab" type="button" data-folder="Nope" role="tab" aria-selected="false">Nope</button>
         </div>
         <div class="memes" id="memes-grid">
-          <a class="meme" data-folder="Nope" href="https://giphy.com/gifs/h2Ro4j4LBwhyw8G92g"><span class="thumb"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-still="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-anim="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="Michael Scott saying no, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>michael-scott-no.gif</b><small>Memes/Nope</small></span></a>
-          <a class="meme" data-folder="Work" href="https://giphy.com/gifs/l41lNp8dHpfaJE25O"><span class="thumb"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-still="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-anim="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></span><span class="meta"><b>cool-cool-cool.gif</b><small>Memes/Work</small></span></a>
-          <a class="meme" data-folder="Reactions" href="https://giphy.com/gifs/fB938PbR1ulsA"><span class="thumb"><img src="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-still="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-anim="https://media.giphy.com/media/fB938PbR1ulsA/200w.webp" alt="Mocking SpongeBob" width="200" height="150" loading="lazy"></span><span class="meta"><b>mocking-spongebob.gif</b><small>Memes/Reactions</small></span></a>
-          <a class="meme" data-folder="Celebrate" href="https://giphy.com/gifs/3o7WIIvYXQNlNXq0XS"><span class="thumb"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-still="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-anim="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="200" height="150" loading="lazy"></span><span class="meta"><b>happy-dance.gif</b><small>Memes/Celebrate</small></span></a>
-          <a class="meme" data-folder="Reactions" href="https://giphy.com/gifs/HBeTEfNfTUpcF5GwVC"><span class="thumb"><img src="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w_s.gif" data-still="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w_s.gif" data-anim="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w.webp" alt="Shocked, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>shocked.gif</b><small>Memes/Reactions</small></span></a>
-          <a class="meme" data-folder="Work" href="https://giphy.com/gifs/gSzVFkOj0Te7gojAhM"><span class="thumb"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-still="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-anim="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>fake-typing.gif</b><small>Memes/Work</small></span></a>
-          <a class="meme" data-folder="Celebrate" href="https://giphy.com/gifs/3ohzAu2U1tOafteBa0"><span class="thumb"><img src="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w_s.gif" data-still="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w_s.gif" data-anim="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w.webp" alt="An excited SpongeBob" width="200" height="150" loading="lazy"></span><span class="meta"><b>spongebob-yay.gif</b><small>Memes/Celebrate</small></span></a>
-          <a class="meme" data-folder="Nope" href="https://giphy.com/gifs/E2EhD5Z7d4fLhjeW6O"><span class="thumb"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-still="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-anim="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp" alt="This is the worst, Parks and Recreation" width="200" height="150" loading="lazy"></span><span class="meta"><b>this-is-the-worst.gif</b><small>Memes/Nope</small></span></a>
-          <a class="meme" data-folder="Reactions" href="https://giphy.com/gifs/9D5gyxpkQj5hZDOkwt"><span class="thumb"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-still="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-anim="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></span><span class="meta"><b>idk.gif</b><small>Memes/Reactions</small></span></a>
-          <a class="meme" data-folder="Work" href="https://giphy.com/gifs/J0BUyA0CPnDTP6iALR"><span class="thumb"><img src="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w_s.gif" data-still="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w_s.gif" data-anim="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w.webp" alt="Michael Scott: I&#x27;ll do it myself, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>ill-do-it-myself.gif</b><small>Memes/Work</small></span></a>
-          <a class="meme" data-folder="Reactions" href="https://giphy.com/gifs/NdIdKr94h0FyPCYnEQ"><span class="thumb"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-still="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-anim="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp" alt="An awkward moment, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>awkward.gif</b><small>Memes/Reactions</small></span></a>
-          <a class="meme" data-folder="Celebrate" href="https://giphy.com/gifs/xoV4JZ3cBaSGngdxxl"><span class="thumb"><img src="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w_s.gif" data-still="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w_s.gif" data-anim="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w.webp" alt="Excited, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>so-excited.gif</b><small>Memes/Celebrate</small></span></a>
+          <button class="meme" type="button" data-folder="Nope" data-name="michael-scott-no.gif"><span class="thumb"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-still="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-anim="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="Michael Scott saying no, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>michael-scott-no.gif</b><small>Memes/Nope</small></span></button>
+          <button class="meme" type="button" data-folder="Work" data-name="cool-cool-cool.gif"><span class="thumb"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-still="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-anim="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></span><span class="meta"><b>cool-cool-cool.gif</b><small>Memes/Work</small></span></button>
+          <button class="meme" type="button" data-folder="Reactions" data-name="mocking-spongebob.gif"><span class="thumb"><img src="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-still="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-anim="https://media.giphy.com/media/fB938PbR1ulsA/200w.webp" alt="Mocking SpongeBob" width="200" height="150" loading="lazy"></span><span class="meta"><b>mocking-spongebob.gif</b><small>Memes/Reactions</small></span></button>
+          <button class="meme" type="button" data-folder="Celebrate" data-name="happy-dance.gif"><span class="thumb"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-still="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-anim="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="200" height="150" loading="lazy"></span><span class="meta"><b>happy-dance.gif</b><small>Memes/Celebrate</small></span></button>
+          <button class="meme" type="button" data-folder="Reactions" data-name="shocked.gif"><span class="thumb"><img src="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w_s.gif" data-still="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w_s.gif" data-anim="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w.webp" alt="Shocked, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>shocked.gif</b><small>Memes/Reactions</small></span></button>
+          <button class="meme" type="button" data-folder="Work" data-name="fake-typing.gif"><span class="thumb"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-still="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-anim="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>fake-typing.gif</b><small>Memes/Work</small></span></button>
+          <button class="meme" type="button" data-folder="Celebrate" data-name="spongebob-yay.gif"><span class="thumb"><img src="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w_s.gif" data-still="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w_s.gif" data-anim="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w.webp" alt="An excited SpongeBob" width="200" height="150" loading="lazy"></span><span class="meta"><b>spongebob-yay.gif</b><small>Memes/Celebrate</small></span></button>
+          <button class="meme" type="button" data-folder="Nope" data-name="this-is-the-worst.gif"><span class="thumb"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-still="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-anim="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp" alt="This is the worst, Parks and Recreation" width="200" height="150" loading="lazy"></span><span class="meta"><b>this-is-the-worst.gif</b><small>Memes/Nope</small></span></button>
+          <button class="meme" type="button" data-folder="Reactions" data-name="idk.gif"><span class="thumb"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-still="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-anim="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></span><span class="meta"><b>idk.gif</b><small>Memes/Reactions</small></span></button>
+          <button class="meme" type="button" data-folder="Work" data-name="ill-do-it-myself.gif"><span class="thumb"><img src="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w_s.gif" data-still="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w_s.gif" data-anim="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w.webp" alt="Michael Scott: I&#x27;ll do it myself, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>ill-do-it-myself.gif</b><small>Memes/Work</small></span></button>
+          <button class="meme" type="button" data-folder="Reactions" data-name="awkward.gif"><span class="thumb"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-still="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-anim="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp" alt="An awkward moment, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>awkward.gif</b><small>Memes/Reactions</small></span></button>
+          <button class="meme" type="button" data-folder="Celebrate" data-name="so-excited.gif"><span class="thumb"><img src="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w_s.gif" data-still="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w_s.gif" data-anim="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w.webp" alt="Excited, The Office" width="200" height="150" loading="lazy"></span><span class="meta"><b>so-excited.gif</b><small>Memes/Celebrate</small></span></button>
         </div>
-        <p class="center more">Plus whatever is in your folder. F4 ships with no memes: you bring your own.</p>
+        <p class="center more">Bring your own: F4 shows what is in your folder.</p>
+        <div class="toast floating" id="copied" role="status"></div>
       </div>
     </section>
 
     <section class="paste">
-      <div class="wrap split">
-        <div>
-          <h2>Pastes like the real thing.</h2>
-          <p class="sub">Most apps flatten a GIF into one frame when you copy it. F4 copies the file itself, so the animation lands in Slack, Discord, Telegram, WhatsApp and Messages exactly as it should.</p>
-          <ul class="ticks">
-            <li>The file URL and the raw bytes, never a flattened image</li>
-            <li>Optional auto-paste: F4 presses <kbd>⌘</kbd><kbd>V</kbd> for you</li>
-            <li>Only the selected GIF plays in the panel, so it stays light</li>
-          </ul>
+      <div class="wrap">
+        <h2 class="center">Pastes like the real thing</h2>
+        <p class="center sub">F4 copies the file, not a picture of it. The animation lands in every chat.</p>
+        <div class="paste-grid">
+          <div class="chat" aria-label="A chat where a GIF was pasted with F4">
+            <div class="chat-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b># team</b></div>
+            <div class="msg">
+              <span class="avatar a1">G</span>
+              <div>
+                <p class="who">Giulia <time>17:58</time></p>
+                <p>deploying to prod on a friday, what could go wrong</p>
+              </div>
+            </div>
+            <div class="msg">
+              <span class="avatar a2">M</span>
+              <div>
+                <p class="who">Marco <time>17:58</time></p>
+                <span class="gif pasted"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/giphy.webp" alt="Michael Scott saying no, The Office" width="480" height="360" loading="lazy"></span>
+              </div>
+            </div>
+            <div class="msg">
+              <span class="avatar a1">G</span>
+              <div>
+                <p class="who">Giulia <time>17:59</time></p>
+                <span class="gif pasted"><img src="https://media.giphy.com/media/fB938PbR1ulsA/giphy.webp" alt="Mocking SpongeBob" width="480" height="360" loading="lazy"></span>
+              </div>
+            </div>
+          </div>
+          <ol class="how">
+            <li><kbd>F4</kbd><div><b>Open</b><span>From any app, even full screen</span></div></li>
+            <li><kbd>no</kbd><div><b>Type</b><span>A few letters of the name</span></div></li>
+            <li><kbd>↩</kbd><div><b>Copy</b><span>The file itself, never a flattened image</span></div></li>
+            <li><kbd>⌘V</kbd><div><b>Paste</b><span>Or let F4 paste it for you</span></div></li>
+          </ol>
         </div>
-        <div class="chat" aria-label="A chat where a GIF was pasted with F4">
-          <div class="chat-head"><span class="dot"></span><span class="dot"></span><span class="dot"></span><b># team</b></div>
-          <div class="msg">
-            <span class="avatar a1">G</span>
-            <div>
-              <p class="who">Giulia <time>17:58</time></p>
-              <p>deploying to prod on a friday, what could go wrong</p>
-            </div>
-          </div>
-          <div class="msg">
-            <span class="avatar a2">M</span>
-            <div>
-              <p class="who">Marco <time>17:58</time></p>
-              <a class="gif pasted" href="https://giphy.com/gifs/h2Ro4j4LBwhyw8G92g"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/giphy.webp" alt="Michael Scott saying no, The Office" width="480" height="360" loading="lazy"></a>
-              <p class="via">F4 · “no” · ↩ · ⌘V — two seconds</p>
-            </div>
-          </div>
-          <div class="msg">
-            <span class="avatar a1">G</span>
-            <div>
-              <p class="who">Giulia <time>17:59</time></p>
-              <a class="gif pasted" href="https://giphy.com/gifs/fB938PbR1ulsA"><img src="https://media.giphy.com/media/fB938PbR1ulsA/giphy.webp" alt="Mocking SpongeBob" width="480" height="360" loading="lazy"></a>
-            </div>
-          </div>
-        </div>
+        <p class="center apps">Slack · Discord · Telegram · WhatsApp · Messages · Mail</p>
       </div>
     </section>
 
     <section id="features">
       <div class="wrap">
-        <h2 class="center">Built for keyboard people.</h2>
-        <p class="center sub">Everything is one shortcut away, and nothing asks for a permission it does not need.</p>
+        <h2 class="center">Built for keyboard people</h2>
+        <p class="center sub">One key away, and no permission it does not need.</p>
         <div class="bento">
-          <div class="tile t-search">
-            <div class="vis">
+          <div class="tile t-wide">
+            <div class="vis mini">
               <div class="mini-search"><span>tif</span></div>
-              <div class="mini-row on"><b>t</b>h<b>i</b>s-is-<b>f</b>ine.gif</div>
+              <div class="mini-row on"><b>t</b>h<b>i</b>s-is-<b>f</b>ine.gif<kbd>↩</kbd></div>
               <div class="mini-row"><b>t</b>h<b>i</b>s-is-the-worst-<b>f</b>riday.gif</div>
               <div class="mini-row">no-<b>t</b>h<b>i</b>s-is-<b>f</b>or-me.png</div>
             </div>
-            <h3>Fuzzy search.</h3>
-            <p>Type a few letters of the name: "tif" finds "this is fine". Favourites and the memes you used last come first.</p>
+            <h3>Fuzzy search</h3>
+            <p>"tif" finds "this is fine". Favourites and recents come first.</p>
           </div>
-          <div class="tile t-keys">
+          <div class="tile">
             <div class="vis keys"><kbd>F4</kbd></div>
-            <h3>One key.</h3>
-            <p>F4, from any app, even full screen. Change it in Settings.</p>
-          </div>
-          <div class="tile t-gif">
-            <a class="gif vis gifvis" href="https://giphy.com/gifs/3o7WIIvYXQNlNXq0XS"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="480" height="360" loading="lazy"></a>
-            <h3>GIFs stay animated.</h3>
-            <p>F4 copies the file, so Slack, Discord and Telegram get the animation.</p>
-          </div>
-          <div class="tile t-tree t-wide">
-            <div class="vis tree">
-              <div>📁 Memes</div>
-              <div class="in">📁 Reactions <small>42</small></div>
-              <div class="in">📁 Work <small>17</small></div>
-              <div class="in">📁 Celebrate <small>9</small></div>
-              <div class="in">🖼️ .basito.png</div>
-            </div>
-            <h3>Folders are categories.</h3>
-            <p>Subfolders show up as categories you can search. New files appear without a restart.</p>
-          </div>
-          <div class="tile t-lock">
-            <div class="vis lock">🔐</div>
-            <h3>No permissions.</h3>
-            <p>The global shortcut needs no Accessibility or Input Monitoring. Auto-paste is optional and degrades gracefully.</p>
-          </div>
-          <div class="tile t-gif">
-            <a class="gif vis gifvis" href="https://giphy.com/gifs/gSzVFkOj0Te7gojAhM"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="480" height="360" loading="lazy"></a>
-            <h3>Instant.</h3>
-            <p>Folder scans and thumbnails run in the background. The panel never waits.</p>
+            <h3>One key</h3>
+            <p>Works in any app, even full screen. Change it in Settings.</p>
           </div>
           <div class="tile">
-            <div class="vis big-emoji">🧩</div>
-            <h3>Raycast too.</h3>
-            <p>A Raycast extension searches the same folder, if that is where your hands already are.</p>
-          </div>
-          <div class="tile">
-            <div class="vis big-emoji">🇮🇹</div>
-            <h3>English and Italian.</h3>
-            <p>The app follows your Mac's language. And yes, a few lines from Boris and The Office are hidden in the search field.</p>
+            <span class="gif vis"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Happy dance, Parks and Recreation" width="480" height="360" loading="lazy"></span>
+            <h3>GIFs stay animated</h3>
+            <p>Slack, Discord and Telegram get the real GIF.</p>
           </div>
           <div class="tile t-wide">
-            <div class="vis big-emoji">🔄</div>
-            <h3>Updates itself.</h3>
-            <p>Signed updates in one click. F4 only goes online to check for updates and to download a link you paste.</p>
+            <div class="vis tree">
+              <div class="folder">📁 Memes</div>
+              <div class="in"><span>📁 Reactions</span><small>42</small></div>
+              <div class="in"><span>📁 Work</span><small>17</small></div>
+              <div class="in"><span>📁 Celebrate</span><small>9</small></div>
+            </div>
+            <h3>Folders are categories</h3>
+            <p>New files show up without a restart.</p>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="install">
-      <div class="wrap">
-        <h2 class="center">Install in a minute.</h2>
-        <p class="center sub">Needs macOS 14 Sonoma or later. Pick whichever you like; F4 keeps itself up to date after that.</p>
-        <div class="ways">
-          <div class="way">
-            <h3>The app</h3>
-            <p><a href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">Download the DMG</a>, open it and drag F4 onto Applications.</p>
-            <a class="btn btn-primary btn-block" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> F4.dmg</a>
+          <div class="tile t-wide">
+            <div class="vis perms">
+              <div><span>Accessibility</span><em>Only for auto-paste</em></div>
+              <div><span>Input Monitoring</span><em class="ok">Not needed</em></div>
+              <div><span>Screen Recording</span><em class="ok">Not needed</em></div>
+            </div>
+            <h3>No permissions</h3>
+            <p>The shortcut works out of the box. Auto-paste is optional.</p>
           </div>
-          <div class="way">
-            <h3>One line in Terminal</h3>
-            <pre><code>curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh</code></pre>
+          <div class="tile">
+            <span class="gif vis"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott fake typing, The Office" width="480" height="360" loading="lazy"></span>
+            <h3>Instant</h3>
+            <p>Scans and thumbnails run in the background.</p>
           </div>
-          <div class="way">
-            <h3>Homebrew</h3>
-            <pre><code>brew tap kkratterf/f4 https://github.com/kkratterf/f4
-brew install --cask f4</code></pre>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="faq">
-      <div class="wrap split faq">
-        <div>
-          <h2>Questions.</h2>
-          <a class="gif faq-gif" href="https://giphy.com/gifs/9D5gyxpkQj5hZDOkwt"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/giphy.webp" alt="Gina: idk, Brooklyn Nine-Nine" width="480" height="360" loading="lazy"></a>
-        </div>
-        <div>
-          <details>
-            <summary>macOS says it cannot verify the developer. Now what?</summary>
-            <p>F4 is not notarized by Apple yet. Open it once, close the warning, then go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>. Or run <code>xattr -dr com.apple.quarantine /Applications/F4.app</code> in Terminal. The install script does it for you.</p>
-          </details>
-          <details>
-            <summary>Where do the memes come from?</summary>
-            <p>From you. F4 ships with no images at all: no copyrighted stills, no GIF packs. Point it at a folder of your own and it indexes what is there. The GIFs on this page are shared by the shows' official channels on GIPHY and load from there.</p>
-          </details>
-          <details>
-            <summary>Does it send anything anywhere?</summary>
-            <p>No. No analytics, no account, no server. Your files are read locally. F4 only goes online to check for updates against the release feed on this site, and to download an image link you paste or drop into the panel.</p>
-          </details>
-          <details>
-            <summary>Which files does it understand?</summary>
-            <p>GIF, PNG, JPEG and WebP (WhatsApp and Telegram stickers). HEIC and short videos are on the <a href="https://github.com/kkratterf/f4/issues">roadmap</a>.</p>
-          </details>
-          <details>
-            <summary>Can I change the shortcut?</summary>
-            <p>Yes, in Settings, from the menu bar icon. <kbd>F4</kbd> is only the default; any function key works on its own, any other key with <kbd>⌘</kbd>, <kbd>⌥</kbd> or <kbd>⌃</kbd>.</p>
-          </details>
-          <details>
-            <summary>F4 opens Spotlight or Launchpad instead. Why?</summary>
-            <p>On a Mac keyboard the top row are media keys first. Hold <kbd>fn</kbd> and press <kbd>F4</kbd>, or turn on <strong>Use F1, F2, etc. keys as standard function keys</strong> in <strong>System Settings → Keyboard → Keyboard Shortcuts → Function Keys</strong>. On most other keyboards F4 just works. Or pick another shortcut in Settings.</p>
-          </details>
-          <details>
-            <summary>Why "F4"?</summary>
-            <p>From <em>"F4, basito"</em>, the face Stanis makes in the Italian series Boris. The icon is the F4 key itself; the basito face shows up inside the app, drawn in code. Put a <code>.basito.png</code> in your meme folder to use your own.</p>
-          </details>
-          <details>
-            <summary>Can an AI assistant or a script use F4?</summary>
-            <p>That is being built (a URL scheme, Shortcuts actions, a command line tool and an MCP server). Facts for AI assistants live in <a href="llms.txt">llms.txt</a>, and the full reference in <a href="llms-full.txt">llms-full.txt</a>.</p>
-          </details>
         </div>
       </div>
     </section>
@@ -337,9 +269,9 @@ brew install --cask f4</code></pre>
     <section class="final">
       <div class="wrap">
         <div class="keys big" aria-hidden="true"><kbd>F4</kbd></div>
-        <h2>Take the short way.</h2>
-        <p class="sub">Download and use F4 for free.</p>
-        <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> Download for Mac</a>
+        <h2>Take the short way</h2>
+        <p class="sub">Free, for every Mac on macOS 14 or later.</p>
+        <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg"><svg class="apple" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> Download for Mac</a>
       </div>
     </section>
   </main>
@@ -348,60 +280,88 @@ brew install --cask f4</code></pre>
     <div class="wrap">
       <div class="cols">
         <div class="col brand-col">
-          <a class="brand" href="./"><img src="logo.svg" alt="" width="34" height="34"><span>F4</span></a>
-          <p>Spotlight for your memes on macOS. MIT licensed. Made with Claude, and a face that has seen things.</p>
+          <a class="brand" href="./"><img src="logo.svg" alt="" width="28" height="28"><span>F4</span></a>
+          <p>Spotlight for your memes on macOS. Free and MIT licensed. Made with Claude, and a face that has seen things.</p>
         </div>
         <div class="col">
           <h4>Product</h4>
-          <a href="#memes">Memes</a>
-          <a href="#features">Features</a>
-          <a href="#faq">FAQ</a>
+          <a href="./#memes">Memes</a>
+          <a href="./#features">Features</a>
           <a href="https://github.com/kkratterf/f4/tree/main/raycast">Raycast extension</a>
         </div>
         <div class="col">
-          <h4>Install</h4>
-          <a href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">Download the DMG</a>
-          <a href="https://github.com/kkratterf/f4/releases">All releases</a>
-          <a href="#install">Homebrew</a>
-          <a href="#install">Terminal</a>
+          <h4>Download</h4>
+          <a href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">F4 for Mac</a>
+          <a href="https://github.com/kkratterf/f4/releases">Releases</a>
         </div>
         <div class="col">
-          <h4>Project</h4>
-          <a href="https://github.com/kkratterf/f4">GitHub</a>
+          <h4>Help</h4>
+          <a href="faq.html">FAQ</a>
           <a href="https://github.com/kkratterf/f4/issues">Report a bug</a>
           <a href="https://github.com/kkratterf/f4/blob/main/CONTRIBUTING.md">Contribute</a>
-        </div>
-        <div class="col">
-          <h4>For AI agents</h4>
-          <a href="llms.txt">llms.txt</a>
-          <a href="llms-full.txt">llms-full.txt</a>
-          <a href="https://github.com/kkratterf/f4/blob/main/AGENTS.md">AGENTS.md</a>
+          <a href="https://github.com/kkratterf/f4">GitHub</a>
         </div>
       </div>
-      <p class="credits">GIFs powered by <a href="https://giphy.com">GIPHY</a>, from the official channels of <a href="https://giphy.com/theoffice">The Office</a>, <a href="https://giphy.com/parksandrec">Parks and Recreation</a>, <a href="https://giphy.com/nbc">NBC</a>, <a href="https://giphy.com/brooklynninenine">Brooklyn Nine-Nine</a> and <a href="https://giphy.com/spongebob">SpongeBob SquarePants</a>. They belong to their owners, load from GIPHY and are not part of F4. Click one to see its source.</p>
+      <p class="credits">GIFs powered by <a href="https://giphy.com">GIPHY</a>, from the official channels of <a href="https://giphy.com/theoffice">The Office</a>, <a href="https://giphy.com/parksandrec">Parks and Recreation</a>, <a href="https://giphy.com/nbc">NBC</a>, <a href="https://giphy.com/brooklynninenine">Brooklyn Nine-Nine</a> and <a href="https://giphy.com/spongebob">SpongeBob SquarePants</a>. They belong to their owners and are not part of F4.</p>
     </div>
   </footer>
 
+  <script src="grainient.js" defer></script>
+  <script>
+    // The GitHub button shows the star count from 10 stars up; until then
+    // it is just the icon. The count is cached for the visit.
+    (function () {
+      var button = document.getElementById("stars");
+      if (!button) return;
+      function show(n) {
+        if (typeof n !== "number" || n < 10) return;
+        var count = button.querySelector(".count");
+        count.querySelector("b").textContent = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n);
+        count.hidden = false;
+        button.classList.add("with-count");
+        button.setAttribute("aria-label", "F4 on GitHub, " + n + " stars");
+      }
+      var cached = null;
+      try { cached = sessionStorage.getItem("f4-stars"); } catch (e) {}
+      if (cached !== null) return show(Number(cached));
+      fetch("https://api.github.com/repos/kkratterf/f4")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (repo) {
+          if (!repo) return;
+          try { sessionStorage.setItem("f4-stars", String(repo.stargazers_count)); } catch (e) {}
+          show(repo.stargazers_count);
+        })
+        .catch(function () {});
+    })();
+  </script>
   <script>
     (function () {
       var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       var noHover = window.matchMedia("(hover: none)").matches;
 
-      // The meme grid: still frames until hovered, like the app, and the
-      // category tabs filter it by folder.
+      // The meme grid: still frames until hovered, like the app. A click
+      // "copies" it, the way F4 would; the category tabs filter by folder.
       var cards = Array.prototype.slice.call(document.querySelectorAll(".meme"));
+      var copied = document.getElementById("copied");
+      var timer = null;
       cards.forEach(function (card) {
         var img = card.querySelector("img");
         if (noHover && !reduce) {
           img.src = img.dataset.anim;
-          return;
+        } else {
+          var play = function () { if (!reduce) img.src = img.dataset.anim; };
+          var stop = function () { img.src = img.dataset.still; };
+          card.addEventListener("mouseenter", play);
+          card.addEventListener("focus", play);
+          card.addEventListener("mouseleave", stop);
+          card.addEventListener("blur", stop);
         }
-        function play() { if (!reduce) img.src = img.dataset.anim; }
-        function stop() { img.src = img.dataset.still; }
-        card.addEventListener("mouseenter", play);
-        card.addEventListener("focus", play);
-        card.addEventListener("mouseleave", stop);
-        card.addEventListener("blur", stop);
+        card.addEventListener("click", function () {
+          copied.textContent = "In F4, " + card.dataset.name + " would be on your clipboard now";
+          copied.classList.add("show");
+          clearTimeout(timer);
+          timer = setTimeout(function () { copied.classList.remove("show"); }, 2200);
+        });
       });
       Array.prototype.slice.call(document.querySelectorAll(".tab")).forEach(function (tab, _, tabs) {
         tab.addEventListener("click", function () {
@@ -456,12 +416,12 @@ brew install --cask f4</code></pre>
       function type(word, done) {
         var n = 0;
         query.textContent = "";
-        var timer = setInterval(function () {
+        var t = setInterval(function () {
           n++;
           query.textContent = word.slice(0, n);
           select(query.textContent);
           if (n >= word.length) {
-            clearInterval(timer);
+            clearInterval(t);
             done();
           }
         }, 140);
