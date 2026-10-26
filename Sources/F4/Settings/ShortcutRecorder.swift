@@ -4,7 +4,8 @@ import SwiftUI
 /// Shows the current shortcut and records a new one: click, then press the keys.
 ///
 /// While recording, a local key monitor swallows the next key press. Esc
-/// cancels; a press without ⌘, ⌥ or ⌃ is ignored, since it would steal typing.
+/// cancels; a press without ⌘, ⌥ or ⌃ is ignored, since it would steal typing,
+/// unless it is a function key such as F4.
 struct ShortcutRecorder: View {
     @Binding var combo: HotKeyCombo
     let defaultCombo: HotKeyCombo

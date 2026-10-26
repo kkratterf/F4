@@ -1,5 +1,6 @@
 import AppKit
 import Carbon.HIToolbox
+import F4Core
 
 /// A global keyboard shortcut: a virtual key code (`kVK_*`) plus Carbon
 /// modifier flags (`cmdKey`, `optionKey`, `controlKey`, `shiftKey`).
@@ -7,29 +8,56 @@ struct HotKeyCombo: Equatable {
     var keyCode: UInt32
     var modifiers: UInt32
 
-    /// ⌘⇧M, the default shortcut that shows and hides the panel.
-    static let toggleDefault = HotKeyCombo(keyCode: kVK_ANSI_M, modifiers: UInt32(cmdKey | shiftKey))
+    /// The F4 key alone, the default shortcut that shows and hides the panel.
+    /// On a Mac keyboard F4 is a media key (Spotlight or Launchpad) unless the
+    /// user holds fn or uses F1, F2, etc. as standard function keys: Carbon
+    /// only sees the press as F4 then. fn is not a Carbon modifier, so fn F4
+    /// fires the same hot key; `displayString` shows "fn F4" when it is needed.
+    static let toggleDefault = HotKeyCombo(keyCode: ShortcutRules.f4KeyCode, modifiers: 0)
 
     init(keyCode: Int, modifiers: UInt32) {
         self.keyCode = UInt32(keyCode)
         self.modifiers = modifiers
     }
 
-    /// The combo of a key press, or nil when it has no ⌘, ⌥ or ⌃: a global
-    /// shortcut with only ⇧ (or nothing) would steal normal typing.
+    /// The combo of a key press, or nil when it cannot be a global shortcut:
+    /// a key without ⌘, ⌥ or ⌃ would steal normal typing, except a function
+    /// key (F1 to F20), which types nothing. fn is not part of the combo.
     init?(event: NSEvent) {
         let flags = event.modifierFlags.intersection(.deviceIndependentFlagsMask)
         var modifiers: UInt32 = 0
         if flags.contains(.command) { modifiers |= UInt32(cmdKey) }
         if flags.contains(.option) { modifiers |= UInt32(optionKey) }
         if flags.contains(.control) { modifiers |= UInt32(controlKey) }
-        guard modifiers != 0 else { return nil }
+        let keyCode = Int(event.keyCode)
+        guard ShortcutRules.canRecord(keyCode: keyCode, hasCommandOptionOrControl: modifiers != 0) else { return nil }
         if flags.contains(.shift) { modifiers |= UInt32(shiftKey) }
-        self.init(keyCode: Int(event.keyCode), modifiers: modifiers)
+        self.init(keyCode: keyCode, modifiers: modifiers)
     }
 
-    /// Human readable form in the macOS order, e.g. "⌃⌥⌘P".
+    /// A function key with no modifier, like the default F4. On a Mac
+    /// keyboard it may need fn (see `toggleDefault`).
+    var isBareFunctionKey: Bool {
+        modifiers == 0 && ShortcutRules.isFunctionKey(Int(keyCode))
+    }
+
+    /// Whether the top row of a Mac keyboard sends F1, F2, ... without fn
+    /// ("Use F1, F2, etc. keys as standard function keys"). Read from the
+    /// global defaults domain, which needs no permission.
+    static var functionKeysAreStandard: Bool {
+        UserDefaults.standard.bool(forKey: "com.apple.keyboard.fnState")
+    }
+
+    /// A bare function key that, on this Mac, only reaches F4 with fn held:
+    /// without it the key opens Spotlight, Launchpad or changes the volume.
+    var needsFn: Bool {
+        isBareFunctionKey && !HotKeyCombo.functionKeysAreStandard
+    }
+
+    /// Human readable form in the macOS order, e.g. "⌃⌥⌘P", or "fn F4" when
+    /// the key needs fn on this Mac.
     var displayString: String {
+        if needsFn { return "fn " + HotKeyCombo.keyName(Int(keyCode)) }
         var text = ""
         if modifiers & UInt32(controlKey) != 0 { text += "⌃" }
         if modifiers & UInt32(optionKey) != 0 { text += "⌥" }
@@ -54,7 +82,8 @@ struct HotKeyCombo: Equatable {
             kVK_ANSI_8: "8", kVK_ANSI_9: "9",
             kVK_F1: "F1", kVK_F2: "F2", kVK_F3: "F3", kVK_F4: "F4", kVK_F5: "F5",
             kVK_F6: "F6", kVK_F7: "F7", kVK_F8: "F8", kVK_F9: "F9", kVK_F10: "F10",
-            kVK_F11: "F11", kVK_F12: "F12",
+            kVK_F11: "F11", kVK_F12: "F12", kVK_F13: "F13", kVK_F14: "F14", kVK_F15: "F15",
+            kVK_F16: "F16", kVK_F17: "F17", kVK_F18: "F18", kVK_F19: "F19", kVK_F20: "F20",
             kVK_ANSI_Comma: ",", kVK_ANSI_Period: ".", kVK_ANSI_Slash: "/",
             kVK_ANSI_Semicolon: ";", kVK_ANSI_Quote: "'", kVK_ANSI_Minus: "-",
             kVK_ANSI_Equal: "=", kVK_ANSI_LeftBracket: "[", kVK_ANSI_RightBracket: "]",
