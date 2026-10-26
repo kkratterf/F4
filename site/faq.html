@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FAQ · F4</title>
+  <meta name="description" content="Answers about F4, the meme launcher for macOS: installing, the F4 key, where memes come from, privacy and updates.">
+  <link rel="canonical" href="https://kkratterf.github.io/f4/faq.html">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0a0908">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="F4">
+  <meta property="og:title" content="FAQ · F4">
+  <meta property="og:description" content="Press F4, type a few letters, hit Enter: the meme is on your clipboard, GIF animation included.">
+  <meta property="og:url" content="https://kkratterf.github.io/f4/faq.html">
+  <meta property="og:image" content="https://kkratterf.github.io/f4/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FAQ · F4">
+  <meta name="twitter:description" content="Press F4, type a few letters, hit Enter: the meme is on your clipboard, GIF animation included.">
+  <meta name="twitter:image" content="https://kkratterf.github.io/f4/og.png">
+
+  <!-- The favicon is the real "F4, basito" still, the maintainer's choice; the app icon stays drawn in code. -->
+  <link rel="icon" href="favicon.ico" sizes="any">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <!-- For AI assistants: the facts about F4 in plain text. -->
+  <link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+  <link rel="alternate" type="text/plain" href="llms-full.txt" title="llms-full.txt">
+  <!-- For AI assistants: the facts about F4 in plain text. -->
+  <link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+  <link rel="alternate" type="text/plain" href="llms-full.txt" title="llms-full.txt">
+  <!-- For AI assistants: the facts about F4 in plain text. -->
+  <link rel="alternate" type="text/plain" href="llms.txt" title="llms.txt">
+  <link rel="alternate" type="text/plain" href="llms-full.txt" title="llms-full.txt">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://media.giphy.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="stylesheet" href="styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "macOS says it cannot verify the developer. Now what?", "acceptedAnswer": { "@type": "Answer", "text": "F4 is not notarized by Apple yet. Open it once and close the warning, then go to System Settings \u2192 Privacy & Security and click Open Anyway. Or run xattr -dr com.apple.quarantine /Applications/F4.app in Terminal." } },
+      { "@type": "Question", "name": "F4 opens Spotlight or Launchpad instead. Why?", "acceptedAnswer": { "@type": "Answer", "text": "On a Mac keyboard the top row are media keys first. Hold fn and press F4, or turn on Use F1, F2, etc. keys as standard function keys in System Settings \u2192 Keyboard \u2192 Keyboard Shortcuts \u2192 Function Keys. On most other keyboards F4 just works. Or pick another shortcut in Settings." } },
+      { "@type": "Question", "name": "Can I change the shortcut?", "acceptedAnswer": { "@type": "Answer", "text": "Yes, in Settings, from the menu bar icon. F4 is only the default; any function key works on its own, any other key with \u2318, \u2325 or \u2303." } },
+      { "@type": "Question", "name": "Where do the memes come from?", "acceptedAnswer": { "@type": "Answer", "text": "From you. F4 ships with no images: no copyrighted stills, no GIF packs. Point it at a folder of your own and it shows what is there. The GIFs on this site are shared by the shows' official channels on GIPHY and load from there." } },
+      { "@type": "Question", "name": "Which files does it understand?", "acceptedAnswer": { "@type": "Answer", "text": "GIF, PNG and JPEG today. WebP, HEIC and short videos are on the roadmap." } },
+      { "@type": "Question", "name": "Does it send anything anywhere?", "acceptedAnswer": { "@type": "Answer", "text": "No. No analytics, no account, no server. Your files are read locally; the only network request is the update check against the release feed on this site." } },
+      { "@type": "Question", "name": "How does it update?", "acceptedAnswer": { "@type": "Answer", "text": "By itself. F4 checks for a new version about once a day and installs it in one click, signed and verified. You can also check by hand from the menu bar icon." } },
+      { "@type": "Question", "name": "Why \"F4\"?", "acceptedAnswer": { "@type": "Answer", "text": "From \"F4, basito\", the face Stanis makes in the Italian series Boris. The icon is the F4 key itself; the basito face shows up inside the app, drawn in code. Put a .basito.png in your meme folder to use your own." } },
+      { "@type": "Question", "name": "Can an AI assistant or a script use F4?", "acceptedAnswer": { "@type": "Answer", "text": "That is being built: a URL scheme, Shortcuts actions, a command line tool and an MCP server. Facts for AI assistants live in llms.txt, the full reference in llms-full.txt." } }
+    ]
+  }
+  </script>
+</head>
+<body class="page">
+  <header class="top">
+    <div class="bar">
+      <a class="brand" href="./" aria-label="F4 home">
+        <img src="logo.svg" alt="" width="28" height="28">
+        <span>F4</span>
+      </a>
+      <nav aria-label="Main">
+        <a href="./#memes">Memes</a>
+        <a href="./#features">Features</a>
+        <a href="faq.html">FAQ</a>
+        <a href="https://github.com/kkratterf/f4/releases">Releases</a>
+      </nav>
+      <div class="actions">
+        <a class="btn btn-icon" id="stars" href="https://github.com/kkratterf/f4" aria-label="F4 on GitHub"><svg viewBox="0 0 16 16" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg><span class="count" hidden><svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true"><path fill="currentColor" d="M8 .25a.75.75 0 0 1 .67.42l1.88 3.81 4.2.61a.75.75 0 0 1 .42 1.28l-3.04 2.96.72 4.19a.75.75 0 0 1-1.09.79L8 12.33l-3.76 1.98a.75.75 0 0 1-1.09-.79l.72-4.19L.83 6.37a.75.75 0 0 1 .42-1.28l4.2-.61L7.33.67A.75.75 0 0 1 8 .25Z"/></svg><b></b></span></a>
+        <a class="btn btn-small" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg"><svg class="apple" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> Download</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="hero-bg" aria-hidden="true"><canvas data-grainient data-colors="#ffa726,#ff4d1f,#1c0805"></canvas></div>
+      <div class="wrap">
+        <h1>FAQ</h1>
+        <p class="lede">The short answers. Something missing? <a href="https://github.com/kkratterf/f4/issues/new/choose">Ask on GitHub</a>.</p>
+      </div>
+    </section>
+    <section class="faq-list">
+      <div class="wrap narrow">
+        <details class="acc">
+          <summary><span>macOS says it cannot verify the developer. Now what?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>F4 is not notarized by Apple yet. Open it once and close the warning, then go to <strong>System Settings → Privacy &amp; Security</strong> and click <strong>Open Anyway</strong>. Or run <code>xattr -dr com.apple.quarantine /Applications/F4.app</code> in Terminal.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>F4 opens Spotlight or Launchpad instead. Why?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>On a Mac keyboard the top row are media keys first. Hold <kbd>fn</kbd> and press <kbd>F4</kbd>, or turn on <strong>Use F1, F2, etc. keys as standard function keys</strong> in <strong>System Settings → Keyboard → Keyboard Shortcuts → Function Keys</strong>. On most other keyboards F4 just works. Or pick another shortcut in Settings.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>Can I change the shortcut?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>Yes, in Settings, from the menu bar icon. <kbd>F4</kbd> is only the default; any function key works on its own, any other key with <kbd>⌘</kbd>, <kbd>⌥</kbd> or <kbd>⌃</kbd>.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>Where do the memes come from?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>From you. F4 ships with no images: no copyrighted stills, no GIF packs. Point it at a folder of your own and it shows what is there. The GIFs on this site are shared by the shows' official channels on GIPHY and load from there.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>Which files does it understand?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>GIF, PNG and JPEG today. WebP, HEIC and short videos are on the <a href="https://github.com/kkratterf/f4/issues">roadmap</a>.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>Does it send anything anywhere?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>No. No analytics, no account, no server. Your files are read locally; the only network request is the update check against the release feed on this site.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>How does it update?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>By itself. F4 checks for a new version about once a day and installs it in one click, signed and verified. You can also check by hand from the menu bar icon.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>Why "F4"?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>From <em>"F4, basito"</em>, the face Stanis makes in the Italian series Boris. The icon is the F4 key itself; the basito face shows up inside the app, drawn in code. Put a <code>.basito.png</code> in your meme folder to use your own.</p></div>
+        </details>
+        <details class="acc">
+          <summary><span>Can an AI assistant or a script use F4?</span><svg class="chev" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="acc-panel"><p>That is being built: a URL scheme, Shortcuts actions, a command line tool and an MCP server. Facts for AI assistants live in <a href="llms.txt">llms.txt</a>, the full reference in <a href="llms-full.txt">llms-full.txt</a>.</p></div>
+        </details>
+      </div>
+    </section>
+    <section class="final">
+      <div class="wrap">
+        <h2>Still here? Just try it</h2>
+        <a class="btn btn-primary" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg"><svg class="apple" viewBox="0 0 24 24" width="17" height="17" aria-hidden="true"><path fill="currentColor" d="M16.37 12.6c-.02-2.3 1.88-3.4 1.96-3.46-1.07-1.56-2.73-1.78-3.32-1.8-1.41-.14-2.76.83-3.48.83-.72 0-1.82-.81-3-.79-1.54.02-2.97.9-3.76 2.28-1.61 2.79-.41 6.91 1.15 9.17.77 1.1 1.68 2.34 2.87 2.3 1.15-.05 1.59-.75 2.98-.75 1.39 0 1.78.75 3 .72 1.24-.02 2.02-1.12 2.78-2.23.88-1.28 1.24-2.52 1.26-2.58-.03-.01-2.42-.93-2.44-3.69ZM14.1 5.86c.63-.77 1.06-1.83.94-2.89-.91.04-2.02.61-2.67 1.37-.58.68-1.1 1.77-.96 2.81 1.02.08 2.06-.52 2.69-1.29Z"/></svg> Download for Mac</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <div class="cols">
+        <div class="col brand-col">
+          <a class="brand" href="./"><img src="logo.svg" alt="" width="28" height="28"><span>F4</span></a>
+          <p>Spotlight for your memes on macOS. Free and MIT licensed. Made with Claude, and a face that has seen things.</p>
+        </div>
+        <div class="col">
+          <h4>Product</h4>
+          <a href="./#memes">Memes</a>
+          <a href="./#features">Features</a>
+          <a href="https://github.com/kkratterf/f4/tree/main/raycast">Raycast extension</a>
+        </div>
+        <div class="col">
+          <h4>Download</h4>
+          <a href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg">F4 for Mac</a>
+          <a href="https://github.com/kkratterf/f4/releases">Releases</a>
+        </div>
+        <div class="col">
+          <h4>Help</h4>
+          <a href="faq.html">FAQ</a>
+          <a href="https://github.com/kkratterf/f4/issues">Report a bug</a>
+          <a href="https://github.com/kkratterf/f4/blob/main/CONTRIBUTING.md">Contribute</a>
+          <a href="https://github.com/kkratterf/f4">GitHub</a>
+        </div>
+      </div>
+      <p class="credits">GIFs powered by <a href="https://giphy.com">GIPHY</a>, from the official channels of <a href="https://giphy.com/theoffice">The Office</a>, <a href="https://giphy.com/parksandrec">Parks and Recreation</a>, <a href="https://giphy.com/nbc">NBC</a>, <a href="https://giphy.com/brooklynninenine">Brooklyn Nine-Nine</a> and <a href="https://giphy.com/spongebob">SpongeBob SquarePants</a>. They belong to their owners and are not part of F4.</p>
+    </div>
+  </footer>
+
+  <script src="grainient.js" defer></script>
+  <script>
+    // The GitHub button shows the star count from 10 stars up; until then
+    // it is just the icon. The count is cached for the visit.
+    (function () {
+      var button = document.getElementById("stars");
+      if (!button) return;
+      function show(n) {
+        if (typeof n !== "number" || n < 10) return;
+        var count = button.querySelector(".count");
+        count.querySelector("b").textContent = n >= 1000 ? (n / 1000).toFixed(1).replace(/\.0$/, "") + "k" : String(n);
+        count.hidden = false;
+        button.classList.add("with-count");
+        button.setAttribute("aria-label", "F4 on GitHub, " + n + " stars");
+      }
+      var cached = null;
+      try { cached = sessionStorage.getItem("f4-stars"); } catch (e) {}
+      if (cached !== null) return show(Number(cached));
+      fetch("https://api.github.com/repos/kkratterf/f4")
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (repo) {
+          if (!repo) return;
+          try { sessionStorage.setItem("f4-stars", String(repo.stargazers_count)); } catch (e) {}
+          show(repo.stargazers_count);
+        })
+        .catch(function () {});
+    })();
+  </script>
+  <script>
+    // The accordion: each answer slides open and shut (after coss ui's
+    // Accordion). Without JavaScript the details elements still work.
+    (function () {
+      var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      Array.prototype.slice.call(document.querySelectorAll("details.acc")).forEach(function (item) {
+        var summary = item.querySelector("summary");
+        var panel = item.querySelector(".acc-panel");
+        summary.addEventListener("click", function (event) {
+          if (reduce || !panel.animate) return;
+          event.preventDefault();
+          var opening = !item.open;
+          if (opening) item.open = true;
+          var full = panel.scrollHeight + "px";
+          var anim = panel.animate(
+            opening ? [{ height: "0px", opacity: 0 }, { height: full, opacity: 1 }] : [{ height: full, opacity: 1 }, { height: "0px", opacity: 0 }],
+            { duration: 220, easing: "cubic-bezier(0.32, 0.72, 0, 1)" }
+          );
+          item.classList.toggle("opening", opening);
+          anim.onfinish = function () {
+            if (!opening) item.open = false;
+          };
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

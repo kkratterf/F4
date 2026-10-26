@@ -29,7 +29,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `scripts/make-icon.swift`, `scripts/make-dmg-background.swift` | Draw the app icon (the F4 keycap logo) and the DMG background in code; no image is committed |
 | `scripts/check-strings.py` | CI check: every string in the String Catalog has an Italian translation |
 | `scripts/update-appcast.py` | Adds a release to the Sparkle appcast (`site/appcast.xml`) |
-| `site/` | The project website (static HTML and CSS, no build step), deployed to GitHub Pages; it also hosts `appcast.xml`, `llms.txt`, `llms-full.txt` and `logo.svg` (the logo, also used by the README) |
+| `site/` | The project website (static HTML, CSS and a little vanilla JS, no build step), deployed to GitHub Pages: `index.html`, `faq.html`, `grainient.js` (the WebGL hero background); it also hosts `appcast.xml`, `llms.txt`, `llms-full.txt` and `logo.svg` (the logo, also used by the README) |
 | `Casks/f4.rb` | Homebrew cask (the repo is its own tap), bumped by the release workflow |
 | `install.sh` | One-line installer and uninstaller (POSIX `sh`, checked with ShellCheck) |
 | `.github/workflows/ci.yml` | CI on every PR and push to `main` (see below) |
