@@ -157,7 +157,7 @@ ditto "$tmp/unzipped/$APP_NAME" "$dest" || fail "cannot copy the app into $dir"
 xattr -dr com.apple.quarantine "$dest" 2>/dev/null || true
 
 say "Done. F4 $version is installed in $dest"
-say "Press Command-Shift-M anywhere to open it, and put your memes in ~/Pictures/Memes"
+say "Press F4 anywhere to open it (fn F4 on a Mac keyboard), and put your memes in ~/Pictures/Memes"
 say "(or pick another folder in Settings, from the menu bar icon)."
 
 if [ "${F4_NO_OPEN:-0}" = 1 ] || ! can_ask; then

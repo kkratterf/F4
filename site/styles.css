@@ -151,7 +151,7 @@ kbd {
 }
 
 .brand img {
-  border-radius: 8px;
+  display: block;
 }
 
 .bar nav {
@@ -515,6 +515,12 @@ section {
 
 .key.space {
   flex: 1 0 200px;
+}
+
+/* The function row: short keys, like on a Mac. */
+.frow .key {
+  height: 30px;
+  font-size: 0.7rem;
 }
 
 .key.hot {
@@ -1247,6 +1253,11 @@ footer {
   }
 
   .key.mod {
+    font-size: 0.5rem;
+  }
+
+  .frow .key {
+    height: 20px;
     font-size: 0.5rem;
   }
 

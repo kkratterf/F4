@@ -11,7 +11,7 @@ final class StatusItemController: NSObject {
     private var shortcut: String
 
     /// - Parameters:
-    ///   - shortcut: shown next to "Open F4", e.g. "⌘⇧M".
+    ///   - shortcut: shown next to "Open F4", e.g. "F4".
     ///   - onCheckForUpdates: nil in builds where the updater is unavailable,
     ///     which leaves the menu item out entirely.
     init(
@@ -27,11 +27,28 @@ final class StatusItemController: NSObject {
         self.onCheckForUpdates = onCheckForUpdates
         self.shortcut = shortcut
         super.init()
-        if let button = statusItem.button {
-            button.image = NSImage(systemSymbolName: "face.smiling", accessibilityDescription: "F4")
-            button.image?.isTemplate = true
-        }
+        statusItem.button?.image = Self.keycapImage()
         update(shortcut: shortcut)
+    }
+
+    /// The F4 keycap, the app's logo, as a template image: a filled key with
+    /// "F4" cut out of it, so it follows the menu bar's colour.
+    private static func keycapImage() -> NSImage {
+        let image = NSImage(size: NSSize(width: 20, height: 15), flipped: false) { rect in
+            NSColor.black.setFill()
+            NSBezierPath(roundedRect: rect.insetBy(dx: 1, dy: 0.5), xRadius: 4, yRadius: 4).fill()
+            let label = NSAttributedString(string: "F4", attributes: [
+                .font: NSFont.systemFont(ofSize: 10, weight: .heavy),
+                .foregroundColor: NSColor.black,
+            ])
+            let size = label.size()
+            NSGraphicsContext.current?.compositingOperation = .destinationOut
+            label.draw(at: NSPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2))
+            return true
+        }
+        image.isTemplate = true
+        image.accessibilityDescription = "F4"
+        return image
     }
 
     /// Shows a new shortcut in the tooltip and the menu.

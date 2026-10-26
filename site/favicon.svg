@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="F4, basito">
-  <rect width="512" height="512" rx="114" fill="#FFC43D"/>
-  <g transform="translate(0 -6) scale(0.98) translate(5 5)">
-    <ellipse cx="256" cy="267" rx="140" ry="163" fill="#FAE0C4" stroke="#3D291F" stroke-width="9"/>
-    <path d="M106.0 168.0 L107.3 155.9 L111.1 143.9 L117.4 132.4 L126.1 121.5 L137.0 111.4 L149.9 102.2 L164.7 94.2 L181.0 87.5 L198.6 82.1 L217.2 78.2 L236.4 75.8 L256.0 75.0 L275.6 75.8 L294.8 78.2 L313.4 82.1 L331.0 87.5 L347.3 94.2 L362.1 102.2 L375.0 111.4 L385.9 121.5 L394.6 132.4 L400.9 143.9 L404.7 155.9 L406.0 168.0Z" fill="#5C4029"/>
-    <path d="M161.9 196.3 L163.8 192.7 L165.9 189.4 L168.4 186.3 L171.2 183.5 L174.2 180.9 L177.4 178.6 L180.9 176.6 L184.5 175.0 L188.2 173.7 L192.1 172.7 L196.0 172.2 L200.0 172.0 L204.0 172.2 L207.9 172.7 L211.8 173.7 L215.5 175.0 L219.1 176.6 L222.6 178.6 L225.8 180.9 L228.8 183.5 L231.6 186.3 L234.1 189.4 L236.2 192.7 L238.1 196.3" fill="none" stroke="#3D291F" stroke-width="13" stroke-linecap="round"/><path d="M273.9 196.3 L275.8 192.7 L277.9 189.4 L280.4 186.3 L283.2 183.5 L286.2 180.9 L289.4 178.6 L292.9 176.6 L296.5 175.0 L300.2 173.7 L304.1 172.7 L308.0 172.2 L312.0 172.0 L316.0 172.2 L319.9 172.7 L323.8 173.7 L327.5 175.0 L331.1 176.6 L334.6 178.6 L337.8 180.9 L340.8 183.5 L343.6 186.3 L346.1 189.4 L348.2 192.7 L350.1 196.3" fill="none" stroke="#3D291F" stroke-width="13" stroke-linecap="round"/><ellipse cx="200" cy="265" rx="37" ry="39" fill="#fff" stroke="#3D291F" stroke-width="9"/><circle cx="200" cy="267" r="12" fill="#1F1F1F"/><ellipse cx="312" cy="265" rx="37" ry="39" fill="#fff" stroke="#3D291F" stroke-width="9"/><circle cx="312" cy="267" r="12" fill="#1F1F1F"/>
-    <ellipse cx="256" cy="371" rx="24" ry="25" fill="#782929" stroke="#3D291F" stroke-width="9"/>
-  </g>
-</svg>

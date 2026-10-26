@@ -21,6 +21,11 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
+                if settings.toggleShortcut.needsFn {
+                    Text("On this Mac the F-keys control the system first, so hold fn with the key. To press it alone, turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
                 Toggle("Open F4 at login", isOn: Binding(
                     get: { loginItem.isEnabled },
                     set: { loginItem.setEnabled($0) }
