@@ -66,6 +66,7 @@ In the panel:
 | --- | --- |
 | Typing | Fuzzy search on file names and category (subfolder) names: each word of the query must appear with its letters in order, not necessarily together ("tif" finds "this is fine"); case, accents, `-`, `_` and `.` are ignored |
 | Arrow keys | Move the selection in the grid |
+| Tab / Shift-Tab, ⌘1 ⌘2 ⌘3 | Switch between the All, GIFs and Stickers tabs (remembered between launches). Stickers are PNG and WebP files and anything inside a top-level `Stickers` folder; GIFs are the other GIFs; JPEGs show only in All. Search filters inside the current tab |
 | Enter, or a click | Copy the selected meme and close the panel |
 | Escape, or a click outside | Close the panel |
 | Command-D | Add the selected meme to Favourites, or remove it |

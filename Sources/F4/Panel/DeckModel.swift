@@ -11,6 +11,14 @@ final class DeckModel: ObservableObject {
     @Published var query = "" {
         didSet { if query != oldValue { refresh() } }
     }
+    /// The tab the panel shows. Remembered between launches.
+    @Published var tab: MemeTab {
+        didSet {
+            guard tab != oldValue else { return }
+            defaults.set(tab.rawValue, forKey: Self.tabKey)
+            refresh()
+        }
+    }
     @Published private(set) var results: [Meme] = []
     /// Index into `results`. Reset to the best match whenever the results change.
     @Published var selection = 0
@@ -24,11 +32,15 @@ final class DeckModel: ObservableObject {
 
     let library: MemeLibrary
     let usage: UsageStore
+    private let defaults: UserDefaults
+    private static let tabKey = "panelTab"
     private var cancellables: Set<AnyCancellable> = []
 
-    init(library: MemeLibrary, usage: UsageStore) {
+    init(library: MemeLibrary, usage: UsageStore, defaults: UserDefaults = .standard) {
         self.library = library
         self.usage = usage
+        self.defaults = defaults
+        tab = defaults.string(forKey: Self.tabKey).flatMap(MemeTab.init(rawValue:)) ?? .all
         // The publishers fire before the new value is stored; refresh on the next turn.
         library.$memes.dropFirst().map { _ in () }
             .merge(with: usage.$favourites.dropFirst().map { _ in () })
@@ -49,6 +61,11 @@ final class DeckModel: ObservableObject {
         return true
     }
 
+    /// Tab and ⇧Tab: the next or previous tab.
+    func cycleTab(backwards: Bool) {
+        tab = tab.next(backwards: backwards)
+    }
+
     /// Feeds every key press in the panel to the Konami code detector.
     func feedKonami(_ key: KonamiCode.Key) {
         guard konami.feed(key) else { return }
@@ -66,26 +83,27 @@ final class DeckModel: ObservableObject {
         openCount += 1
     }
 
-    /// Recomputes the results: favourites and recents first while the query
-    /// is empty, best fuzzy matches otherwise.
+    /// Recomputes the results from the memes of the current tab: favourites
+    /// and recents first while the query is empty, best fuzzy matches otherwise.
     private func refresh(keepSelection: Bool = false) {
         let selected = selectedMeme
         let egg = query.isEmpty && konamiActive ? EasterEggs.konami : EasterEggs.match(query)
         if easterEgg != egg { easterEgg = egg }
-        let arranged = { MemeOrdering.arrange(self.library.memes, favourites: self.usage.favourites, recents: self.usage.recents) }
+        let memes = tab.filter(library.memes)
+        let arranged = { MemeOrdering.arrange(memes, favourites: self.usage.favourites, recents: self.usage.recents) }
         if let egg, egg.showsAllMemes {
             switch egg.effect {
             case .favouritesOnly:
                 results = arranged().filter { usage.favourites.contains($0.url) }
             case .shuffle:
-                results = library.memes.shuffled()
+                results = memes.shuffled()
             default:
                 results = arranged()
             }
         } else if query.trimmingCharacters(in: .whitespaces).isEmpty {
             results = arranged()
         } else {
-            results = FuzzySearch.filter(library.memes, query: query)
+            results = FuzzySearch.filter(memes, query: query)
         }
         if keepSelection, let selected, let index = results.firstIndex(of: selected) {
             selection = index
