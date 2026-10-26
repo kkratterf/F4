@@ -19,7 +19,7 @@ final class MemeScannerTests: XCTestCase {
     }
 
     func testKeepsOnlySupportedImages() throws {
-        for name in ["a.gif", "b.PNG", "c.jpg", "d.jpeg", "e.mp4", "notes.txt", ".hidden.gif"] {
+        for name in ["a.gif", "b.PNG", "c.jpg", "d.jpeg", "e.webp", "f.mp4", "notes.txt", ".hidden.gif"] {
             try touch(name)
         }
         try FileManager.default.createDirectory(
@@ -27,8 +27,8 @@ final class MemeScannerTests: XCTestCase {
             withIntermediateDirectories: true
         )
         let memes = try MemeScanner.scan(folder: folder)
-        XCTAssertEqual(memes.map(\.url.lastPathComponent), ["a.gif", "b.PNG", "c.jpg", "d.jpeg"])
-        XCTAssertEqual(memes.map(\.kind), [.gif, .png, .jpeg, .jpeg])
+        XCTAssertEqual(memes.map(\.url.lastPathComponent), ["a.gif", "b.PNG", "c.jpg", "d.jpeg", "e.webp"])
+        XCTAssertEqual(memes.map(\.kind), [.gif, .png, .jpeg, .jpeg, .webp])
     }
 
     func testSortsLikeFinder() throws {

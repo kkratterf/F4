@@ -6,7 +6,7 @@ Key facts:
 
 - The default shortcut is Command-Shift-M, from any app; it can be changed in Settings. The panel floats above everything, including full-screen apps, and has no Dock icon (the app lives in the menu bar).
 - It reads one folder, `~/Pictures/Memes` by default or any folder picked in Settings, and watches it with FSEvents so new files appear without a restart. Subfolders become categories you can search.
-- Supported files today: GIF, PNG, JPEG. WebP, HEIC and short videos are planned.
+- Supported files today: GIF, PNG, JPEG, WebP (WhatsApp and Telegram stickers). HEIC and short videos are planned.
 - Type to search (fuzzy, on file names), arrow keys to move in the grid, Enter to copy, Escape to close. Favourites and recently used memes are ranked first.
 - Copying writes the file URL (`public.file-url`) and the raw file bytes under the file's UTI, never a decoded `NSImage`, so GIFs stay animated when pasted into Slack, Discord or Telegram.
 - Auto-paste (a simulated Command-V into the frontmost app) is optional and the only feature that needs the Accessibility permission; everything else works without any permission, because the global shortcut uses Carbon `RegisterEventHotKey`.

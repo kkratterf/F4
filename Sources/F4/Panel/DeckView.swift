@@ -84,7 +84,7 @@ struct DeckView: View {
                 VStack(spacing: 4) {
                     Text(verbatim: "F4. Basito.")
                         .fontWeight(.semibold)
-                    Text("Drop GIFs, PNGs and JPEGs into \(library.folder.path(percentEncoded: false)).")
+                    Text("Drop GIFs, stickers (PNG, WebP) and JPEGs into \(library.folder.path(percentEncoded: false)).")
                 }
             }
         } else if model.results.isEmpty {
