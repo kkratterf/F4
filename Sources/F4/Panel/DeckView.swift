@@ -38,6 +38,10 @@ struct DeckView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
 
+            TabBar(selection: $model.tab)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 10)
+
             if let egg = model.easterEgg {
                 Text(verbatim: egg.banner)
                     .font(.callout.weight(.semibold))
@@ -149,6 +153,8 @@ struct DeckView: View {
                 } description: {
                     Text(verbatim: "F4. Basito.")
                 }
+            } else if model.query.trimmingCharacters(in: .whitespaces).isEmpty {
+                emptyTab
             } else {
                 ContentUnavailableView.search(text: model.query)
             }
@@ -160,6 +166,27 @@ struct DeckView: View {
                 }
                 effects(on: grid)
             }
+        }
+    }
+
+    /// A tab with nothing in it while the meme folder has memes.
+    @ViewBuilder
+    private var emptyTab: some View {
+        switch model.tab {
+        case .gifs:
+            ContentUnavailableView(
+                "No GIFs yet",
+                systemImage: "play.square.stack",
+                description: Text("Put GIFs in \(library.folder.path(percentEncoded: false)).")
+            )
+        case .stickers:
+            ContentUnavailableView(
+                "No stickers yet",
+                systemImage: "seal",
+                description: Text("Save WhatsApp or Telegram stickers (WebP, PNG) in a Stickers folder inside \(library.folder.path(percentEncoded: false)).")
+            )
+        case .all:
+            ContentUnavailableView.search(text: model.query)
         }
     }
 
@@ -220,6 +247,45 @@ struct DeckView: View {
     }
 }
 
+/// All · GIFs · Stickers, under the search field. Tab and ⌘1–3 switch too
+/// (`PanelController`).
+private struct TabBar: View {
+    @Binding var selection: MemeTab
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(MemeTab.allCases, id: \.self) { tab in
+                Button {
+                    selection = tab
+                } label: {
+                    Text(Self.title(tab))
+                        .font(.system(size: 12, weight: .semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(
+                            selection == tab ? Color.accentColor.opacity(0.25) : Color.clear,
+                            in: Capsule()
+                        )
+                        .foregroundStyle(selection == tab ? .primary : .secondary)
+                        .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(selection == tab ? .isSelected : [])
+            }
+            Spacer()
+        }
+    }
+
+    private static func title(_ tab: MemeTab) -> LocalizedStringKey {
+        switch tab {
+        case .all: return "All"
+        case .gifs: return "GIFs"
+        case .stickers: return "Stickers"
+        }
+    }
+}
+
+/// The translucent HUD material behind the panel content.
 /// A key as the footer shows it: "↵", "⌘D".
 private struct KeyHint: View {
     let key: String

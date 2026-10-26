@@ -21,6 +21,16 @@
         }
       }
     },
+    "All": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti"
+          }
+        }
+      }
+    },
     "Allow F4 in System Settings → General → Login Items.": {
       "localizations": {
         "it": {
@@ -195,6 +205,16 @@
         }
       }
     },
+    "GIFs": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GIF"
+          }
+        }
+      }
+    },
     "General": {
       "localizations": {
         "it": {
@@ -215,12 +235,32 @@
         }
       }
     },
+    "No GIFs yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessuna GIF"
+          }
+        }
+      }
+    },
     "No memes yet": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Ancora nessun meme"
+          }
+        }
+      }
+    },
+    "No stickers yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessuno sticker"
           }
         }
       }
@@ -315,6 +355,16 @@
         }
       }
     },
+    "Put GIFs in %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metti le GIF in %@."
+          }
+        }
+      }
+    },
     "Quit F4": {
       "localizations": {
         "it": {
@@ -341,6 +391,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ripristina"
+          }
+        }
+      }
+    },
+    "Save WhatsApp or Telegram stickers (WebP, PNG) in a Stickers folder inside %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salva gli sticker di WhatsApp o Telegram (WebP, PNG) in una cartella Stickers dentro %@."
           }
         }
       }
@@ -401,6 +461,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spazio"
+          }
+        }
+      }
+    },
+    "Stickers": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sticker"
           }
         }
       }
