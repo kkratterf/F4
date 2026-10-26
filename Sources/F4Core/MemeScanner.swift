@@ -12,7 +12,7 @@ public enum MemeScanner {
     /// How deep subfolders are scanned (the folder itself is depth 0).
     public static let maxDepth = 4
 
-    /// The GIF, PNG and JPEG files in `folder` and its subfolders (up to
+    /// The GIF, PNG, JPEG and WebP files in `folder` and its subfolders (up to
     /// `maxDepth`), each subfolder becoming the meme's category. Top-level
     /// memes come first, then each subfolder; names are sorted the way Finder
     /// sorts them. Hidden files and folders, packages and other file types are

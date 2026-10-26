@@ -114,12 +114,12 @@
         }
       }
     },
-    "Drop GIFs, PNGs and JPEGs into %@.": {
+    "Drop GIFs, stickers (PNG, WebP) and JPEGs into %@.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trascina GIF, PNG e JPEG in %@."
+            "value": "Trascina GIF, sticker (PNG, WebP) e JPEG in %@."
           }
         }
       }
@@ -154,12 +154,12 @@
         }
       }
     },
-    "F4 shows the GIF, PNG and JPEG files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.": {
+    "F4 shows the GIF, PNG, JPEG and WebP files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "F4 mostra i file GIF, PNG e JPEG di questa cartella e delle sue sottocartelle, e si aggiorna quando ne aggiungi o togli uno. I nomi delle sottocartelle funzionano come categorie nella ricerca."
+            "value": "F4 mostra i file GIF, PNG, JPEG e WebP di questa cartella e delle sue sottocartelle, e si aggiorna quando ne aggiungi o togli uno. I nomi delle sottocartelle funzionano come categorie nella ricerca."
           }
         }
       }

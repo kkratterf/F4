@@ -154,7 +154,7 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 ## FAQ
 
-**Which files does it understand?** GIF, PNG and JPEG today. WebP, HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
+**Which files does it understand?** GIF, PNG, JPEG and WebP (WhatsApp and Telegram stickers). HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
 
 **Where do the memes come from?** From you. F4 ships with no images at all: no stills, no GIF packs, nothing copyrighted.
 

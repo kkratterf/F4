@@ -56,7 +56,7 @@ F4 has no Dock icon and no window at launch. Press F4 (fn-F4 on a Mac keyboard, 
 
 ## Use
 
-1. Put memes in a folder: `~/Pictures/Memes` by default, or any folder chosen in Settings. Supported files: GIF, PNG, JPEG (`.gif`, `.png`, `.jpg`, `.jpeg`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
+1. Put memes in a folder: `~/Pictures/Memes` by default, or any folder chosen in Settings. Supported files: GIF, PNG, JPEG, WebP (`.gif`, `.png`, `.jpg`, `.jpeg`, `.webp`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
 2. Press F4 (fn-F4 on a Mac keyboard) in any app. The panel appears centred on the screen with the mouse, above every window, including full-screen apps.
 3. Type to search, then press Enter. The meme is on the clipboard; paste it with Command-V wherever you want it.
 
@@ -78,7 +78,7 @@ New, renamed or deleted files in the folder appear without a restart: F4 watches
 
 ### How copying works, and why GIFs stay animated
 
-F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and its raw bytes under the file's type (`com.compuserve.gif`, `public.png`, `public.jpeg`). It never puts a decoded image there, which would flatten a GIF to one frame. So Slack, Discord, Telegram, WhatsApp Desktop, Messages, Mail and most chat apps paste the animated GIF. An app that accepts only plain images may paste the first frame; that is the app's limit.
+F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and its raw bytes under the file's type (`com.compuserve.gif`, `public.png`, `public.jpeg`, `org.webmproject.webp`). It never puts a decoded image there, which would flatten a GIF to one frame. So Slack, Discord, Telegram, WhatsApp Desktop, Messages, Mail and most chat apps paste the animated GIF. An app that accepts only plain images may paste the first frame; that is the app's limit.
 
 ### Menu bar menu
 
@@ -148,7 +148,7 @@ open dist/F4.app
 
 ## What F4 does not do (yet)
 
-- No WebP, HEIC, PNG sequences or video files; those are planned.
+- No HEIC, PNG sequences or video files; those are planned. Animated WebP stickers show their first frame in the grid and still paste animated.
 - No cloud sync, no meme search on the internet, no bundled meme packs: F4 shows only the user's own files.
 - One meme folder at a time (with subfolders).
 - No tags beyond folder names, no OCR of the text inside images.
