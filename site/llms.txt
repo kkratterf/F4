@@ -24,11 +24,12 @@ Key facts:
 
 ## Docs
 
+- [Full reference](https://kkratterf.github.io/f4/llms-full.txt): every setting, key, default, file location, install option and troubleshooting step, in one plain-text file
 - [README](https://github.com/kkratterf/f4/blob/main/README.md): every feature, settings, shortcuts, install, privacy, FAQ, build from source
 - [Releases](https://github.com/kkratterf/f4/releases): downloads and release notes
 - [Issues](https://github.com/kkratterf/f4/issues): bugs, ideas and the roadmap (labels mark area, priority and version)
 
 ## Optional
 
-- [Contributing rules](https://github.com/kkratterf/f4/blob/main/AGENTS.md): build, test, commit format, the rules a change must respect. Written for AI agents and humans alike.
+- [AGENTS.md](https://github.com/kkratterf/f4/blob/main/AGENTS.md): for agents that change F4. The code map, build and test, CI, the rules a change must respect, commit and PR format, how a release is cut. Written for AI agents and humans alike.
 - [Raycast extension](https://github.com/kkratterf/f4/tree/main/raycast)
