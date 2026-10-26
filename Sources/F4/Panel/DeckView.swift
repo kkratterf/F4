@@ -7,6 +7,8 @@ struct DeckView: View {
     @ObservedObject var library: MemeLibrary
     /// The primary action: copy the meme and hide the panel.
     let onPick: (Meme) -> Void
+    /// The + button: pick files to add.
+    let onAdd: () -> Void
 
     @FocusState private var searchFocused: Bool
     /// Degrees the panel content has spun for "do a barrel roll".
@@ -38,11 +40,19 @@ struct DeckView: View {
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
 
-            TabBar(selection: $model.tab)
+            TabBar(selection: $model.tab, onAdd: onAdd)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 10)
 
-            if let egg = model.easterEgg {
+            if let notice = model.notice {
+                Text(verbatim: notice)
+                    .font(.callout.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 5)
+                    .background(.green.opacity(0.2), in: Capsule())
+                    .padding(.bottom, 10)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            } else if let egg = model.easterEgg {
                 Text(verbatim: egg.banner)
                     .font(.callout.weight(.semibold))
                     .padding(.horizontal, 12)
@@ -63,6 +73,7 @@ struct DeckView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.spring(duration: 0.3), value: model.easterEgg)
+        .animation(.spring(duration: 0.3), value: model.notice)
         .rotationEffect(.degrees(roll))
         .background(VisualEffectBackground(cornerRadius: FloatingPanel.cornerRadius))
         .clipShape(panelShape)
@@ -143,7 +154,7 @@ struct DeckView: View {
                 VStack(spacing: 4) {
                     Text(verbatim: "F4. Basito.")
                         .fontWeight(.semibold)
-                    Text("Drop GIFs, stickers (PNG, WebP) and JPEGs into \(library.folder.path(percentEncoded: false)).")
+                    Text("Paste a GIF, a sticker or a link with ⌘V, drop files here, or click Add. They are saved in \(library.folder.path(percentEncoded: false)).")
                 }
             }
         } else if model.results.isEmpty {
@@ -177,13 +188,13 @@ struct DeckView: View {
             ContentUnavailableView(
                 "No GIFs yet",
                 systemImage: "play.square.stack",
-                description: Text("Put GIFs in \(library.folder.path(percentEncoded: false)).")
+                description: Text("Paste a GIF or a GIPHY link with ⌘V, drop one here, or click Add.")
             )
         case .stickers:
             ContentUnavailableView(
                 "No stickers yet",
                 systemImage: "seal",
-                description: Text("Save WhatsApp or Telegram stickers (WebP, PNG) in a Stickers folder inside \(library.folder.path(percentEncoded: false)).")
+                description: Text("In WhatsApp or Telegram, right-click a sticker and copy it, then press ⌘V here. Or drop stickers on the panel.")
             )
         case .all:
             ContentUnavailableView.search(text: model.query)
@@ -251,6 +262,7 @@ struct DeckView: View {
 /// (`PanelController`).
 private struct TabBar: View {
     @Binding var selection: MemeTab
+    let onAdd: () -> Void
 
     var body: some View {
         HStack(spacing: 4) {
@@ -273,6 +285,12 @@ private struct TabBar: View {
                 .accessibilityAddTraits(selection == tab ? .isSelected : [])
             }
             Spacer()
+            Button(action: onAdd) {
+                Label("Add", systemImage: "plus")
+                    .font(.system(size: 12, weight: .semibold))
+            }
+            .buttonStyle(.borderless)
+            .help("Add GIFs and stickers. You can also paste them with ⌘V or drop them here.")
         }
     }
 
