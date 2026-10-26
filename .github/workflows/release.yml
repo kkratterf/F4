@@ -94,14 +94,19 @@ jobs:
         run: scripts/build-app.sh release
 
       - name: Build the DMG
-        run: scripts/build-dmg.sh
+        run: |
+          scripts/build-dmg.sh
+          # Same file under a name that never changes, so the website's Download
+          # button can link releases/latest/download/F4.dmg and always get the
+          # newest version.
+          cp "dist/F4-$VERSION.dmg" dist/F4.dmg
 
       - name: Checksums
         run: |
           cd dist
           test -f "F4-$VERSION.zip"
           test -f "F4-$VERSION.dmg"
-          shasum -a 256 "F4-$VERSION.zip" "F4-$VERSION.dmg" > SHA256SUMS.txt
+          shasum -a 256 "F4-$VERSION.zip" "F4-$VERSION.dmg" F4.dmg > SHA256SUMS.txt
           cat SHA256SUMS.txt
 
       - name: Sign the update for Sparkle
@@ -225,7 +230,7 @@ jobs:
             --title "$TAG" \
             --notes-file dist/notes.md \
             ${flags[@]+"${flags[@]}"} \
-            "dist/F4-$VERSION.zip" "dist/F4-$VERSION.dmg" dist/SHA256SUMS.txt
+            "dist/F4-$VERSION.zip" "dist/F4-$VERSION.dmg" dist/F4.dmg dist/SHA256SUMS.txt
 
       # After the release, so the appcast and the cask never point at missing assets.
       - name: Push the updates to main
