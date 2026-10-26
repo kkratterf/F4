@@ -121,7 +121,7 @@ It quits F4, deletes `F4.app` and its settings (`defaults delete com.kkratterf.f
 
 ## Troubleshooting
 
-- "Nothing happens when I press F4", or F4 opens Spotlight or Launchpad: on a Mac keyboard the top row sends media keys unless fn is held. Press fn-F4, or turn on "Use F1, F2, etc. keys as standard function keys" in System Settings > Keyboard > Keyboard Shortcuts > Function Keys, or record another shortcut in Settings > General (Settings shows this hint under the shortcut). Also check F4 is running (the F4 key icon in the menu bar); another app may already own the shortcut.
+- "Nothing happens when I press F4", or F4 opens Spotlight or Launchpad: on a Mac keyboard the top row sends media keys unless fn is held. Press fn-F4, or turn on "Use F1, F2, etc. keys as standard function keys" in System Settings > Keyboard > Keyboard Shortcuts > Function Keys, or record another shortcut in Settings > General (F4 reads that setting: when fn is needed, Settings shows this hint under the shortcut and the menu shows the shortcut as "fn F4"). Also check F4 is running (the F4 key icon in the menu bar); another app may already own the shortcut.
 - Upgrading from 0.2 or earlier: the old default was Command-Shift-M. A shortcut the user recorded themselves is kept; otherwise the new default, F4, applies.
 - "The panel says No memes yet": the folder is empty, missing, or holds only unsupported files. Open it from the menu (Open Meme Folder) or pick another in Settings > Meme folder.
 - "The GIF pastes as a still image": the receiving app takes only images. Most chat apps paste the animation; try pasting into a message field rather than an image editor.

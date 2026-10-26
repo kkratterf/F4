@@ -11,7 +11,8 @@ struct HotKeyCombo: Equatable {
     /// The F4 key alone, the default shortcut that shows and hides the panel.
     /// On a Mac keyboard F4 is a media key (Spotlight or Launchpad) unless the
     /// user holds fn or uses F1, F2, etc. as standard function keys: Carbon
-    /// only sees the press as F4 then. Settings says so under the recorder.
+    /// only sees the press as F4 then. fn is not a Carbon modifier, so fn F4
+    /// fires the same hot key; `displayString` shows "fn F4" when it is needed.
     static let toggleDefault = HotKeyCombo(keyCode: ShortcutRules.f4KeyCode, modifiers: 0)
 
     init(keyCode: Int, modifiers: UInt32) {
@@ -40,8 +41,23 @@ struct HotKeyCombo: Equatable {
         modifiers == 0 && ShortcutRules.isFunctionKey(Int(keyCode))
     }
 
-    /// Human readable form in the macOS order, e.g. "⌃⌥⌘P".
+    /// Whether the top row of a Mac keyboard sends F1, F2, ... without fn
+    /// ("Use F1, F2, etc. keys as standard function keys"). Read from the
+    /// global defaults domain, which needs no permission.
+    static var functionKeysAreStandard: Bool {
+        UserDefaults.standard.bool(forKey: "com.apple.keyboard.fnState")
+    }
+
+    /// A bare function key that, on this Mac, only reaches F4 with fn held:
+    /// without it the key opens Spotlight, Launchpad or changes the volume.
+    var needsFn: Bool {
+        isBareFunctionKey && !HotKeyCombo.functionKeysAreStandard
+    }
+
+    /// Human readable form in the macOS order, e.g. "⌃⌥⌘P", or "fn F4" when
+    /// the key needs fn on this Mac.
     var displayString: String {
+        if needsFn { return "fn " + HotKeyCombo.keyName(Int(keyCode)) }
         var text = ""
         if modifiers & UInt32(controlKey) != 0 { text += "⌃" }
         if modifiers & UInt32(optionKey) != 0 { text += "⌥" }

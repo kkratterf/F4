@@ -235,12 +235,12 @@
         }
       }
     },
-    "On a Mac keyboard, hold fn and press %@, or turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.": {
+    "On this Mac the F-keys control the system first, so hold fn with the key. To press it alone, turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Su una tastiera Mac tieni premuto fn e premi %@, oppure attiva “Usa i tasti F1, F2 ecc. come tasti funzione standard” in Impostazioni di Sistema › Tastiera › Abbreviazioni da tastiera › Tasti funzione."
+            "value": "Su questo Mac i tasti F controllano prima il sistema, quindi tieni premuto fn insieme al tasto. Per premerlo da solo, attiva “Usa i tasti F1, F2 ecc. come tasti funzione standard” in Impostazioni di Sistema › Tastiera › Abbreviazioni da tastiera › Tasti funzione."
           }
         }
       }

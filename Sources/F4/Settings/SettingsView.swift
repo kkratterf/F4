@@ -21,8 +21,8 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
-                if settings.toggleShortcut.isBareFunctionKey {
-                    Text("On a Mac keyboard, hold fn and press \(settings.toggleShortcut.displayString), or turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.")
+                if settings.toggleShortcut.needsFn {
+                    Text("On this Mac the F-keys control the system first, so hold fn with the key. To press it alone, turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
