@@ -51,8 +51,9 @@ final class PanelController: NSObject, NSWindowDelegate {
         panel.onCancel = { [weak self] in self?.hide() }
     }
 
-    /// Copies the meme and gets out of the way, so the user can paste right away.
-    private func pick(_ meme: Meme) {
+    /// Copies the meme and gets out of the way, so the user can paste right
+    /// away. Also used by the recent memes in the menu bar menu.
+    func pick(_ meme: Meme) {
         guard MemeClipboard.copy(meme) else {
             hide()
             return

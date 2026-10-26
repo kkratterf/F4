@@ -535,6 +535,16 @@
         }
       }
     },
+    "Recent Memes": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meme recenti"
+          }
+        }
+      }
+    },
     "Remove from Favourites": {
       "localizations": {
         "it": {
@@ -591,6 +601,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scorciatoia: %@"
+          }
+        }
+      }
+    },
+    "Show F4 in the menu bar": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra F4 nella barra dei menu"
           }
         }
       }
@@ -661,6 +681,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Questa build non ha una chiave GIPHY. Creane una gratis su developers.giphy.com e incollala qui per cercare su GIPHY."
+          }
+        }
+      }
+    },
+    "To get back here, open F4 again from Finder or Spotlight.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per tornare qui, riapri F4 dal Finder o da Spotlight."
           }
         }
       }

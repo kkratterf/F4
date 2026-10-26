@@ -35,6 +35,12 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                Toggle("Show F4 in the menu bar", isOn: $settings.showInMenuBar)
+                if !settings.showInMenuBar {
+                    Text("To get back here, open F4 again from Finder or Spotlight.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             Section("Paste") {
                 Toggle("Paste into the front app after copying", isOn: Binding(
