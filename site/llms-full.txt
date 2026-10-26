@@ -9,7 +9,7 @@
 - Website: https://kkratterf.github.io/f4/
 - Bundle identifier: `com.kkratterf.f4`. The app is `F4.app`; it has no Dock icon and lives in the menu bar.
 - Languages: English, and Italian when macOS runs in Italian.
-- Privacy: no analytics, no account, no server. Files are read locally. The only network request is the update check against https://kkratterf.github.io/f4/appcast.xml, which can be turned off.
+- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://kkratterf.github.io/f4/appcast.xml (can be turned off) and to download an image link the user pastes or drops into the panel.
 - Permissions: none needed. Only the optional auto-paste asks for Accessibility.
 - The name comes from "F4, basito", the stunned face of Stanis in the Italian TV series Boris.
 
@@ -69,6 +69,9 @@ In the panel:
 | Tab / Shift-Tab, ⌘1 ⌘2 ⌘3 | Switch between the All, GIFs and Stickers tabs (remembered between launches). Stickers are PNG and WebP files and anything inside a top-level `Stickers` folder; GIFs are the other GIFs; JPEGs show only in All. Search filters inside the current tab |
 | Enter, or a click | Copy the selected meme and close the panel |
 | Escape, or a click outside | Close the panel |
+| ⌘V with an empty search field | Add what the clipboard holds: an image (for example a WhatsApp or Telegram sticker copied with right-click → Copy), image files copied in Finder, or a link to a GIF or image (a GIPHY page link becomes its GIF). It is saved in the meme folder, GIFs in `GIFs/`, PNG/WebP and anything added in the Stickers tab in `Stickers/`, JPEG at the top level, never overwriting a file, and selected. Any other text pastes in the search field |
+| Drop on the panel | The same, for files, stickers dragged out of an app, images and links. Press the shortcut while dragging to open the panel under the pointer |
+| Add (top right) | A file picker for GIF, PNG, JPEG and WebP files |
 | Command-D | Add the selected meme to Favourites, or remove it |
 | Right-click a meme | Copy, Add to Favourites / Remove from Favourites, Show in Finder |
 | The global shortcut again | Hide the panel |

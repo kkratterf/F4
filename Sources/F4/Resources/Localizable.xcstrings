@@ -11,12 +11,52 @@
         }
       }
     },
+    "Add": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi"
+          }
+        }
+      }
+    },
+    "Add GIFs and stickers. You can also paste them with ⌘V or drop them here.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi GIF e sticker. Puoi anche incollarli con ⌘V o trascinarli qui."
+          }
+        }
+      }
+    },
     "Add to Favourites": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Aggiungi ai preferiti"
+          }
+        }
+      }
+    },
+    "Added %@ memes to %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ meme aggiunti in %2$@"
+          }
+        }
+      }
+    },
+    "Added to %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiunto in %@"
           }
         }
       }
@@ -84,6 +124,16 @@
         }
       }
     },
+    "Choose GIFs and stickers to add to F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli le GIF e gli sticker da aggiungere a F4"
+          }
+        }
+      }
+    },
     "Choose the folder with your memes": {
       "localizations": {
         "it": {
@@ -124,12 +174,12 @@
         }
       }
     },
-    "Drop GIFs, stickers (PNG, WebP) and JPEGs into %@.": {
+    "Couldn't download the image: %@": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trascina GIF, sticker (PNG, WebP) e JPEG in %@."
+            "value": "Impossibile scaricare l'immagine: %@"
           }
         }
       }
@@ -154,6 +204,16 @@
         }
       }
     },
+    "F4 can only add GIF, PNG, JPEG and WebP images.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 può aggiungere solo immagini GIF, PNG, JPEG e WebP."
+          }
+        }
+      }
+    },
     "F4 needs Accessibility access to press ⌘V for you. Until then it only copies.": {
       "localizations": {
         "it": {
@@ -174,13 +234,13 @@
         }
       }
     },
-    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. This is the only request F4 makes to the network.": {
+    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online to download a link you paste or drop.": {
       "extractionState": "manual",
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "F4 si aggiorna da solo: le nuove versioni arrivano dal feed delle release e si installano con un clic. È l'unica richiesta che F4 fa alla rete."
+            "value": "F4 si aggiorna da sola: le nuove versioni vengono scaricate dal feed delle release e installate in un clic. Oltre a questo, F4 va in rete solo per scaricare un link che incolli o trascini."
           }
         }
       }
@@ -221,6 +281,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Generali"
+          }
+        }
+      }
+    },
+    "In WhatsApp or Telegram, right-click a sticker and copy it, then press ⌘V here. Or drop stickers on the panel.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In WhatsApp o Telegram fai clic destro su uno sticker e copialo, poi premi ⌘V qui. Oppure trascina gli sticker sul pannello."
           }
         }
       }
@@ -335,6 +405,26 @@
         }
       }
     },
+    "Paste a GIF or a GIPHY link with ⌘V, drop one here, or click Add.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla una GIF o un link di GIPHY con ⌘V, trascinala qui o fai clic su Aggiungi."
+          }
+        }
+      }
+    },
+    "Paste a GIF, a sticker or a link with ⌘V, drop files here, or click Add. They are saved in %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla una GIF, uno sticker o un link con ⌘V, trascina i file qui o fai clic su Aggiungi. Vengono salvati in %@."
+          }
+        }
+      }
+    },
     "Paste into the front app after copying": {
       "localizations": {
         "it": {
@@ -351,16 +441,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Premi la scorciatoia…"
-          }
-        }
-      }
-    },
-    "Put GIFs in %@.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Metti le GIF in %@."
           }
         }
       }
@@ -391,16 +471,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ripristina"
-          }
-        }
-      }
-    },
-    "Save WhatsApp or Telegram stickers (WebP, PNG) in a Stickers folder inside %@.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Salva gli sticker di WhatsApp o Telegram (WebP, PNG) in una cartella Stickers dentro %@."
           }
         }
       }
@@ -502,6 +572,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usa ~/Immagini/Memes"
+          }
+        }
+      }
+    },
+    "sticker": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sticker"
+          }
+        }
+      }
+    },
+    "the file is larger than 50 MB": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "il file supera i 50 MB"
           }
         }
       }
