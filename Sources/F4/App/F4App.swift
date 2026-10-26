@@ -21,7 +21,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var statusItem: StatusItemController?
     private let settings = AppSettings.shared
-    private lazy var library = MemeLibrary(folder: settings.memeFolder)
+    private lazy var library = MemeLibrary(folder: settings.memeFolder, showsStarterPack: settings.showStarterPack)
     private lazy var settingsWindow = SettingsWindowController(settings: settings)
     private var cancellables: Set<AnyCancellable> = []
 
@@ -33,6 +33,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .dropFirst()
             .removeDuplicates()
             .sink { [weak self] url in self?.library.setFolder(url) }
+            .store(in: &cancellables)
+        settings.$showStarterPack
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] shows in self?.library.setShowsStarterPack(shows) }
             .store(in: &cancellables)
         let panel = PanelController(library: library, usage: UsageStore())
         self.panel = panel

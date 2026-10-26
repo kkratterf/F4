@@ -36,6 +36,12 @@ final class UsageStore: ObservableObject {
         defaults.set(favourites.map(\.path).sorted(), forKey: Key.favourites)
     }
 
+    /// Marks the file at `url` as a favourite (a GIPHY result just pinned).
+    func addFavourite(_ url: URL) {
+        favourites.insert(url)
+        defaults.set(favourites.map(\.path).sorted(), forKey: Key.favourites)
+    }
+
     func recordCopy(_ meme: Meme) {
         recents = MemeOrdering.recording(meme.url, in: recents)
         defaults.set(recents.map(\.path), forKey: Key.recents)

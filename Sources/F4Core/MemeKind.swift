@@ -5,6 +5,8 @@ public enum MemeKind: String, CaseIterable, Sendable {
     case gif
     case png
     case jpeg
+    /// WhatsApp and Telegram stickers.
+    case webp
 
     /// The kind for a file URL, from its extension (case-insensitive), or nil
     /// when the file is not a meme F4 handles.
@@ -13,6 +15,7 @@ public enum MemeKind: String, CaseIterable, Sendable {
         case "gif": self = .gif
         case "png": self = .png
         case "jpg", "jpeg": self = .jpeg
+        case "webp": self = .webp
         default: return nil
         }
     }
@@ -23,6 +26,7 @@ public enum MemeKind: String, CaseIterable, Sendable {
         case .gif: return "com.compuserve.gif"
         case .png: return "public.png"
         case .jpeg: return "public.jpeg"
+        case .webp: return "org.webmproject.webp"
         }
     }
 
@@ -36,6 +40,8 @@ public enum MemeKind: String, CaseIterable, Sendable {
         ["public.file-url", typeIdentifier]
     }
 
-    /// Whether the file can hold more than one frame.
+    /// Whether the grid plays the file on hover and badges it "GIF". An
+    /// animated WebP sticker shows its first frame and still pastes animated,
+    /// since the file itself is copied.
     public var isAnimated: Bool { self == .gif }
 }

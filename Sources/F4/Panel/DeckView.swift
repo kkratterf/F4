@@ -7,6 +7,12 @@ struct DeckView: View {
     @ObservedObject var library: MemeLibrary
     /// The primary action: copy the meme and hide the panel.
     let onPick: (Meme) -> Void
+    /// The + button: pick files to add.
+    let onAdd: () -> Void
+    /// Enter or a click on a GIPHY result: download it, copy it, hide the panel.
+    let onPickWeb: (Giphy.Result) -> Void
+    /// ⌘D or "Pin to F4" on a GIPHY result: save it in the meme folder as a favourite.
+    let onPinWeb: (Giphy.Result) -> Void
     /// The user drags the panel by its search bar or footer.
     let onDrag: (PanelDrag) -> Void
 
@@ -34,14 +40,30 @@ struct DeckView: View {
                     .font(.system(size: 24, weight: .regular))
                     .focused($searchFocused)
                     .onSubmit {
-                        if let meme = model.selectedMeme { onPick(meme) }
+                        if let meme = model.selectedMeme {
+                            onPick(meme)
+                        } else if let result = model.selectedWebResult {
+                            onPickWeb(result)
+                        }
                     }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
             .background(WindowDragArea(onDrag: onDrag))
 
-            if let egg = model.easterEgg {
+            TabBar(selection: $model.tab, onAdd: onAdd)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 10)
+
+            if let notice = model.notice {
+                Text(verbatim: notice)
+                    .font(.callout.weight(.semibold))
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 5)
+                    .background(.green.opacity(0.2), in: Capsule())
+                    .padding(.bottom, 10)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            } else if let egg = model.easterEgg {
                 Text(verbatim: egg.banner)
                     .font(.callout.weight(.semibold))
                     .padding(.horizontal, 12)
@@ -62,6 +84,7 @@ struct DeckView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .animation(.spring(duration: 0.3), value: model.easterEgg)
+        .animation(.spring(duration: 0.3), value: model.notice)
         .rotationEffect(.degrees(roll))
         .background(VisualEffectBackground(cornerRadius: FloatingPanel.cornerRadius))
         .clipShape(panelShape)
@@ -113,6 +136,32 @@ struct DeckView: View {
                         KeyHint(key: "↵")
                     }
                 }
+            } else if let result = model.selectedWebResult {
+                Text(verbatim: "GIPHY · \(result.name)")
+                    .lineLimit(1)
+                    .truncationMode(.middle)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 12)
+                Button {
+                    onPinWeb(result)
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Pin to F4")
+                        KeyHint(key: "⌘D")
+                    }
+                }
+                .keyboardShortcut("d", modifiers: .command)
+                Divider()
+                    .frame(height: 16)
+                Button {
+                    onPickWeb(result)
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Copy")
+                            .fontWeight(.medium)
+                        KeyHint(key: "↵")
+                    }
+                }
             } else {
                 Spacer()
             }
@@ -133,7 +182,7 @@ struct DeckView: View {
                 systemImage: "exclamationmark.triangle",
                 description: Text(error)
             )
-        } else if library.memes.isEmpty {
+        } else if library.memes.isEmpty && model.webResults.isEmpty {
             ContentUnavailableView {
                 VStack(spacing: 10) {
                     BasitoFace(size: 120, custom: library.customBasito)
@@ -143,16 +192,18 @@ struct DeckView: View {
                 VStack(spacing: 4) {
                     Text(verbatim: "F4. Basito.")
                         .fontWeight(.semibold)
-                    Text("Drop GIFs, PNGs and JPEGs into \(library.folder.path(percentEncoded: false)).")
+                    Text("Paste a GIF, a sticker or a link with ⌘V, drop files here, or click Add. They are saved in \(library.folder.path(percentEncoded: false)).")
                 }
             }
-        } else if model.results.isEmpty {
+        } else if model.results.isEmpty && model.webResults.isEmpty {
             if model.easterEgg?.effect == .basito {
                 ContentUnavailableView {
                     BasitoFace(size: 140, custom: library.customBasito)
                 } description: {
                     Text(verbatim: "F4. Basito.")
                 }
+            } else if model.query.trimmingCharacters(in: .whitespaces).isEmpty {
+                emptyTab
             } else {
                 ContentUnavailableView.search(text: model.query)
             }
@@ -164,6 +215,27 @@ struct DeckView: View {
                 }
                 effects(on: grid)
             }
+        }
+    }
+
+    /// A tab with nothing in it while the meme folder has memes.
+    @ViewBuilder
+    private var emptyTab: some View {
+        switch model.tab {
+        case .gifs:
+            ContentUnavailableView(
+                "No GIFs yet",
+                systemImage: "play.square.stack",
+                description: Text("Paste a GIF or a GIPHY link with ⌘V, drop one here, or click Add.")
+            )
+        case .stickers:
+            ContentUnavailableView(
+                "No stickers yet",
+                systemImage: "seal",
+                description: Text("In WhatsApp or Telegram, right-click a sticker and copy it, then press ⌘V here. Or drop stickers on the panel.")
+            )
+        case .all:
+            ContentUnavailableView.search(text: model.query)
         }
     }
 
@@ -206,24 +278,99 @@ struct DeckView: View {
                                 : LocalizedStringKey("Add to Favourites")) {
                                 model.usage.toggleFavourite(meme)
                             }
-                            Divider()
-                            Button("Show in Finder") {
-                                NSWorkspace.shared.activateFileViewerSelecting([meme.url])
+                            // Starter memes live inside the app bundle.
+                            if !library.isStarter(meme) {
+                                Divider()
+                                Button("Show in Finder") {
+                                    NSWorkspace.shared.activateFileViewerSelecting([meme.url])
+                                }
+                            }
+                        }
+                    }
+                    ForEach(Array(model.webResults.enumerated()), id: \.element.id) { offset, result in
+                        WebMemeCell(
+                            result: result,
+                            giphy: model.giphy,
+                            isSelected: model.results.count + offset == model.selection
+                        )
+                        .id(result.id)
+                        .onTapGesture { onPickWeb(result) }
+                        .contextMenu {
+                            Button("Copy") { onPickWeb(result) }
+                            Button("Pin to F4") { onPinWeb(result) }
+                            if let page = result.pageURL {
+                                Divider()
+                                Button("Open on GIPHY") { NSWorkspace.shared.open(page) }
                             }
                         }
                     }
                 }
                 .padding(14)
+                if !model.webResults.isEmpty {
+                    // GIPHY's terms ask for this line wherever its results show.
+                    Text(verbatim: "Powered by GIPHY")
+                        .font(.caption2.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                        .padding(.bottom, 12)
+                }
             }
             .onChange(of: model.selection) {
                 if let meme = model.selectedMeme {
                     proxy.scrollTo(meme.id)
+                } else if let result = model.selectedWebResult {
+                    proxy.scrollTo(result.id)
                 }
             }
         }
     }
 }
 
+/// All · GIFs · Stickers, under the search field. Tab and ⌘1–3 switch too
+/// (`PanelController`).
+private struct TabBar: View {
+    @Binding var selection: MemeTab
+    let onAdd: () -> Void
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(MemeTab.allCases, id: \.self) { tab in
+                Button {
+                    selection = tab
+                } label: {
+                    Text(Self.title(tab))
+                        .font(.system(size: 12, weight: .semibold))
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 4)
+                        .background(
+                            selection == tab ? Color.accentColor.opacity(0.25) : Color.clear,
+                            in: Capsule()
+                        )
+                        .foregroundStyle(selection == tab ? .primary : .secondary)
+                        .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityAddTraits(selection == tab ? .isSelected : [])
+            }
+            Spacer()
+            Button(action: onAdd) {
+                Label("Add", systemImage: "plus")
+                    .font(.system(size: 12, weight: .semibold))
+            }
+            .buttonStyle(.borderless)
+            .help("Add GIFs and stickers. You can also paste them with ⌘V or drop them here.")
+        }
+    }
+
+    private static func title(_ tab: MemeTab) -> LocalizedStringKey {
+        switch tab {
+        case .all: return "All"
+        case .gifs: return "GIFs"
+        case .stickers: return "Stickers"
+        }
+    }
+}
+
+/// The translucent HUD material behind the panel content.
 /// A key as the footer shows it: "↵", "⌘D".
 private struct KeyHint: View {
     let key: String

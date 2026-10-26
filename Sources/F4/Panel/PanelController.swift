@@ -2,6 +2,7 @@ import AppKit
 import Carbon.HIToolbox
 import F4Core
 import SwiftUI
+import UniformTypeIdentifiers
 
 /// Owns the floating panel and shows or hides it.
 ///
@@ -28,16 +29,21 @@ final class PanelController: NSObject, NSWindowDelegate {
     init(library: MemeLibrary, usage: UsageStore) {
         self.library = library
         self.usage = usage
-        model = DeckModel(library: library, usage: usage)
+        model = DeckModel(library: library, usage: usage, giphy: .shared)
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
         let deck = DeckView(
             model: model,
             library: library,
             onPick: { [weak self] meme in self?.pick(meme) },
+            onAdd: { [weak self] in self?.chooseFiles() },
+            onPickWeb: { [weak self] result in self?.pick(result) },
+            onPinWeb: { [weak self] result in self?.pin(result) },
             onDrag: { [weak self] drag in self?.drag(drag) }
         )
-        let hosting = NSHostingView(rootView: deck)
+        let hosting = DropHostingView(rootView: deck)
+        hosting.onDragChange = { [weak self] inside in self?.dragIsInside = inside }
+        hosting.onDrop = { [weak self] pasteboard in self?.add(from: pasteboard) }
         hosting.frame = NSRect(origin: .zero, size: Self.size)
         hosting.autoresizingMask = [.width, .height]
         panel.contentView = hosting
@@ -58,6 +64,120 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
     }
 
+    // MARK: Adding memes
+
+    /// Set while something is dragged over the panel, so letting go of the
+    /// mouse there does not hide it before the drop arrives.
+    private var dragIsInside = false
+    /// Set while a paste or a drop is being saved, so the panel stays up for its result.
+    private var isImporting = false
+    /// Polls the mouse after the panel lost focus with a button down.
+    private var mouseUpTimer: Timer?
+
+    /// Adds what the pasteboard holds (⌘V or a drop) to the meme folder.
+    private func add(from pasteboard: NSPasteboard) {
+        let folder = library.folder
+        let tab = model.tab
+        isImporting = true
+        Task {
+            defer { isImporting = false }
+            do {
+                let urls = try await MemeImporter.importItems(from: pasteboard, into: folder, tab: tab)
+                added(urls)
+            } catch {
+                failed(error)
+            }
+        }
+    }
+
+    /// Set while the Add button's file picker is open: it takes the focus,
+    /// and the panel must stay for the result.
+    private var isChoosingFiles = false
+
+    /// The Add button: a file picker. F4 comes to the front for it (an open
+    /// panel needs an active app), and the panel waits behind it.
+    private func chooseFiles() {
+        let picker = NSOpenPanel()
+        picker.canChooseFiles = true
+        picker.canChooseDirectories = false
+        picker.allowsMultipleSelection = true
+        picker.allowedContentTypes = MemeKind.allCases.compactMap { UTType($0.typeIdentifier) }
+        picker.prompt = String(localized: "Add")
+        picker.message = String(localized: "Choose GIFs and stickers to add to F4")
+        isChoosingFiles = true
+        NSApp.activate(ignoringOtherApps: true)
+        picker.level = .modalPanel
+        picker.begin { [weak self] response in
+            guard let self else { return }
+            self.isChoosingFiles = false
+            self.panel.makeKeyAndOrderFront(nil)
+            guard response == .OK else { return }
+            let urls = picker.urls
+            let folder = self.library.folder
+            let tab = self.model.tab
+            Task {
+                do {
+                    self.added(try await MemeImporter.importFiles(urls, into: folder, tab: tab))
+                } catch {
+                    self.failed(error)
+                }
+            }
+        }
+    }
+
+    private func added(_ urls: [URL]) {
+        guard let first = urls.first else { return }
+        let folder = first.deletingLastPathComponent().lastPathComponent
+        model.show(notice: urls.count == 1
+            ? String(localized: "Added to \(folder)")
+            : String(localized: "Added \(String(urls.count)) memes to \(folder)"))
+        library.reload()
+        model.reveal(first)
+        if !panel.isVisible { show(keepingQuery: true) }
+        panel.makeKeyAndOrderFront(nil)
+    }
+
+    private func failed(_ error: Error) {
+        model.show(notice: error.localizedDescription)
+        if panel.isVisible { panel.makeKeyAndOrderFront(nil) }
+    }
+
+    // MARK: GIPHY
+
+    /// Copies a GIPHY result: downloaded once to the cache, then copied as a
+    /// file like any meme, so it pastes animated.
+    private func pick(_ result: Giphy.Result) {
+        model.show(notice: String(localized: "Downloading from GIPHY…"))
+        Task {
+            do {
+                let file = try await model.giphy.file(for: result)
+                let meme = Meme(url: file, kind: .gif, modificationDate: Date())
+                guard MemeClipboard.copy(meme) else { return hide() }
+                hide()
+                if AppSettings.shared.pasteAfterCopy { AutoPaster.pasteSoon() }
+            } catch {
+                model.show(notice: String(localized: "Couldn't download the GIF from GIPHY."))
+            }
+        }
+    }
+
+    /// Saves a GIPHY result in the meme folder (GIFs/ or Stickers/) as a
+    /// favourite: from then on it is local, instant and offline.
+    private func pin(_ result: Giphy.Result) {
+        let folder = library.folder
+        let tab = model.tab
+        Task {
+            do {
+                let file = try await model.giphy.file(for: result)
+                let url = try await MemeImporter.pin(file, name: result.name, into: folder, tab: tab)
+                usage.addFavourite(url)
+                added([url])
+            } catch {
+                failed(error)
+            }
+        }
+    }
+
     var isVisible: Bool { panel.isVisible }
 
     func toggle() {
@@ -65,7 +185,11 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     func show() {
-        model.prepareForShow()
+        show(keepingQuery: false)
+    }
+
+    private func show(keepingQuery: Bool) {
+        if !keepingQuery { model.prepareForShow() }
         position(on: screenWithMouse())
         startArrowKeys()
         panel.makeKeyAndOrderFront(nil)
@@ -74,6 +198,8 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     func hide() {
+        mouseUpTimer?.invalidate()
+        mouseUpTimer = nil
         stopArrowKeys()
         guides.hide()
         panel.orderOut(nil)
@@ -90,9 +216,38 @@ final class PanelController: NSObject, NSWindowDelegate {
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, event.window === self.panel else { return event }
             self.model.feedKonami(Self.konamiKey(for: event))
+            if self.switchTab(for: event) { return nil }
+            if self.pasteMeme(for: event) { return nil }
             guard let direction = Self.direction(for: event) else { return event }
             return self.model.move(direction) ? nil : event
         }
+    }
+
+    /// Tab / ⇧Tab cycle the tabs; ⌘1, ⌘2, ⌘3 jump to one. Returns true when
+    /// the key was taken. The search field has no use for Tab here.
+    private func switchTab(for event: NSEvent) -> Bool {
+        let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
+        if Int(event.keyCode) == kVK_Tab, modifiers.subtracting(.shift).isEmpty {
+            model.cycleTab(backwards: modifiers.contains(.shift))
+            return true
+        }
+        guard modifiers == .command else { return false }
+        let tabs: [Int: MemeTab] = [kVK_ANSI_1: .all, kVK_ANSI_2: .gifs, kVK_ANSI_3: .stickers]
+        guard let tab = tabs[Int(event.keyCode)] else { return false }
+        model.tab = tab
+        return true
+    }
+
+    /// ⌘V with an empty search field and an image, an image file or a link
+    /// on the clipboard adds it to the meme folder. Otherwise the search
+    /// field pastes the text as usual.
+    private func pasteMeme(for event: NSEvent) -> Bool {
+        let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
+        guard modifiers == .command, Int(event.keyCode) == kVK_ANSI_V,
+              model.query.isEmpty, MemeImporter.canImport(.general)
+        else { return false }
+        add(from: .general)
+        return true
     }
 
     private func stopArrowKeys() {
@@ -127,7 +282,30 @@ final class PanelController: NSObject, NSWindowDelegate {
     // MARK: NSWindowDelegate
 
     func windowDidResignKey(_ notification: Notification) {
+        // The Add button's file picker takes the focus for a while.
+        if isChoosingFiles { return }
+        // A press in another app may be the start of a drag towards the
+        // panel (a sticker out of WhatsApp or a file out of Finder): stay
+        // until the button is released, and stay if it was released over us.
+        if NSEvent.pressedMouseButtons & 1 != 0 {
+            waitForMouseUp()
+            return
+        }
         hide()
+    }
+
+    private func waitForMouseUp() {
+        mouseUpTimer?.invalidate()
+        mouseUpTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] timer in
+            MainActor.assumeIsolated {
+                guard let self, NSEvent.pressedMouseButtons & 1 == 0 else { return }
+                timer.invalidate()
+                self.mouseUpTimer = nil
+                // A drop on the panel arrives right after the release and
+                // brings the focus back (added(_:)); anything else hides it.
+                if !self.dragIsInside && !self.isImporting && !self.panel.isKeyWindow { self.hide() }
+            }
+        }
     }
 
     // MARK: Position
