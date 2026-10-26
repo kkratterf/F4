@@ -100,9 +100,9 @@ Agent platforms that assign their own branch names (e.g. `claude/...`) are fine;
 
 - SemVer, tags `vX.Y.Z`.
 - Minor release = a version label, cut when all `P0` issues of that version are closed and `main` is green. Patch release when a user-facing fix lands.
-- First a version-bump PR (`chore(release): vX.Y.Z`) that updates `CFBundleShortVersionString` and bumps `CFBundleVersion` in `Resources/Info.plist`; the release workflow checks it.
+- **Releasing = merging a version bump.** Open a PR `chore(release): vX.Y.Z` that only changes `CFBundleShortVersionString` in `Resources/Info.plist` (`build-app.sh` sets `CFBundleVersion` from it). When it lands on `main`, `release.yml` runs on its own: tests, builds, tags `vX.Y.Z` and publishes. A version with a suffix (`0.3.0-beta.1`) becomes a pre-release.
 - Updates reach users through Sparkle: the release workflow signs the zip with `SPARKLE_ED_PRIVATE_KEY` and adds it to `site/appcast.xml`, which GitHub Pages serves. The public half lives in `SUPublicEDKey` in `Resources/Info.plist`; without a real key the updater stays hidden.
-- The release is created by the manual `release.yml` workflow (`workflow_dispatch`, with a `dry_run` option), which tests, builds the ad-hoc signed `F4.app`, tags and publishes the zip with notes grouped by label.
+- `release.yml` publishes the zip, the DMG (also as `F4.dmg`, which the website's Download button links), `SHA256SUMS.txt` and notes grouped by label, titled with the tag alone (`v0.2.0`), then adds the update to the appcast and bumps the Homebrew cask on `main`. Run it by hand (`workflow_dispatch`) with `dry_run` to check a release without publishing, or to retry a failed one.
 - **No `CHANGELOG.md`.** The changelog lives only in GitHub Release notes.
 
 ## Merging

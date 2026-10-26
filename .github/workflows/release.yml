@@ -1,36 +1,41 @@
 name: Release
 
-# Started by hand with the version to publish (e.g. 0.1.0).
-# The version must already be set in Resources/Info.plist (CFBundleShortVersionString):
-# merge a `chore(release): vX.Y.Z` PR first.
+# Automatic: merging a `chore(release): vX.Y.Z` PR that changes
+# CFBundleShortVersionString in Resources/Info.plist publishes vX.Y.Z as soon
+# as it lands on main. Pushes that leave the version alone, or whose version is
+# already tagged, release nothing. A version with a suffix (0.3.0-beta.1) is
+# published as a pre-release.
+#
+# By hand (workflow_dispatch): the same pipeline for the version in Info.plist,
+# mainly for dry runs or to retry a failed release.
 #
 # Tests, builds the ad-hoc signed F4.app, and publishes F4-<version>.zip,
-# F4-<version>.dmg and SHA256SUMS.txt on a new vX.Y.Z tag, with release notes
-# grouped by PR label (.github/release.yml), then (for stable releases) bumps
-# version and sha256 in Casks/f4.rb on main.
+# F4-<version>.dmg, F4.dmg (the same DMG under a fixed name, for the website's
+# Download button) and SHA256SUMS.txt on a new vX.Y.Z tag, with release notes
+# grouped by PR label (.github/release.yml), then (for stable releases) adds
+# the update to the appcast and bumps Casks/f4.rb on main.
 #
 # Dry run (dry_run: true): runs the whole pipeline but creates no tag or
 # release and pushes nothing to main; the zip, the DMG, the checksums, the
 # notes, appcast.xml, the cask and their diffs are uploaded as the
 # "f4-<version>-dry-run" artifact and the notes are shown in the job summary.
 #
-# Auto-update with Sparkle (optional). When the SPARKLE_ED_PRIVATE_KEY secret
-# is set, the zip is signed with Sparkle's sign_update and, for non-pre-release
-# versions, added to site/appcast.xml, committed to main and deployed to
-# GitHub Pages (https://kkratterf.github.io/f4/appcast.xml). Without the secret
-# these steps are skipped with a warning and the app simply does not update
-# itself.
+# Auto-update with Sparkle. When the SPARKLE_ED_PRIVATE_KEY secret is set, the
+# zip is signed with Sparkle's sign_update and, for non-pre-release versions,
+# added to site/appcast.xml, committed to main and deployed to GitHub Pages
+# (https://kkratterf.github.io/f4/appcast.xml). Without the secret these steps
+# are skipped with a warning and the app simply does not update itself.
 #   SPARKLE_ED_PRIVATE_KEY   private EdDSA key (Sparkle's `generate_keys -x`);
 #                            its public half is SUPublicEDKey in Resources/Info.plist
 on:
+  push:
+    branches: [main]
+    paths:
+      - Resources/Info.plist
   workflow_dispatch:
     inputs:
-      version:
-        description: "Version to release, without the leading v (e.g. 0.1.0)"
-        required: true
-        type: string
       prerelease:
-        description: "Mark the release as a pre-release"
+        description: "Mark the release as a pre-release (versions with a suffix always are)"
         required: false
         type: boolean
         default: false
@@ -47,40 +52,62 @@ concurrency:
   group: release
   cancel-in-progress: false
 
-env:
-  VERSION: ${{ inputs.version }}
-  TAG: v${{ inputs.version }}
-
 jobs:
+  version:
+    name: Decide whether to release
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.decide.outputs.version }}
+      release: ${{ steps.decide.outputs.release }}
+      prerelease: ${{ steps.decide.outputs.prerelease }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read the version and look for its tag
+        id: decide
+        env:
+          DRY_RUN: ${{ inputs.dry_run }}
+          PRERELEASE_INPUT: ${{ inputs.prerelease }}
+        run: |
+          version=$(python3 -c "import plistlib; print(plistlib.load(open('Resources/Info.plist', 'rb'))['CFBundleShortVersionString'])")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          if ! [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
+            echo "::error::'$version' in Resources/Info.plist is not a SemVer version (expected X.Y.Z)"
+            exit 1
+          fi
+          prerelease=false
+          if [[ "$version" == *-* ]] || [ "$PRERELEASE_INPUT" = "true" ]; then prerelease=true; fi
+          echo "prerelease=$prerelease" >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/v$version" >/dev/null && [ "$DRY_RUN" != "true" ]; then
+            echo "release=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::v$version is already released: nothing to do"
+          else
+            echo "release=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Releasing v$version (pre-release: $prerelease, dry run: ${DRY_RUN:-false})"
+          fi
+
   release:
     name: ${{ inputs.dry_run && 'Dry run (publishes nothing)' || 'Build, tag and publish' }}
+    needs: version
+    if: needs.version.outputs.release == 'true'
     runs-on: macos-15
     permissions:
       contents: write
       # To start the Pages deploy after the appcast commit (pushes made with
       # GITHUB_TOKEN do not trigger workflows on their own).
       actions: write
+    env:
+      VERSION: ${{ needs.version.outputs.version }}
+      TAG: v${{ needs.version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Check version format
-        run: |
-          if ! [[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.]+)?$ ]]; then
-            echo "::error::'$VERSION' is not a SemVer version (expected X.Y.Z)"
-            exit 1
-          fi
-
-      - name: Check the version matches Info.plist
-        run: |
-          plist_version=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' Resources/Info.plist)
-          if [ "$plist_version" != "$VERSION" ]; then
-            echo "::error::Resources/Info.plist has version $plist_version, but the release asks for $VERSION. Merge a version bump first."
-            exit 1
-          fi
-
       - name: Check the tag does not exist yet
+        if: ${{ !inputs.dry_run }}
         run: |
           if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
             echo "::error::Tag $TAG already exists"
@@ -137,7 +164,7 @@ jobs:
       - name: Prepare the appcast and cask updates
         id: updates
         env:
-          PRERELEASE: ${{ inputs.prerelease }}
+          PRERELEASE: ${{ needs.version.outputs.prerelease }}
           SPARKLE_ENABLED: ${{ steps.sparkle.outputs.enabled }}
           ZIP_SIGNATURE: ${{ steps.sparkle.outputs.zip_signature }}
         run: |
@@ -209,10 +236,10 @@ jobs:
         if: inputs.dry_run
         uses: actions/upload-artifact@v4
         with:
-          name: f4-${{ inputs.version }}-dry-run
+          name: f4-${{ needs.version.outputs.version }}-dry-run
           path: |
-            dist/F4-${{ inputs.version }}.zip
-            dist/F4-${{ inputs.version }}.dmg
+            dist/F4-${{ needs.version.outputs.version }}.zip
+            dist/F4-${{ needs.version.outputs.version }}.dmg
             dist/SHA256SUMS.txt
             dist/notes.md
             ${{ runner.temp }}/release-out/
@@ -221,7 +248,7 @@ jobs:
         if: ${{ !inputs.dry_run }}
         env:
           GH_TOKEN: ${{ github.token }}
-          PRERELEASE: ${{ inputs.prerelease }}
+          PRERELEASE: ${{ needs.version.outputs.prerelease }}
         run: |
           flags=()
           if [ "$PRERELEASE" = "true" ]; then flags+=(--prerelease); fi
