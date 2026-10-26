@@ -13,6 +13,8 @@ struct DeckView: View {
     let onPickWeb: (Giphy.Result) -> Void
     /// ⌘D or "Pin to F4" on a GIPHY result: save it in the meme folder as a favourite.
     let onPinWeb: (Giphy.Result) -> Void
+    /// The user drags the panel by its search bar or footer.
+    let onDrag: (PanelDrag) -> Void
 
     @FocusState private var searchFocused: Bool
     /// Degrees the panel content has spun for "do a barrel roll".
@@ -47,6 +49,7 @@ struct DeckView: View {
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
+            .background(WindowDragArea(onDrag: onDrag))
 
             TabBar(selection: $model.tab, onAdd: onAdd)
                 .padding(.horizontal, 16)
@@ -167,6 +170,7 @@ struct DeckView: View {
         .font(.system(size: 12))
         .padding(.horizontal, 14)
         .frame(height: 40)
+        .background(WindowDragArea(onDrag: onDrag))
         .background(Color.primary.opacity(0.03))
     }
 

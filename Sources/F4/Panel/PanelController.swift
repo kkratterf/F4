@@ -20,6 +20,9 @@ final class PanelController: NSObject, NSWindowDelegate {
     private let library: MemeLibrary
     private let model: DeckModel
     private var keyMonitor: Any?
+    private let guides = SnapGuideWindow()
+    /// True once a drag has actually moved the panel.
+    private var didDrag = false
 
     private let usage: UsageStore
 
@@ -35,7 +38,8 @@ final class PanelController: NSObject, NSWindowDelegate {
             onPick: { [weak self] meme in self?.pick(meme) },
             onAdd: { [weak self] in self?.chooseFiles() },
             onPickWeb: { [weak self] result in self?.pick(result) },
-            onPinWeb: { [weak self] result in self?.pin(result) }
+            onPinWeb: { [weak self] result in self?.pin(result) },
+            onDrag: { [weak self] drag in self?.drag(drag) }
         )
         let hosting = DropHostingView(rootView: deck)
         hosting.onDragChange = { [weak self] inside in self?.dragIsInside = inside }
@@ -197,6 +201,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         mouseUpTimer?.invalidate()
         mouseUpTimer = nil
         stopArrowKeys()
+        guides.hide()
         panel.orderOut(nil)
     }
 
@@ -303,15 +308,56 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
     }
 
-    /// Centred horizontally and a little above the middle, where Spotlight sits.
+    // MARK: Position
+
+    /// Where the user last left the panel, as `PanelPlacement.relativeCentre`;
+    /// nil until they move it, or after they snap it back to the default spot.
+    private static let positionKey = "panelPosition"
+
+    private var savedCentre: CGPoint? {
+        get {
+            guard let values = UserDefaults.standard.array(forKey: Self.positionKey) as? [Double],
+                  values.count == 2 else { return nil }
+            return CGPoint(x: values[0], y: values[1])
+        }
+        set {
+            if let newValue {
+                UserDefaults.standard.set([Double(newValue.x), Double(newValue.y)], forKey: Self.positionKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Self.positionKey)
+            }
+        }
+    }
+
+    /// Opens on the screen with the mouse, where the user last dragged the
+    /// panel (at the same place relative to that screen), or where Spotlight sits.
     private func position(on screen: NSScreen?) {
         guard let visible = (screen ?? NSScreen.main)?.visibleFrame else { return }
         let size = panel.frame.size
-        let origin = NSPoint(
-            x: visible.midX - size.width / 2,
-            y: visible.minY + (visible.height - size.height) * 0.6
-        )
+        let origin = savedCentre.map { PanelPlacement.origin(relativeCentre: $0, size: size, in: visible) }
+            ?? PanelPlacement.defaultOrigin(size: size, in: visible)
         panel.setFrameOrigin(origin)
+    }
+
+    /// Moves the panel with the mouse, snapping to the screen's centre lines
+    /// and the default height, and remembers where it was left.
+    private func drag(_ drag: PanelDrag) {
+        switch drag {
+        case .began:
+            didDrag = false
+        case .moved(let proposed):
+            guard let screen = screenWithMouse() ?? panel.screen else { return }
+            let snap = PanelPlacement.snap(proposed, size: panel.frame.size, in: screen.visibleFrame)
+            panel.setFrameOrigin(snap.origin)
+            guides.show(snap.guides, on: screen, below: panel)
+            didDrag = true
+        case .ended:
+            guides.hide()
+            guard didDrag, let screen = panel.screen else { return }
+            let visible = screen.visibleFrame
+            let snap = PanelPlacement.snap(panel.frame.origin, size: panel.frame.size, in: visible)
+            savedCentre = snap.isDefault ? nil : PanelPlacement.relativeCentre(of: panel.frame, in: visible)
+        }
     }
 
     private func screenWithMouse() -> NSScreen? {
