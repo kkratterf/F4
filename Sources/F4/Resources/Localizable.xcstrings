@@ -41,6 +41,39 @@
         }
       }
     },
+    "Check Now": {
+      "extractionState": "manual",
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla ora"
+          }
+        }
+      }
+    },
+    "Check for Updates…": {
+      "extractionState": "manual",
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla aggiornamenti…"
+          }
+        }
+      }
+    },
+    "Check for updates automatically": {
+      "extractionState": "manual",
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla gli aggiornamenti automaticamente"
+          }
+        }
+      }
+    },
     "Choose the folder with your memes": {
       "localizations": {
         "it": {
@@ -127,6 +160,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "F4 mostra i file GIF, PNG e JPEG di questa cartella e delle sue sottocartelle, e si aggiorna quando ne aggiungi o togli uno. I nomi delle sottocartelle funzionano come categorie nella ricerca."
+          }
+        }
+      }
+    },
+    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. This is the only request F4 makes to the network.": {
+      "extractionState": "manual",
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 si aggiorna da solo: le nuove versioni arrivano dal feed delle release e si installano con un clic. È l'unica richiesta che F4 fa alla rete."
           }
         }
       }
@@ -347,6 +391,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spazio"
+          }
+        }
+      }
+    },
+    "Updates": {
+      "extractionState": "manual",
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamenti"
           }
         }
       }
