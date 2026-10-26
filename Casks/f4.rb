@@ -4,8 +4,8 @@
 # version and sha256 are bumped by .github/workflows/release.yml after each
 # stable release.
 cask "f4" do
-  version "0.2.0"
-  sha256 "c143b142718e2e0b10828690407fce7e25fe94ffb83cbbf6eaf2b47cabd69a12"
+  version "0.2.1"
+  sha256 "9a8272e3d6f2237cdbf9a1bbdb4c0ee7c2ccb89565c9b930a7a0e37b7479f395"
 
   url "https://github.com/kkratterf/f4/releases/download/v#{version}/F4-#{version}.dmg"
   name "F4"
