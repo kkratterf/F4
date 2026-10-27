@@ -49,19 +49,34 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         update(shortcut: shortcut)
     }
 
+    /// "F4" in Inter Display Black, in the logo's 1024 design space (y down,
+    /// centred on (512, 458)): the same outlines as scripts/make-icon.swift
+    /// and site/logo.svg. The third outline is the hole in the 4.
+    private static let glyphOutlines: [[(CGFloat, CGFloat)]] = [
+        [(311.1, 578), (378.1, 578), (378.1, 491.7), (484.9, 491.7), (484.9, 437.2), (378.1, 437.2), (378.1, 394.7), (491.3, 394.7), (491.3, 338), (311.1, 338)],
+        [(506.1, 531.6), (623.4, 531.6), (623.4, 578), (686.2, 578), (686.2, 531.6), (712.9, 531.6), (712.9, 482.3), (686.2, 482.3), (686.2, 338), (603.9, 338), (506.1, 481)],
+        [(623.4, 482.3), (566.5, 482.3), (566.5, 482), (623.2, 397.9), (623.4, 397.9)],
+    ]
+
     /// The F4 keycap, the app's logo, as a template image: a filled key with
     /// "F4" cut out of it, so it follows the menu bar's colour.
     private static func keycapImage() -> NSImage {
         let image = NSImage(size: NSSize(width: 20, height: 15), flipped: false) { rect in
             NSColor.black.setFill()
             NSBezierPath(roundedRect: rect.insetBy(dx: 1, dy: 0.5), xRadius: 4, yRadius: 4).fill()
-            let label = NSAttributedString(string: "F4", attributes: [
-                .font: NSFont.systemFont(ofSize: 10, weight: .heavy),
-                .foregroundColor: NSColor.black,
-            ])
-            let size = label.size()
+            // 7 pt tall letters, flipped into the image's y-up space.
+            let scale: CGFloat = 7 / 240
+            let label = NSBezierPath()
+            label.windingRule = .evenOdd
+            for outline in glyphOutlines {
+                for (index, (x, y)) in outline.enumerated() {
+                    let point = NSPoint(x: rect.midX + (x - 512) * scale, y: rect.midY - (y - 458) * scale)
+                    if index == 0 { label.move(to: point) } else { label.line(to: point) }
+                }
+                label.close()
+            }
             NSGraphicsContext.current?.compositingOperation = .destinationOut
-            label.draw(at: NSPoint(x: rect.midX - size.width / 2, y: rect.midY - size.height / 2))
+            label.fill()
             return true
         }
         image.isTemplate = true

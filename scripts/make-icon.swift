@@ -3,8 +3,8 @@
 // Then:  iconutil -c icns <out.iconset> -o AppIcon.icns
 //
 // The icon is the app's logo: an F4 keycap, the default shortcut. The letters
-// are stroked lines rather than a font, so the icon looks the same on every
-// Mac and matches site/logo.svg, which uses the same geometry. Everything is
+// are Inter's outlines rather than a font, so the icon looks the same on
+// every Mac and matches site/logo.svg, which uses the same geometry. Everything is
 // drawn in a 1024x1024 design space with the origin at the top left (y grows
 // downwards, like SVG), scaled for each size, so the output needs no assets.
 
@@ -49,15 +49,17 @@ func squircle(center: CGPoint, radiusX: CGFloat, radiusY: CGFloat, exponent: CGF
 
 // MARK: - Icon
 
-/// The strokes of "F4", centred on the key's top face.
+/// The outlines of "F4" in Inter Display Black (SIL Open Font License),
+/// centred on the key's top face. Inter's F and 4 have no curves, so the
+/// glyphs are plain polygons; the third one is the hole in the 4. Same
+/// outlines as site/logo.svg and the menu bar icon in StatusItemController.
 let glyphs: [[CGPoint]] = {
-    let dx: CGFloat = -22
-    let lines: [[(CGFloat, CGFloat)]] = [
-        [(474, 330), (330, 330), (330, 598)], // F: top bar and stem
-        [(330, 456), (448, 456)], // F: middle bar
-        [(676, 598), (676, 330), (548, 520), (738, 520)], // 4: stem, diagonal, bar
+    let outlines: [[(CGFloat, CGFloat)]] = [
+        [(311.1, 578), (378.1, 578), (378.1, 491.7), (484.9, 491.7), (484.9, 437.2), (378.1, 437.2), (378.1, 394.7), (491.3, 394.7), (491.3, 338), (311.1, 338)],
+        [(506.1, 531.6), (623.4, 531.6), (623.4, 578), (686.2, 578), (686.2, 531.6), (712.9, 531.6), (712.9, 482.3), (686.2, 482.3), (686.2, 338), (603.9, 338), (506.1, 481)],
+        [(623.4, 482.3), (566.5, 482.3), (566.5, 482), (623.2, 397.9), (623.4, 397.9)],
     ]
-    return lines.map { line in line.map { CGPoint(x: $0.0 + dx, y: $0.1) } }
+    return outlines.map { outline in outline.map { CGPoint(x: $0.0, y: $0.1) } }
 }()
 
 func drawIcon(in ctx: CGContext, pixels: Int) {
@@ -100,15 +102,13 @@ func drawIcon(in ctx: CGContext, pixels: Int) {
     ctx.setLineWidth(6)
     ctx.strokePath()
 
-    // "F4", in round strokes.
-    for line in glyphs {
-        ctx.addLines(between: line)
+    // "F4", filled; even-odd cuts the hole in the 4.
+    for outline in glyphs {
+        ctx.addLines(between: outline)
+        ctx.closePath()
     }
-    ctx.setStrokeColor(rgb(0x241809))
-    ctx.setLineWidth(64)
-    ctx.setLineCap(.round)
-    ctx.setLineJoin(.round)
-    ctx.strokePath()
+    ctx.setFillColor(rgb(0x241809))
+    ctx.fillPath(using: .evenOdd)
 }
 
 // MARK: - Output
