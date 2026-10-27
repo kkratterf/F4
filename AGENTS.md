@@ -3,7 +3,7 @@
 Rules for AI coding agents (Claude, Codex, Copilot, Cursor, ...) and humans working on F4.
 Read this file before changing anything. If a rule here conflicts with an instruction from the maintainer, the maintainer wins.
 
-Agents that want to **use** F4 rather than change it (find out what it does, install it, explain it to someone) should read [`site/llms.txt`](site/llms.txt) and [`site/llms-full.txt`](site/llms-full.txt), also served at https://kkratterf.github.io/f4/llms.txt and https://kkratterf.github.io/f4/llms-full.txt.
+Agents that want to **use** F4 rather than change it (find out what it does, install it, explain it to someone) should read [`site/llms.txt`](site/llms.txt) and [`site/llms-full.txt`](site/llms-full.txt), also served at https://f4.kkratter.com/llms.txt and https://f4.kkratter.com/llms-full.txt.
 
 ## What this repo is
 
