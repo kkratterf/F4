@@ -10,11 +10,38 @@ final class MemeLibrary: ObservableObject {
     @Published private(set) var error: String?
 
     @Published private(set) var folder: URL
+    /// Whether the starter pack is listed after the user's memes.
+    private(set) var showsStarterPack: Bool
     private var scanTask: Task<Void, Never>?
     private var watcher: FolderWatcher?
 
-    init(folder: URL = MemeScanner.defaultFolder) {
+    init(folder: URL = MemeScanner.defaultFolder, showsStarterPack: Bool = true) {
         self.folder = folder
+        self.showsStarterPack = showsStarterPack
+    }
+
+    /// The GIFs and stickers built into F4 (`Contents/Resources/Starter`,
+    /// added by build-app.sh), so a new user never starts from an empty
+    /// panel. Read-only and never copied into the meme folder. Nil when
+    /// running outside the app bundle (`swift run`).
+    static let starterFolder: URL? = {
+        guard let url = Bundle.main.resourceURL?.appendingPathComponent("Starter", isDirectory: true),
+              FileManager.default.fileExists(atPath: url.path)
+        else { return nil }
+        return url
+    }()
+
+    /// Whether `meme` comes from the starter pack rather than the meme folder.
+    func isStarter(_ meme: Meme) -> Bool {
+        guard let starter = Self.starterFolder else { return false }
+        return meme.url.standardizedFileURL.path.hasPrefix(starter.standardizedFileURL.path + "/")
+    }
+
+    /// Shows or hides the starter pack (Settings).
+    func setShowsStarterPack(_ shows: Bool) {
+        guard shows != showsStarterPack else { return }
+        showsStarterPack = shows
+        reload()
     }
 
     /// The user's own basito face for the empty states: a hidden
@@ -40,11 +67,15 @@ final class MemeLibrary: ObservableObject {
     func reload() {
         scanTask?.cancel()
         let folder = folder
+        let starter = showsStarterPack ? Self.starterFolder : nil
         scanTask = Task { [weak self] in
             let result = await Task.detached(priority: .userInitiated) { () -> Result<[Meme], Error> in
                 Result {
                     try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-                    return try MemeScanner.scan(folder: folder)
+                    let own = try MemeScanner.scan(folder: folder)
+                    // The user's memes first; the starter pack never fails the scan.
+                    let builtIn = starter.flatMap { try? MemeScanner.scan(folder: $0) } ?? []
+                    return own + builtIn
                 }
             }.value
             guard !Task.isCancelled, let self else { return }

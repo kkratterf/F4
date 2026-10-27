@@ -6,6 +6,36 @@
     <description>F4 updates</description>
     <language>en</language>
     <item>
+      <title>F4 0.3.1</title>
+      <pubDate>Mon, 26 Oct 2026 18:20:00 GMT</pubDate>
+      <link>https://github.com/kkratterf/f4/releases/tag/v0.3.1</link>
+      <sparkle:version>0.3.1</sparkle:version>
+      <sparkle:shortVersionString>0.3.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <sparkle:fullReleaseNotesLink>https://github.com/kkratterf/f4/releases/tag/v0.3.1</sparkle:fullReleaseNotesLink>
+      <enclosure url="https://github.com/kkratterf/F4/releases/download/v0.3.1/F4-0.3.1.zip" length="5489957" type="application/octet-stream" sparkle:edSignature="NtMDWK6dBuEohdeIXDtml8pc4dWdnvtC+I45uw839nr4BNRuAFq9PsqJUnUXP1jQX4P9kIMJ7W4nEngJXHYaCw==" />
+    </item>
+    <item>
+      <title>F4 0.3.0</title>
+      <pubDate>Mon, 26 Oct 2026 18:11:35 GMT</pubDate>
+      <link>https://github.com/kkratterf/f4/releases/tag/v0.3.0</link>
+      <sparkle:version>0.3.0</sparkle:version>
+      <sparkle:shortVersionString>0.3.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <sparkle:fullReleaseNotesLink>https://github.com/kkratterf/f4/releases/tag/v0.3.0</sparkle:fullReleaseNotesLink>
+      <enclosure url="https://github.com/kkratterf/F4/releases/download/v0.3.0/F4-0.3.0.zip" length="5460252" type="application/octet-stream" sparkle:edSignature="tgJd6yG7aFa12L8yAsIMG+yINrAvqVMlzsuGXU5o2N4TWJhU2CZ7zFltEt1bskW4dTWEulsRIDByCJqRVZCSBw==" />
+    </item>
+    <item>
+      <title>F4 0.2.1</title>
+      <pubDate>Mon, 26 Oct 2026 17:48:50 GMT</pubDate>
+      <link>https://github.com/kkratterf/f4/releases/tag/v0.2.1</link>
+      <sparkle:version>0.2.1</sparkle:version>
+      <sparkle:shortVersionString>0.2.1</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <sparkle:fullReleaseNotesLink>https://github.com/kkratterf/f4/releases/tag/v0.2.1</sparkle:fullReleaseNotesLink>
+      <enclosure url="https://github.com/kkratterf/F4/releases/download/v0.2.1/F4-0.2.1.zip" length="1902312" type="application/octet-stream" sparkle:edSignature="M8fd594ttD0SPZum9LKucN0/3W+kg+rTH5JhqGXa1ng4NxvbqEcf51O+X7lIzu3V5Ll6vYvgP6ldrMZn9ldSBw==" />
+    </item>
+    <item>
       <title>F4 0.2.0</title>
       <pubDate>Mon, 26 Oct 2026 15:12:09 GMT</pubDate>
       <link>https://github.com/kkratterf/f4/releases/tag/v0.2.0</link>

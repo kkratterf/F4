@@ -11,6 +11,26 @@
         }
       }
     },
+    "Add": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi"
+          }
+        }
+      }
+    },
+    "Add GIFs and stickers. You can also paste them with ⌘V or drop them here.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi GIF e sticker. Puoi anche incollarli con ⌘V o trascinarli qui."
+          }
+        }
+      }
+    },
     "Add to Favourites": {
       "localizations": {
         "it": {
@@ -21,12 +41,52 @@
         }
       }
     },
+    "Added %@ memes to %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ meme aggiunti in %2$@"
+          }
+        }
+      }
+    },
+    "Added to %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiunto in %@"
+          }
+        }
+      }
+    },
+    "All": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutti"
+          }
+        }
+      }
+    },
     "Allow F4 in System Settings → General → Login Items.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Consenti F4 in Impostazioni di Sistema → Generali → Elementi login."
+          }
+        }
+      }
+    },
+    "Animated emoji from Google's Noto Emoji (CC BY 4.0) and F4's own stickers, listed after your memes. They stay inside the app and are never copied into your folder.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emoji animate da Noto Emoji di Google (CC BY 4.0) e sticker di F4, elencati dopo i tuoi meme. Restano dentro l'app e non vengono mai copiati nella tua cartella."
           }
         }
       }
@@ -74,6 +134,16 @@
         }
       }
     },
+    "Choose GIFs and stickers to add to F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli le GIF e gli sticker da aggiungere a F4"
+          }
+        }
+      }
+    },
     "Choose the folder with your memes": {
       "localizations": {
         "it": {
@@ -114,12 +184,32 @@
         }
       }
     },
-    "Drop GIFs, PNGs and JPEGs into %@.": {
+    "Couldn't download the GIF from GIPHY.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trascina GIF, PNG e JPEG in %@."
+            "value": "Impossibile scaricare la GIF da GIPHY."
+          }
+        }
+      }
+    },
+    "Couldn't download the image: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile scaricare l'immagine: %@"
+          }
+        }
+      }
+    },
+    "Downloading from GIPHY…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download da GIPHY…"
           }
         }
       }
@@ -144,6 +234,16 @@
         }
       }
     },
+    "F4 can only add GIF, PNG, JPEG and WebP images.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 può aggiungere solo immagini GIF, PNG, JPEG e WebP."
+          }
+        }
+      }
+    },
     "F4 needs Accessibility access to press ⌘V for you. Until then it only copies.": {
       "localizations": {
         "it": {
@@ -154,23 +254,23 @@
         }
       }
     },
-    "F4 shows the GIF, PNG and JPEG files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.": {
+    "F4 shows the GIF, PNG, JPEG and WebP files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "F4 mostra i file GIF, PNG e JPEG di questa cartella e delle sue sottocartelle, e si aggiorna quando ne aggiungi o togli uno. I nomi delle sottocartelle funzionano come categorie nella ricerca."
+            "value": "F4 mostra i file GIF, PNG, JPEG e WebP di questa cartella e delle sue sottocartelle, e si aggiorna quando ne aggiungi o togli uno. I nomi delle sottocartelle funzionano come categorie nella ricerca."
           }
         }
       }
     },
-    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. This is the only request F4 makes to the network.": {
+    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online for GIPHY and to download a link you paste or drop.": {
       "extractionState": "manual",
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "F4 si aggiorna da solo: le nuove versioni arrivano dal feed delle release e si installano con un clic. È l'unica richiesta che F4 fa alla rete."
+            "value": "F4 si aggiorna da sola: le nuove versioni vengono scaricate dal feed delle release e installate in un clic. Oltre a questo, F4 va in rete solo per GIPHY e per scaricare un link che incolli o trascini."
           }
         }
       }
@@ -195,12 +295,42 @@
         }
       }
     },
+    "GIFs": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GIF"
+          }
+        }
+      }
+    },
+    "GIPHY": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GIPHY"
+          }
+        }
+      }
+    },
     "General": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Generali"
+          }
+        }
+      }
+    },
+    "In WhatsApp or Telegram, right-click a sticker and copy it, then press ⌘V here. Or drop stickers on the panel.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In WhatsApp o Telegram fai clic destro su uno sticker e copialo, poi premi ⌘V qui. Oppure trascina gli sticker sul pannello."
           }
         }
       }
@@ -215,12 +345,32 @@
         }
       }
     },
+    "No GIFs yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessuna GIF"
+          }
+        }
+      }
+    },
     "No memes yet": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Ancora nessun meme"
+          }
+        }
+      }
+    },
+    "No stickers yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessuno sticker"
           }
         }
       }
@@ -285,6 +435,26 @@
         }
       }
     },
+    "Open on GIPHY": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri su GIPHY"
+          }
+        }
+      }
+    },
+    "Optional": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Facoltativa"
+          }
+        }
+      }
+    },
     "Paste": {
       "localizations": {
         "it": {
@@ -295,12 +465,52 @@
         }
       }
     },
+    "Paste a GIF or a GIPHY link with ⌘V, drop one here, or click Add.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla una GIF o un link di GIPHY con ⌘V, trascinala qui o fai clic su Aggiungi."
+          }
+        }
+      }
+    },
+    "Paste a GIF, a sticker or a link with ⌘V, drop files here, or click Add. They are saved in %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla una GIF, uno sticker o un link con ⌘V, trascina i file qui o fai clic su Aggiungi. Vengono salvati in %@."
+          }
+        }
+      }
+    },
     "Paste into the front app after copying": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Incolla nell'app in primo piano dopo la copia"
+          }
+        }
+      }
+    },
+    "Pin to F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi a F4"
+          }
+        }
+      }
+    },
+    "Powered by GIPHY. F4 asks GIPHY only while you are in the GIFs or Stickers tab: trending when the search is empty, your search otherwise. Press ⌘D on a result to pin it to your folder as a favourite.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Powered by GIPHY. F4 interroga GIPHY solo mentre sei nella scheda GIF o Sticker: le tendenze a ricerca vuota, la tua ricerca altrimenti. Premi ⌘D su un risultato per salvarlo nella tua cartella tra i preferiti."
           }
         }
       }
@@ -325,6 +535,16 @@
         }
       }
     },
+    "Recent Memes": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meme recenti"
+          }
+        }
+      }
+    },
     "Remove from Favourites": {
       "localizations": {
         "it": {
@@ -341,6 +561,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ripristina"
+          }
+        }
+      }
+    },
+    "Search GIPHY in the GIFs and Stickers tabs": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca su GIPHY nelle schede GIF e Sticker"
           }
         }
       }
@@ -375,6 +605,16 @@
         }
       }
     },
+    "Show F4 in the menu bar": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra F4 nella barra dei menu"
+          }
+        }
+      }
+    },
     "Show and hide F4": {
       "localizations": {
         "it": {
@@ -395,12 +635,62 @@
         }
       }
     },
+    "Show the GIFs and stickers built into F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra le GIF e gli sticker inclusi in F4"
+          }
+        }
+      }
+    },
     "Space": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Spazio"
+          }
+        }
+      }
+    },
+    "Starter pack": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starter pack"
+          }
+        }
+      }
+    },
+    "Stickers": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sticker"
+          }
+        }
+      }
+    },
+    "This build has no GIPHY key. Create a free one at developers.giphy.com and paste it here to search GIPHY.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa build non ha una chiave GIPHY. Creane una gratis su developers.giphy.com e incollala qui per cercare su GIPHY."
+          }
+        }
+      }
+    },
+    "To get back here, open F4 again from Finder or Spotlight.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per tornare qui, riapri F4 dal Finder o da Spotlight."
           }
         }
       }
@@ -432,6 +722,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usa ~/Immagini/Memes"
+          }
+        }
+      }
+    },
+    "Your API key": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua chiave API"
+          }
+        }
+      }
+    },
+    "sticker": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sticker"
+          }
+        }
+      }
+    },
+    "the file is larger than 50 MB": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "il file supera i 50 MB"
           }
         }
       }

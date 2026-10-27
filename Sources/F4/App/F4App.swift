@@ -1,5 +1,6 @@
 import AppKit
 import Combine
+import F4Core
 import SwiftUI
 
 @main
@@ -21,7 +22,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var statusItem: StatusItemController?
     private let settings = AppSettings.shared
-    private lazy var library = MemeLibrary(folder: settings.memeFolder)
+    private lazy var library = MemeLibrary(folder: settings.memeFolder, showsStarterPack: settings.showStarterPack)
+    private let usage = UsageStore()
     private lazy var settingsWindow = SettingsWindowController(settings: settings)
     private var cancellables: Set<AnyCancellable> = []
 
@@ -34,11 +36,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .removeDuplicates()
             .sink { [weak self] url in self?.library.setFolder(url) }
             .store(in: &cancellables)
-        let panel = PanelController(library: library, usage: UsageStore())
+        settings.$showStarterPack
+            .dropFirst()
+            .removeDuplicates()
+            .sink { [weak self] shows in self?.library.setShowsStarterPack(shows) }
+            .store(in: &cancellables)
+        let panel = PanelController(library: library, usage: usage)
         self.panel = panel
         registerToggleShortcut()
         statusItem = StatusItemController(
             shortcut: settings.toggleShortcut.displayString,
+            recentMemes: { [weak self] in self?.recentMemes() ?? [] },
+            onCopy: { [weak self] meme in self?.panel?.pick(meme) },
             onOpen: { [weak self] in self?.panel?.show() },
             onOpenFolder: { [weak self] in
                 guard let self else { return }
@@ -49,6 +58,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 ? { AppUpdater.shared.checkForUpdates() }
                 : nil
         )
+        settings.$showInMenuBar
+            .sink { [weak self] isOn in self?.statusItem?.isVisible = isOn }
+            .store(in: &cancellables)
         // Auto-update; a no-op until Info.plist has a real Sparkle public key.
         AppUpdater.shared.start()
         // Opening the app from Finder or Spotlight shows the panel right away.
@@ -83,9 +95,20 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private static let toggleShortcutID = "togglePanel"
 
-    /// Opening the app again while it runs shows the panel.
+    /// The last copied memes that are still in the folder, most recent first.
+    private func recentMemes() -> [Meme] {
+        let byURL = Dictionary(library.memes.map { ($0.url, $0) }, uniquingKeysWith: { first, _ in first })
+        return usage.recents.compactMap { byURL[$0] }
+    }
+
+    /// Opening the app again while it runs shows the panel, or Settings when
+    /// the menu bar icon is hidden: otherwise there would be no way back to them.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        panel?.show()
+        if settings.showInMenuBar {
+            panel?.show()
+        } else {
+            settingsWindow.show()
+        }
         return false
     }
 }

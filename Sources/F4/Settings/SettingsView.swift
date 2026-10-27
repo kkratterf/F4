@@ -35,6 +35,12 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }
+                Toggle("Show F4 in the menu bar", isOn: $settings.showInMenuBar)
+                if !settings.showInMenuBar {
+                    Text("To get back here, open F4 again from Finder or Spotlight.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             Section("Paste") {
                 Toggle("Paste into the front app after copying", isOn: Binding(
@@ -77,16 +83,36 @@ struct SettingsView: View {
                     }
                     .disabled(settings.isUsingDefaultFolder)
                 }
-                Text("F4 shows the GIF, PNG and JPEG files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.")
+                Text("F4 shows the GIF, PNG, JPEG and WebP files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+            }
+            Section("Starter pack") {
+                Toggle("Show the GIFs and stickers built into F4", isOn: $settings.showStarterPack)
+                Text("Animated emoji from Google's Noto Emoji (CC BY 4.0) and F4's own stickers, listed after your memes. They stay inside the app and are never copied into your folder.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Section("GIPHY") {
+                Toggle("Search GIPHY in the GIFs and Stickers tabs", isOn: $settings.searchGiphy)
+                TextField("Your API key", text: $settings.giphyAPIKey, prompt: Text("Optional"))
+                    .textFieldStyle(.roundedBorder)
+                if GiphyClient.shared.hasKey {
+                    Text("Powered by GIPHY. F4 asks GIPHY only while you are in the GIFs or Stickers tab: trending when the search is empty, your search otherwise. Press ⌘D on a result to pin it to your folder as a favourite.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("This build has no GIPHY key. Create a free one at developers.giphy.com and paste it here to search GIPHY.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
             // Hidden in builds without a real Sparkle key (see AppUpdater).
             if updater.isAvailable {
                 Section("Updates") {
                     Toggle("Check for updates automatically", isOn: $updater.automaticallyChecksForUpdates)
                     HStack {
-                        Text("F4 updates itself: new versions are downloaded from the release feed and installed in one click. This is the only request F4 makes to the network.")
+                        Text("F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online for GIPHY and to download a link you paste or drop.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         Spacer()

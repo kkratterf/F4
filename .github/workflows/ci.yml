@@ -45,6 +45,11 @@ jobs:
           test -d "$app/Contents/Frameworks/Sparkle.framework"
           otool -L "$app/Contents/MacOS/F4" | grep Sparkle
           otool -l "$app/Contents/MacOS/F4" | grep -A2 LC_RPATH
+          # Starter pack: committed GIFs plus stickers drawn at build time.
+          gifs=$(find "$app/Contents/Resources/Starter/GIFs" -name '*.gif' | wc -l)
+          stickers=$(find "$app/Contents/Resources/Starter/Stickers" -name '*.png' 2>/dev/null | wc -l)
+          test "$gifs" -ge 20 || { echo "::error::starter GIFs missing from F4.app ($gifs)"; exit 1; }
+          test "$stickers" -ge 10 || { echo "::error::starter stickers missing from F4.app ($stickers)"; exit 1; }
           # Smoke test: the app must launch and stay up.
           "$app/Contents/MacOS/F4" &
           pid=$!

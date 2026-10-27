@@ -1,26 +1,44 @@
 import AppKit
+import F4Core
 
 /// The menu bar icon: with no Dock icon, it is how the user finds F4 again.
+///
+/// Its menu opens the panel, copies one of the last memes again without
+/// opening anything, and leads to the folder, the settings and updates.
+/// The user can hide it in Settings; opening F4 again then shows Settings.
 @MainActor
-final class StatusItemController: NSObject {
+final class StatusItemController: NSObject, NSMenuDelegate {
+    /// How many recent memes the menu lists.
+    static let recentCount = 5
+    /// Points for the thumbnails next to recent memes.
+    private static let thumbnailSide: CGFloat = 18
+
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let onOpen: () -> Void
     private let onOpenFolder: () -> Void
     private let onSettings: () -> Void
     private let onCheckForUpdates: (() -> Void)?
+    private let recentMemes: () -> [Meme]
+    private let onCopy: (Meme) -> Void
     private var shortcut: String
 
     /// - Parameters:
     ///   - shortcut: shown next to "Open F4", e.g. "F4".
+    ///   - recentMemes: the memes copied last, most recent first.
+    ///   - onCopy: copies a meme picked from the menu.
     ///   - onCheckForUpdates: nil in builds where the updater is unavailable,
     ///     which leaves the menu item out entirely.
     init(
         shortcut: String,
+        recentMemes: @escaping () -> [Meme],
+        onCopy: @escaping (Meme) -> Void,
         onOpen: @escaping () -> Void,
         onOpenFolder: @escaping () -> Void,
         onSettings: @escaping () -> Void,
         onCheckForUpdates: (() -> Void)? = nil
     ) {
+        self.recentMemes = recentMemes
+        self.onCopy = onCopy
         self.onOpen = onOpen
         self.onOpenFolder = onOpenFolder
         self.onSettings = onSettings
@@ -51,15 +69,29 @@ final class StatusItemController: NSObject {
         return image
     }
 
+    /// Shows or hides the icon (Settings → Show F4 in the menu bar).
+    var isVisible: Bool {
+        get { statusItem.isVisible }
+        set { statusItem.isVisible = newValue }
+    }
+
     /// Shows a new shortcut in the tooltip and the menu.
     func update(shortcut: String) {
         self.shortcut = shortcut
         statusItem.button?.toolTip = "F4 · basito (\(shortcut))"
-        statusItem.menu = makeMenu(shortcut: shortcut)
+        let menu = NSMenu()
+        menu.delegate = self
+        statusItem.menu = menu
     }
 
-    private func makeMenu(shortcut: String) -> NSMenu {
-        let menu = NSMenu()
+    // MARK: NSMenuDelegate
+
+    /// Rebuilt every time it opens, so the recent memes are current.
+    func menuNeedsUpdate(_ menu: NSMenu) {
+        menu.items = makeItems(shortcut: shortcut)
+    }
+
+    private func makeItems(shortcut: String) -> [NSMenuItem] {
         let open = NSMenuItem(title: String(localized: "Open F4"), action: #selector(open(_:)), keyEquivalent: "")
         open.target = self
         // The shortcut is global (Carbon), not a menu key equivalent: this line only tells the user.
@@ -70,7 +102,14 @@ final class StatusItemController: NSObject {
         let settings = NSMenuItem(title: String(localized: "Settings…"), action: #selector(openSettings(_:)), keyEquivalent: ",")
         settings.target = self
         let quit = NSMenuItem(title: String(localized: "Quit F4"), action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q")
-        menu.items = [open, shortcutHint, .separator(), folder, settings]
+        var items: [NSMenuItem] = [open, shortcutHint, .separator()]
+        let recents = recentMemes().prefix(Self.recentCount)
+        if !recents.isEmpty {
+            items.append(NSMenuItem.sectionHeader(title: String(localized: "Recent Memes")))
+            items.append(contentsOf: recents.map { recentItem($0) })
+            items.append(.separator())
+        }
+        items.append(contentsOf: [folder, settings])
         if onCheckForUpdates != nil {
             let updates = NSMenuItem(
                 title: String(localized: "Check for Updates…"),
@@ -78,10 +117,44 @@ final class StatusItemController: NSObject {
                 keyEquivalent: ""
             )
             updates.target = self
-            menu.items.append(updates)
+            items.append(updates)
         }
-        menu.items.append(contentsOf: [.separator(), quit])
-        return menu
+        items.append(contentsOf: [.separator(), quit])
+        return items
+    }
+
+    /// A recent meme: its name, and its thumbnail when it is already decoded
+    /// (the menu never waits for one). Clicking copies it.
+    private func recentItem(_ meme: Meme) -> NSMenuItem {
+        let item = NSMenuItem(title: meme.name, action: #selector(copyMeme(_:)), keyEquivalent: "")
+        item.target = self
+        item.representedObject = meme
+        item.toolTip = meme.category.map { "\($0)/\(meme.name)" } ?? meme.name
+        if let thumbnail = ThumbnailCache.shared.cached(meme, maxPixelSize: MemeCell.thumbnailPixels) {
+            item.image = Self.square(thumbnail)
+        }
+        return item
+    }
+
+    /// The thumbnail cropped to a small rounded square, like a grid cell.
+    private static func square(_ image: CGImage) -> NSImage {
+        let side = thumbnailSide
+        return NSImage(size: NSSize(width: side, height: side), flipped: false) { rect in
+            NSBezierPath(roundedRect: rect, xRadius: 4, yRadius: 4).addClip()
+            let scale = max(side / CGFloat(image.width), side / CGFloat(image.height))
+            let size = NSSize(width: CGFloat(image.width) * scale, height: CGFloat(image.height) * scale)
+            NSImage(cgImage: image, size: size).draw(in: NSRect(
+                x: rect.midX - size.width / 2,
+                y: rect.midY - size.height / 2,
+                width: size.width,
+                height: size.height
+            ))
+            return true
+        }
+    }
+
+    @objc private func copyMeme(_ sender: NSMenuItem) {
+        if let meme = sender.representedObject as? Meme { onCopy(meme) }
     }
 
     @objc private func open(_ sender: Any?) { onOpen() }

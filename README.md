@@ -31,7 +31,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The meme is copied; paste it with ⌘V, or let F4 paste it for you.
 
-**Esc**, or a click outside, closes the panel.
+**Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen, and opens where you left it next time.
 
 ## Features
 
@@ -39,11 +39,15 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | --- | --- |
 | 🎞️ **GIFs stay animated** | F4 writes the file URL (`public.file-url`) and the raw bytes under the file's UTI, never a decoded `NSImage`, so Slack, Discord and Telegram paste the animation. |
 | ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the hovered or selected GIF animates. |
-| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (right-click a meme) and the ones you used last come first. |
+| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (⌘D, or right-click a meme) and the ones you used last come first. |
+| 🗂️ **GIFs and stickers** | Tabs split the panel into All, GIFs and Stickers (Tab or ⌘1–⌘3). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
+| 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), listed after your memes. Turn them off in Settings. |
+| 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one, **⌘D** pins it into your folder as a favourite, so next time it is local and instant. |
+| ➕ **Add from the panel** | Press ⌘V in the panel to add a copied GIF, sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. GIFs go into `GIFs/`, stickers into `Stickers/` in your folder. No Finder needed. |
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. This is the only feature that needs the Accessibility permission, and it is off by default. |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. |
-| 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, the meme folder, the settings and the update check. |
+| 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, copies one of your last 5 memes in a click, and leads to the meme folder, the settings and the update check. You can hide it in Settings. |
 | 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Settings → Updates). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
 | 🧩 **Raycast** | A [Raycast extension](raycast) searches the same folder, if that is where your hands already are. |
@@ -54,7 +58,7 @@ The empty state draws the basito face in code. Drop a `.basito.png` (or `.gif`, 
 
 ### Settings
 
-From the menu bar icon: the shortcut, the meme folder, open at login, auto-paste, and automatic update checks.
+From the menu bar icon: the shortcut, open at login, show in the menu bar, the meme folder, auto-paste, and automatic update checks.
 
 ---
 
@@ -150,11 +154,11 @@ open dist/F4.app
 
 ## Privacy
 
-F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. The only network request it makes is the update check against the release feed on [the website](https://kkratterf.github.io/f4/appcast.xml), which you can turn off in Settings.
+F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://kkratterf.github.io/f4/appcast.xml); GIPHY, only while you are in the GIFs or Stickers tab of the open panel; and downloading an image link you paste or drop into the panel yourself. Both the update check and GIPHY can be turned off in Settings.
 
 ## FAQ
 
-**Which files does it understand?** GIF, PNG and JPEG today. WebP, HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
+**Which files does it understand?** GIF, PNG, JPEG and WebP (WhatsApp and Telegram stickers). HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
 
 **Where do the memes come from?** From you. F4 ships with no images at all: no stills, no GIF packs, nothing copyrighted.
 
@@ -172,7 +176,7 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the short 
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). The animated emoji in the starter pack are [Noto Emoji](https://googlefonts.github.io/noto-emoji-animation/) by Google, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), downscaled for F4.
 
 ---
 
