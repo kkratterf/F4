@@ -23,7 +23,7 @@ name: Release
 # Auto-update with Sparkle. When the SPARKLE_ED_PRIVATE_KEY secret is set, the
 # zip is signed with Sparkle's sign_update and, for non-pre-release versions,
 # added to site/appcast.xml, committed to main and deployed to GitHub Pages
-# (https://kkratterf.github.io/f4/appcast.xml). Without the secret these steps
+# (https://f4.kkratter.com/appcast.xml). Without the secret these steps
 # are skipped with a warning and the app simply does not update itself.
 #   SPARKLE_ED_PRIVATE_KEY   private EdDSA key (Sparkle's `generate_keys -x`);
 #                            its public half is SUPublicEDKey in Resources/Info.plist
