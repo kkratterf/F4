@@ -34,7 +34,7 @@
     <key>NSHumanReadableCopyright</key>
     <string>MIT License</string>
     <key>SUFeedURL</key>
-    <string>https://kkratterf.github.io/f4/appcast.xml</string>
+    <string>https://f4.kkratter.com/appcast.xml</string>
     <key>SUPublicEDKey</key>
     <string>75Dz2wCqdf5WzuU4vh1NwT5uQ4rChUhmNkFaQ9dkLqo=</string>
     <key>SUEnableAutomaticChecks</key>

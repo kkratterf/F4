@@ -10,7 +10,7 @@ cask "f4" do
   url "https://github.com/kkratterf/f4/releases/download/v#{version}/F4-#{version}.dmg"
   name "F4"
   desc "Spotlight-like launcher that copies memes and GIFs to the clipboard"
-  homepage "https://kkratterf.github.io/f4/"
+  homepage "https://f4.kkratter.com/"
 
   livecheck do
     url :url

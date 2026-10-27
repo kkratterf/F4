@@ -3,7 +3,7 @@
 Rules for AI coding agents (Claude, Codex, Copilot, Cursor, ...) and humans working on F4.
 Read this file before changing anything. If a rule here conflicts with an instruction from the maintainer, the maintainer wins.
 
-Agents that want to **use** F4 rather than change it (find out what it does, install it, explain it to someone) should read [`site/llms.txt`](site/llms.txt) and [`site/llms-full.txt`](site/llms-full.txt), also served at https://kkratterf.github.io/f4/llms.txt and https://kkratterf.github.io/f4/llms-full.txt.
+Agents that want to **use** F4 rather than change it (find out what it does, install it, explain it to someone) should read [`site/llms.txt`](site/llms.txt) and [`site/llms-full.txt`](site/llms-full.txt), also served at https://f4.kkratter.com/llms.txt and https://f4.kkratter.com/llms-full.txt.
 
 ## What this repo is
 
@@ -36,7 +36,7 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `install.sh` | One-line installer and uninstaller (POSIX `sh`, checked with ShellCheck) |
 | `.github/workflows/ci.yml` | CI on every PR and push to `main` (see below) |
 | `.github/workflows/release.yml` | Publishes a release when a version bump lands on `main` |
-| `.github/workflows/pages.yml` | Deploys `site/` to GitHub Pages |
+| `.github/workflows/pages.yml` | Deploys `site/` to GitHub Pages, served at https://f4.kkratter.com (the custom domain is set in the repository's Pages settings, so no `CNAME` file is needed) |
 | `.github/release.yml` | How release notes are grouped by PR label |
 | `.github/ISSUE_TEMPLATE/`, `.github/pull_request_template.md` | Issue forms (bug, feature) and the PR template |
 | `README.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE` | User docs, the short contributor guide, how to report a vulnerability, MIT |
@@ -156,10 +156,10 @@ Agent platforms that assign their own branch names (e.g. `claude/...`) are fine;
 2. Optional, after a change to the pipeline: run `release.yml` by hand with `dry_run` and read its summary and artifact.
 3. Open a PR `chore(release): vX.Y.Z` that **only** changes `CFBundleShortVersionString` in `Resources/Info.plist`. Labels: `ci`, `skip-changelog`, the version label. It closes the version's release issue if there is one.
 4. Merge it when CI is green. On `main`, `release.yml` then runs on its own: it skips if the tag exists, otherwise tests, builds, and publishes the tag `vX.Y.Z` with `F4-X.Y.Z.zip`, `F4-X.Y.Z.dmg`, `F4.dmg` (the same DMG under the fixed name the website links) and `SHA256SUMS.txt`; signs the zip with `SPARKLE_ED_PRIVATE_KEY`; commits the appcast entry and the cask bump to `main`; redeploys the site.
-5. Check the result: the release page, `https://github.com/kkratterf/f4/releases/latest/download/F4.dmg`, the new `<item>` in `https://kkratterf.github.io/f4/appcast.xml`, and `version` in `Casks/f4.rb`.
+5. Check the result: the release page, `https://github.com/kkratterf/f4/releases/latest/download/F4.dmg`, the new `<item>` in `https://f4.kkratter.com/appcast.xml`, and `version` in `Casks/f4.rb`.
 6. If the run fails before the GitHub Release is created, nothing was tagged: fix the cause in a PR, then run `release.yml` by hand (`workflow_dispatch`). If it fails after (pushing the appcast and the cask), the release is out and a re-run would stop at the tag check: land the appcast entry (`scripts/update-appcast.py` with the signature from the run's log) and the cask bump in a PR. Never delete or move a published tag.
 
-Updates reach users through Sparkle: the public half of the signing key is `SUPublicEDKey` in `Resources/Info.plist` and must match the `SPARKLE_ED_PRIVATE_KEY` secret. Never change the public key: every installed copy would reject the next update. Without the secret the workflow warns and the app simply does not update.
+Updates reach users through Sparkle: the public half of the signing key is `SUPublicEDKey` in `Resources/Info.plist` and must match the `SPARKLE_ED_PRIVATE_KEY` secret. Never change the public key: every installed copy would reject the next update. Without the secret the workflow warns and the app simply does not update. Copies up to 0.3.1 read the feed at the old `https://kkratterf.github.io/f4/appcast.xml`, which GitHub Pages redirects to the custom domain: keep the custom domain set on this repository's Pages, or those copies stop updating.
 
 ## Merging
 
