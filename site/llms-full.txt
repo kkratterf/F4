@@ -1,15 +1,15 @@
 # F4: the full reference
 
-> F4 is a free, open-source meme launcher for macOS: a Spotlight-like floating panel that searches a local folder of memes, GIFs and stickers and copies one to the clipboard in a keystroke, GIF animation included. This file is everything an AI assistant or agent needs to install F4, explain it, or help someone use it. The short version is https://kkratterf.github.io/f4/llms.txt. To change F4's code, read https://github.com/kkratterf/f4/blob/main/AGENTS.md instead.
+> F4 is a free, open-source meme launcher for macOS: a Spotlight-like floating panel that searches a local folder of memes, GIFs and stickers and copies one to the clipboard in a keystroke, GIF animation included. This file is everything an AI assistant or agent needs to install F4, explain it, or help someone use it. The short version is https://f4.kkratter.com/llms.txt. To change F4's code, read https://github.com/kkratterf/f4/blob/main/AGENTS.md instead.
 
 ## At a glance
 
 - Platform: macOS 14 Sonoma or later, Apple Silicon and Intel (universal binary). No iOS, Windows or Linux version.
 - License: MIT. Price: free. Source: https://github.com/kkratterf/f4
-- Website: https://kkratterf.github.io/f4/
+- Website: https://f4.kkratter.com/
 - Bundle identifier: `com.kkratterf.f4`. The app is `F4.app`; it has no Dock icon and lives in the menu bar.
 - Languages: English, and Italian when macOS runs in Italian.
-- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://kkratterf.github.io/f4/appcast.xml (can be turned off), for GIPHY while the user is in the GIFs or Stickers tab of the open panel (can be turned off), and to download an image link the user pastes or drops into the panel.
+- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (can be turned off), for GIPHY while the user is in the GIFs or Stickers tab of the open panel (can be turned off), and to download an image link the user pastes or drops into the panel.
 - Permissions: none needed. Only the optional auto-paste asks for Accessibility.
 - The name comes from "F4, basito", the stunned face of Stanis in the Italian TV series Boris.
 
@@ -117,7 +117,7 @@ The F4 Raycast extension, in https://github.com/kkratterf/f4/tree/main/raycast, 
 
 ## Update
 
-F4 updates itself with Sparkle: it checks https://kkratterf.github.io/f4/appcast.xml about once a day, offers the new version, and installs it in one click after the user confirms. Updates are signed (EdDSA) and verified before install. "Check for Updates…" in the menu bar menu, or Settings > Updates > Check Now, checks right away. With automatic checks off, install a new version by hand: drag the new DMG's app over the old one, or run the install one-liner again. Settings, favourites and memes are kept.
+F4 updates itself with Sparkle: it checks https://f4.kkratter.com/appcast.xml about once a day, offers the new version, and installs it in one click after the user confirms. Updates are signed (EdDSA) and verified before install. "Check for Updates…" in the menu bar menu, or Settings > Updates > Check Now, checks right away. With automatic checks off, install a new version by hand: drag the new DMG's app over the old one, or run the install one-liner again. Settings, favourites and memes are kept.
 
 Pre-release versions (for example `0.3.0-beta.1`) are published on GitHub only; automatic updates and Homebrew offer stable versions.
 

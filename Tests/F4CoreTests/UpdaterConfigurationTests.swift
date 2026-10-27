@@ -4,7 +4,7 @@ import XCTest
 final class UpdaterConfigurationTests: XCTestCase {
     /// 32 bytes, base64: the shape of a key printed by Sparkle's generate_keys.
     private let realKey = Data(repeating: 7, count: 32).base64EncodedString()
-    private let feed = "https://kkratterf.github.io/f4/appcast.xml"
+    private let feed = "https://f4.kkratter.com/appcast.xml"
     private let bundle = "/Applications/F4.app"
 
     func testPlaceholderKeyIsNotReal() {
@@ -27,7 +27,7 @@ final class UpdaterConfigurationTests: XCTestCase {
 
     func testFeedURLMustBeHTTPS() {
         XCTAssertTrue(UpdaterConfiguration.isValidFeedURL(feed))
-        XCTAssertFalse(UpdaterConfiguration.isValidFeedURL("http://kkratterf.github.io/f4/appcast.xml"))
+        XCTAssertFalse(UpdaterConfiguration.isValidFeedURL("http://f4.kkratter.com/appcast.xml"))
         XCTAssertFalse(UpdaterConfiguration.isValidFeedURL("appcast.xml"))
         XCTAssertFalse(UpdaterConfiguration.isValidFeedURL(""))
         XCTAssertFalse(UpdaterConfiguration.isValidFeedURL(nil))

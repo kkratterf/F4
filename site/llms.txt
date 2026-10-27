@@ -27,7 +27,7 @@ Key facts:
 
 ## Docs
 
-- [Full reference](https://kkratterf.github.io/f4/llms-full.txt): every setting, key, default, file location, install option and troubleshooting step, in one plain-text file
+- [Full reference](https://f4.kkratter.com/llms-full.txt): every setting, key, default, file location, install option and troubleshooting step, in one plain-text file
 - [README](https://github.com/kkratterf/f4/blob/main/README.md): every feature, settings, shortcuts, install, privacy, FAQ, build from source
 - [Releases](https://github.com/kkratterf/f4/releases): downloads and release notes
 - [Issues](https://github.com/kkratterf/f4/issues): bugs, ideas and the roadmap (labels mark area, priority and version)
