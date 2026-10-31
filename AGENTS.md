@@ -25,9 +25,10 @@ F4 is a native macOS app, a Spotlight-like floating panel to search a local fold
 | `Resources/Info.plist` | App bundle metadata: the version (`CFBundleShortVersionString`, the single source of truth for releases), `LSUIElement` (no Dock icon), the Sparkle feed (`SUFeedURL`) and public key (`SUPublicEDKey`) |
 | `raycast/` | Raycast extension (TypeScript) that searches the same meme folder; built in CI with `ray build` |
 | `scripts/build-app.sh` | Wraps the SwiftPM binary into `dist/F4.app` and `dist/F4-x.y.z.zip`: universal binary, icon, Sparkle framework, localizations, signature |
-| `scripts/build-dmg.sh` | Builds `dist/F4-x.y.z.dmg` from `dist/F4.app`: a styled drag-to-Applications window |
+| `scripts/build-dmg.sh` | Builds `dist/F4-x.y.z.dmg` from `dist/F4.app`: a drag-to-Applications window over the committed background in `Resources/dmg/` |
 | `Resources/Starter/GIFs`, `scripts/make-stickers.swift` | The starter pack: Noto Animated Emoji GIFs (CC BY 4.0) and stickers drawn at build time. `build-app.sh` puts both in `F4.app/Contents/Resources/Starter`; `MemeLibrary` lists them after the user's memes |
-| `scripts/make-icon.swift`, `scripts/make-dmg-background.swift` | Draw the app icon (the F4 keycap logo) and the DMG background in code; no image is committed |
+| `scripts/make-icon.swift` | Draws the app icon (the F4 keycap logo) in code; no image is committed |
+| `scripts/dmg-background/`, `scripts/render-dmg-background.mjs`, `Resources/dmg/` | The DMG background: the website hero (its Grainient gradient, colours and headline) as a 660×420 page, screenshotted with Playwright into `Resources/dmg/background.png` and `@2x`. The PNGs are committed because CoreGraphics can't redraw the shader and CI should not need a browser; after changing the page run `npm i -D playwright && npx playwright install chromium` and `node scripts/render-dmg-background.mjs --preview`, look at `.build/dmg-preview.png`, commit the PNGs. Icon positions and the window size must match `build-dmg.sh` |
 | `scripts/check-strings.py` | CI check: every string in the String Catalog has an Italian translation |
 | `scripts/update-appcast.py` | Adds a release to the Sparkle appcast (`site/appcast.xml`) |
 | `site/` | The project website (static HTML and CSS, no build step), deployed to GitHub Pages; it also hosts `appcast.xml`, `llms.txt`, `llms-full.txt` and `logo.svg` (the logo, also used by the README) |
@@ -74,7 +75,7 @@ python3 -m http.server -d site 8000   # preview the website at http://localhost:
 
 | Job | Runs on | Checks |
 | --- | --- | --- |
-| Build and test | macOS | `swift build`, `swift test`, builds `F4.app` and checks it (universal binary, signature, `LSUIElement`, Italian strings, icon, Sparkle framework and rpath, launches and stays up for 8 seconds), builds the DMG and mounts it to check the layout. Uploads the zip and the DMG as artifacts |
+| Build and test | macOS | `swift build`, `swift test`, builds `F4.app` and checks it (universal binary, signature, `LSUIElement`, Italian strings, icon, Sparkle framework and rpath, launches and stays up for 8 seconds), builds the DMG, mounts it to check the layout and screenshots its Finder window. Uploads the zip, the DMG and the screenshot (`F4-dmg-window`) as artifacts |
 | Lint scripts | Linux | ShellCheck on `scripts/*.sh` and `install.sh`, `check-strings.py`, a round trip of `update-appcast.py` |
 | Raycast extension | Linux | `npm ci` and `ray build` in `raycast/` |
 | Homebrew cask | macOS | `brew style` and an offline `brew audit --strict` of `Casks/f4.rb` |

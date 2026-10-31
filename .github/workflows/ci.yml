@@ -87,6 +87,30 @@ jobs:
           hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
           exit $status
 
+      - name: Screenshot the installer window
+        # Opens the DMG in Finder like a user would and captures the window
+        # at the bounds set by build-dmg.sh, so the look can be checked
+        # without a Mac. Best effort: a runner without a display just skips it.
+        continue-on-error: true
+        run: |
+          dmg=$(ls dist/F4-*.dmg)
+          mnt=$(hdiutil attach -noverify "$dmg" | grep -E 'Apple_HFS' | sed -E 's/^.*Apple_HFS[[:space:]]+//' | head -n 1)
+          open "$mnt"
+          sleep 5
+          mkdir -p dist/screenshots
+          screencapture -x -o -R 200,120,660,448 dist/screenshots/dmg-window.png
+          hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
+
+      - name: Upload the installer screenshot
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: F4-dmg-window
+          path: dist/screenshots/*.png
+          if-no-files-found: ignore
+          retention-days: 14
+
       - name: Upload the DMG
         uses: actions/upload-artifact@v4
         with:
@@ -165,6 +189,8 @@ jobs:
           tap="$(brew --repository)/Library/Taps/f4/homebrew-ci"
           mkdir -p "$tap/Casks"
           cp Casks/f4.rb "$tap/Casks/f4.rb"
+          # Newer Homebrew refuses casks from taps it has not been told to trust.
+          if brew commands --quiet | grep -qx trust; then brew trust f4/ci; fi
           if ! brew audit --cask --strict f4/ci/f4 > audit.log 2>&1; then
             cat audit.log
             # Surface the findings as annotations, so they show on the PR.
