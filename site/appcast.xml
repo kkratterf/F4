@@ -6,6 +6,16 @@
     <description>F4 updates</description>
     <language>en</language>
     <item>
+      <title>F4 0.3.2</title>
+      <pubDate>Sat, 31 Oct 2026 15:34:14 GMT</pubDate>
+      <link>https://github.com/kkratterf/f4/releases/tag/v0.3.2</link>
+      <sparkle:version>0.3.2</sparkle:version>
+      <sparkle:shortVersionString>0.3.2</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <sparkle:fullReleaseNotesLink>https://github.com/kkratterf/f4/releases/tag/v0.3.2</sparkle:fullReleaseNotesLink>
+      <enclosure url="https://github.com/kkratterf/F4/releases/download/v0.3.2/F4-0.3.2.zip" length="5479106" type="application/octet-stream" sparkle:edSignature="WYt+Nl4sSc5TnYRZ28Ek5SLVd3uXMTBpew/m13zWRlIv00wTRdCBHUn3A80aEitI9vVguTUJnv1GQSEvFTq4BQ==" />
+    </item>
+    <item>
       <title>F4 0.3.1</title>
       <pubDate>Mon, 26 Oct 2026 18:20:00 GMT</pubDate>
       <link>https://github.com/kkratterf/f4/releases/tag/v0.3.1</link>
