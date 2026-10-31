@@ -98,7 +98,7 @@ jobs:
           open "$mnt"
           sleep 5
           mkdir -p dist/screenshots
-          screencapture -x -o -R 200,120,640,448 dist/screenshots/dmg-window.png
+          screencapture -x -o -R 200,120,660,448 dist/screenshots/dmg-window.png
           hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
 
       - name: Upload the installer screenshot

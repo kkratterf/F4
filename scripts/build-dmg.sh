@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# Builds dist/F4-<version>.dmg: a styled installer window with F4.app on
-# the left and an Applications shortcut on the right, over a background
-# built like the website hero (scripts/dmg-background.html, rendered by
-# scripts/render-dmg-background.js).
+# Builds dist/F4-<version>.dmg: a styled installer window with
+# F4.app on the left, an Applications shortcut on the right and the
+# website hero as background (Resources/dmg/*.png, rendered from
+# scripts/dmg-background/background.html by scripts/render-dmg-background.mjs).
 #
 # Usage: scripts/build-dmg.sh [--rebuild]
 #   Reuses dist/F4.app when it exists (so a signed app is kept),
@@ -10,10 +10,6 @@
 #
 # Environment:
 #   SIGN_IDENTITY  codesign identity for the .dmg (default "-", ad-hoc)
-#
-# The background needs Node: Playwright and its Chromium are installed into
-# .build/dmg-tools the first time. Without Node, or offline, the DMG is
-# built without a background and a warning is printed.
 #
 # The Finder layout is set with AppleScript, which can fail on a headless
 # machine. It is retried once; if it still fails the DMG is built anyway,
@@ -27,16 +23,15 @@ WORK="$ROOT/.build/dmg"
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"
 VOLNAME="F4"
 
-# Window geometry: must match scripts/dmg-background.html.
-WIN_W=640
+# Window geometry: must match scripts/dmg-background/background.html. The
+# bounds include the ~28 pt title bar above the 660x420 background.
+WIN_W=660
 WIN_H=448
 WIN_X=200
 WIN_Y=120
-ICON_SIZE=112
-APP_POS="170, 244"
-APPS_POS="470, 244"
-# Playwright, pinned, for rendering the background.
-PLAYWRIGHT_VERSION="1.48.2"
+ICON_SIZE=128
+APP_POS="190, 222"
+APPS_POS="470, 222"
 
 warn() {
   if [ -n "${GITHUB_ACTIONS:-}" ]; then
@@ -64,26 +59,13 @@ mkdir -p "$STAGING/.background"
 ditto "$APP" "$STAGING/F4.app"
 ln -s /Applications "$STAGING/Applications"
 
-# Renders the background PNGs into $1, installing Playwright on first use.
-render_background() {
-  command -v node >/dev/null 2>&1 || { echo "node not found" >&2; return 1; }
-  local tools="$ROOT/.build/dmg-tools"
-  if ! NODE_PATH="$tools/node_modules" node -e 'require("playwright")' >/dev/null 2>&1; then
-    echo "Installing Playwright $PLAYWRIGHT_VERSION into $tools"
-    npm install --silent --no-save --no-audit --no-fund --prefix "$tools" "playwright@$PLAYWRIGHT_VERSION" || return 1
-  fi
-  "$tools/node_modules/.bin/playwright" install chromium >/dev/null || return 1
-  NODE_PATH="$tools/node_modules" node "$ROOT/scripts/render-dmg-background.js" "$1"
-}
-
 BACKGROUND=""
-if render_background "$WORK/background" \
-  && tiffutil -cathidpicheck "$WORK/background/background.png" "$WORK/background/background@2x.png" \
+if tiffutil -cathidpicheck "$ROOT/Resources/dmg/background.png" "$ROOT/Resources/dmg/background@2x.png" \
     -out "$STAGING/.background/background.tiff"; then
   BACKGROUND="background.tiff"
   echo "Created DMG background ($(wc -c < "$STAGING/.background/background.tiff" | tr -d ' ') bytes)"
 else
-  warn "could not render the DMG background, building without it"
+  warn "could not prepare the DMG background, building without it"
   rmdir "$STAGING/.background" 2>/dev/null || true
 fi
 
