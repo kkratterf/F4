@@ -25,6 +25,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var library = MemeLibrary(folder: settings.memeFolder, showsStarterPack: settings.showStarterPack)
     private let usage = UsageStore()
     private lazy var settingsWindow = SettingsWindowController(settings: settings)
+    private lazy var f4KeyWelcome = F4KeyWelcomeWindowController(settings: settings) { [weak self] in
+        self?.panel?.show()
+    }
     private var cancellables: Set<AnyCancellable> = []
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -61,10 +64,51 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         settings.$showInMenuBar
             .sink { [weak self] isOn in self?.statusItem?.isVisible = isOn }
             .store(in: &cancellables)
+        startMediaF4Key()
         // Auto-update; a no-op until Info.plist has a real Sparkle public key.
         AppUpdater.shared.start()
-        // Opening the app from Finder or Spotlight shows the panel right away.
-        panel.show()
+        if shouldOfferF4WithoutFn {
+            // Once, on a Mac whose F4 key is Spotlight or Launchpad: offer
+            // F4 alone first. The panel opens when the window closes.
+            f4KeyWelcome.show()
+        } else {
+            // Opening the app from Finder or Spotlight shows the panel right away.
+            panel.show()
+        }
+    }
+
+    private var shouldOfferF4WithoutFn: Bool {
+        !settings.didOfferF4WithoutFn
+            && !settings.pressF4WithoutFn
+            && settings.toggleShortcut.isF4Alone
+            && !HotKeyCombo.functionKeysAreStandard
+    }
+
+    /// "F4 without fn": while the setting is on and the shortcut is F4 alone,
+    /// `MediaF4KeyTap` catches the Spotlight or Launchpad key too. The Carbon
+    /// hot key stays registered, so fn F4 works with or without the tap.
+    private func startMediaF4Key() {
+        let tap = MediaF4KeyTap.shared
+        tap.onPress = { [weak self] in self?.panel?.toggle() }
+        settings.$pressF4WithoutFn
+            .combineLatest(settings.$toggleShortcut)
+            .sink { isOn, combo in
+                tap.setWanted(MediaF4Key.shouldCatch(
+                    settingIsOn: isOn,
+                    shortcutKeyCode: Int(combo.keyCode),
+                    shortcutModifiers: Int(combo.modifiers),
+                    functionKeysAreStandard: HotKeyCombo.functionKeysAreStandard
+                ))
+            }
+            .store(in: &cancellables)
+        tap.$isRunning
+            .removeDuplicates()
+            .sink { [weak self] isRunning in
+                HotKeyCombo.mediaF4KeyIsCaught = isRunning
+                guard let self else { return }
+                self.statusItem?.update(shortcut: self.settings.toggleShortcut.displayString)
+            }
+            .store(in: &cancellables)
     }
 
     /// The shortcut (the F4 key by default) shows or hides the panel from anywhere.
