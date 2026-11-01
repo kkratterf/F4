@@ -34,8 +34,10 @@ final class MemeImportTests: XCTestCase {
                 let folder = MemeImport.folder(for: kind, tab: tab)
                 let url = URL(fileURLWithPath: "/m/\(folder.map { "\($0)/" } ?? "")x.\(kind.fileExtension)")
                 let meme = Meme(url: url, kind: kind, modificationDate: .distantPast, category: folder)
+                // Adding in Favourites also marks the meme as a favourite.
+                let favourites: Set<URL> = tab == .favourites ? [url] : []
                 if tab != .gifs || kind == .gif {
-                    XCTAssertTrue(tab.contains(meme), "\(kind) added in \(tab)")
+                    XCTAssertTrue(tab.contains(meme, favourites: favourites), "\(kind) added in \(tab)")
                 }
             }
         }

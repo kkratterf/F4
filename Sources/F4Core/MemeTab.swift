@@ -1,8 +1,9 @@
 import Foundation
 
-/// The tabs of the panel: everything, GIFs only, stickers only.
+/// The tabs of the panel: everything, favourites, GIFs only, stickers only.
 public enum MemeTab: String, CaseIterable, Sendable {
     case all
+    case favourites
     case gifs
     case stickers
 
@@ -16,18 +17,20 @@ public enum MemeTab: String, CaseIterable, Sendable {
     /// A sticker is anything inside a top-level `Stickers` folder, or any PNG
     /// or WebP file: stickers are transparent PNG or WebP in practice
     /// (WhatsApp and Telegram save WebP). A GIF is any GIF outside `Stickers`.
-    /// JPEG memes only show in All.
-    public func contains(_ meme: Meme) -> Bool {
+    /// JPEG memes only show in All. Favourites shows the memes whose URL is
+    /// in `favourites`, whatever their kind.
+    public func contains(_ meme: Meme, favourites: Set<URL> = []) -> Bool {
         switch self {
         case .all: return true
+        case .favourites: return favourites.contains(meme.url)
         case .gifs: return meme.kind == .gif && !Self.isInStickersFolder(meme)
         case .stickers: return Self.isInStickersFolder(meme) || meme.kind == .png || meme.kind == .webp
         }
     }
 
     /// The memes of `memes` that show in this tab, in the same order.
-    public func filter(_ memes: [Meme]) -> [Meme] {
-        self == .all ? memes : memes.filter(contains)
+    public func filter(_ memes: [Meme], favourites: Set<URL> = []) -> [Meme] {
+        self == .all ? memes : memes.filter { contains($0, favourites: favourites) }
     }
 
     /// The tab after (or before) this one, wrapping around: Tab and ⇧Tab.

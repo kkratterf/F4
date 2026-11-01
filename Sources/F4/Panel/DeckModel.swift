@@ -20,6 +20,10 @@ final class DeckModel: ObservableObject {
         }
     }
     @Published private(set) var results: [Meme] = []
+    /// How many of the first `results` are favourites shown under their own
+    /// "Favourites" heading: with an empty search, outside the Favourites tab.
+    /// 0 when the grid has no sections.
+    @Published private(set) var favouriteCount = 0
     /// The GIPHY row after the local results, in the GIFs and Stickers tabs.
     @Published private(set) var webResults: [Giphy.Result] = []
     /// Index into `results` followed by `webResults`. Reset to the best
@@ -72,6 +76,12 @@ final class DeckModel: ObservableObject {
     /// Local results and GIPHY results together: what the grid shows.
     var itemCount: Int { results.count + webResults.count }
 
+    /// The sizes of the grid's sections, in order: favourites and the rest
+    /// (or all results), then GIPHY. Each section starts on a new row.
+    var sections: [Int] {
+        (favouriteCount > 0 ? [favouriteCount, results.count - favouriteCount] : [results.count]) + [webResults.count]
+    }
+
     /// The GIPHY result under the selection, when it is past the local results.
     var selectedWebResult: Giphy.Result? {
         let index = selection - results.count
@@ -86,7 +96,7 @@ final class DeckModel: ObservableObject {
     @discardableResult
     func move(_ direction: GridDirection) -> Bool {
         guard itemCount > 0 else { return false }
-        selection = GridNavigation.move(direction, from: selection, count: itemCount, columns: Self.columns)
+        selection = GridNavigation.move(direction, from: selection, sections: sections, columns: Self.columns)
         return true
     }
 
@@ -139,7 +149,7 @@ final class DeckModel: ObservableObject {
         let selected = selectedMeme
         let egg = query.isEmpty && konamiActive ? EasterEggs.konami : EasterEggs.match(query)
         if easterEgg != egg { easterEgg = egg }
-        let memes = tab.filter(library.memes)
+        let memes = tab.filter(library.memes, favourites: usage.favourites)
         let arranged = { MemeOrdering.arrange(memes, favourites: self.usage.favourites, recents: self.usage.recents) }
         if let egg, egg.showsAllMemes {
             switch egg.effect {
@@ -155,8 +165,14 @@ final class DeckModel: ObservableObject {
         } else {
             results = FuzzySearch.filter(memes, query: query)
         }
+        // Favourites get their own heading on the home grid, so it is clear
+        // where they are; the Favourites tab and search results have none.
+        let sectioned = egg == nil && tab != .favourites && query.trimmingCharacters(in: .whitespaces).isEmpty
+        let count = sectioned ? results.prefix { usage.favourites.contains($0.url) }.count : 0
+        // A heading over everything would add nothing.
+        favouriteCount = count < results.count ? count : 0
         if let pendingReveal, let meme = library.memes.first(where: { $0.url.standardizedFileURL == pendingReveal }) {
-            if !tab.contains(meme) {
+            if !tab.contains(meme, favourites: usage.favourites) {
                 // Setting the tab refreshes again and lands in the branch below.
                 tab = .all
                 return

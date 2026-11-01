@@ -31,9 +31,7 @@ struct DeckView: View {
                 Image(systemName: "magnifyingglass")
                     .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(.secondary)
-                // F4 is named after the "F4, basito" face from Boris: the
-                // placeholder stays Italian in every language, it's the joke.
-                TextField(text: $model.query, prompt: Text(verbatim: "Cerca un F4 basito...")) {
+                TextField(text: $model.query, prompt: Text("Search…")) {
                     Text("Search memes")
                 }
                     .textFieldStyle(.plain)
@@ -234,6 +232,12 @@ struct DeckView: View {
                 systemImage: "seal",
                 description: Text("In WhatsApp or Telegram, right-click a sticker and copy it, then press ⌘V here. Or drop stickers on the panel.")
             )
+        case .favourites:
+            ContentUnavailableView(
+                "No favourites yet",
+                systemImage: "star",
+                description: Text("Click the star on a meme, or select it and press ⌘D, to keep it here. Do it again to remove it.")
+            )
         case .all:
             ContentUnavailableView.search(text: model.query)
         }
@@ -263,44 +267,28 @@ struct DeckView: View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVGrid(columns: gridColumns, spacing: 10) {
-                    ForEach(Array(model.results.enumerated()), id: \.element.id) { index, meme in
-                        MemeCell(
-                            meme: meme,
-                            isSelected: index == model.selection,
-                            isFavourite: model.usage.isFavourite(meme)
-                        )
-                        .id(meme.id)
-                        .onTapGesture { onPick(meme) }
-                        .contextMenu {
-                            Button("Copy") { onPick(meme) }
-                            Button(model.usage.isFavourite(meme)
-                                ? LocalizedStringKey("Remove from Favourites")
-                                : LocalizedStringKey("Add to Favourites")) {
-                                model.usage.toggleFavourite(meme)
-                            }
-                            // Starter memes live inside the app bundle.
-                            if !library.isStarter(meme) {
-                                Divider()
-                                Button("Show in Finder") {
-                                    NSWorkspace.shared.activateFileViewerSelecting([meme.url])
-                                }
-                            }
+                    // Each section starts on a new row, which is what
+                    // `DeckModel.sections` tells the arrow keys.
+                    if model.favouriteCount > 0 {
+                        Section {
+                            memeCells(0..<model.favouriteCount)
+                        } header: {
+                            SectionHeader(title: "Favourites")
                         }
+                        Section {
+                            memeCells(model.favouriteCount..<model.results.count)
+                        } header: {
+                            SectionHeader(title: "Everything else")
+                        }
+                    } else {
+                        memeCells(model.results.indices)
                     }
-                    ForEach(Array(model.webResults.enumerated()), id: \.element.id) { offset, result in
-                        WebMemeCell(
-                            result: result,
-                            giphy: model.giphy,
-                            isSelected: model.results.count + offset == model.selection
-                        )
-                        .id(result.id)
-                        .onTapGesture { onPickWeb(result) }
-                        .contextMenu {
-                            Button("Copy") { onPickWeb(result) }
-                            Button("Pin to F4") { onPinWeb(result) }
-                            if let page = result.pageURL {
-                                Divider()
-                                Button("Open on GIPHY") { NSWorkspace.shared.open(page) }
+                    if !model.webResults.isEmpty {
+                        Section {
+                            webCells
+                        } header: {
+                            if !model.results.isEmpty {
+                                SectionHeader(title: "From GIPHY")
                             }
                         }
                     }
@@ -325,7 +313,75 @@ struct DeckView: View {
     }
 }
 
-/// All · GIFs · Stickers, under the search field. Tab and ⌘1–3 switch too
+extension DeckView {
+    /// The cells of `model.results` in `range`.
+    fileprivate func memeCells(_ range: Range<Int>) -> some View {
+        ForEach(Array(model.results[range].enumerated()), id: \.element.id) { offset, meme in
+            memeCell(meme, at: range.lowerBound + offset)
+        }
+    }
+
+    private func memeCell(_ meme: Meme, at index: Int) -> some View {
+        MemeCell(
+            meme: meme,
+            isSelected: index == model.selection,
+            isFavourite: model.usage.isFavourite(meme),
+            onToggleFavourite: { model.usage.toggleFavourite(meme) }
+        )
+        .id(meme.id)
+        .onTapGesture { onPick(meme) }
+        .contextMenu {
+            Button("Copy") { onPick(meme) }
+            Button(model.usage.isFavourite(meme)
+                ? LocalizedStringKey("Remove from Favourites")
+                : LocalizedStringKey("Add to Favourites")) {
+                model.usage.toggleFavourite(meme)
+            }
+            // Starter memes live inside the app bundle.
+            if !library.isStarter(meme) {
+                Divider()
+                Button("Show in Finder") {
+                    NSWorkspace.shared.activateFileViewerSelecting([meme.url])
+                }
+            }
+        }
+    }
+
+    fileprivate var webCells: some View {
+        ForEach(Array(model.webResults.enumerated()), id: \.element.id) { offset, result in
+            WebMemeCell(
+                result: result,
+                giphy: model.giphy,
+                isSelected: model.results.count + offset == model.selection
+            )
+            .id(result.id)
+            .onTapGesture { onPickWeb(result) }
+            .contextMenu {
+                Button("Copy") { onPickWeb(result) }
+                Button("Pin to F4") { onPinWeb(result) }
+                if let page = result.pageURL {
+                    Divider()
+                    Button("Open on GIPHY") { NSWorkspace.shared.open(page) }
+                }
+            }
+        }
+    }
+}
+
+/// A heading over a section of the grid: "Favourites", "Everything else".
+private struct SectionHeader: View {
+    let title: LocalizedStringKey
+
+    var body: some View {
+        Text(title)
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.top, 4)
+    }
+}
+
+/// All · Favourites · GIFs · Stickers, under the search field. Tab and ⌘1–4 switch too
 /// (`PanelController`).
 private struct TabBar: View {
     @Binding var selection: MemeTab
@@ -364,6 +420,7 @@ private struct TabBar: View {
     private static func title(_ tab: MemeTab) -> LocalizedStringKey {
         switch tab {
         case .all: return "All"
+        case .favourites: return "Favourites"
         case .gifs: return "GIFs"
         case .stickers: return "Stickers"
         }

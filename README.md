@@ -39,10 +39,10 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | --- | --- |
 | 🎞️ **GIFs stay animated** | F4 writes the file URL (`public.file-url`) and the raw bytes under the file's UTI, never a decoded `NSImage`, so Slack, Discord and Telegram paste the animation. |
 | ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the hovered or selected GIF animates. |
-| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (⌘D, or right-click a meme) and the ones you used last come first. |
-| 🗂️ **GIFs and stickers** | Tabs split the panel into All, GIFs and Stickers (Tab or ⌘1–⌘3). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
+| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (click the star on a meme, or ⌘D) get their own section on top, then the ones you used last. |
+| 🗂️ **GIFs and stickers** | Tabs split the panel into All, Favourites, GIFs and Stickers (Tab or ⌘1–⌘4). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
 | 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), listed after your memes. Turn them off in Settings. |
-| 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one, **⌘D** pins it into your folder as a favourite, so next time it is local and instant. |
+| 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one and saves it in your folder, so next time it is local, instant and offline; **⌘D** saves it as a favourite. |
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied GIF, sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. GIFs go into `GIFs/`, stickers into `Stickers/` in your folder. No Finder needed. |
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. This is the only feature that needs the Accessibility permission, and it is off by default. |

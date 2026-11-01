@@ -12,7 +12,7 @@ public enum Giphy {
     /// The catalogue a tab searches, or nil for a tab with no GIPHY row.
     public static func catalogue(for tab: MemeTab) -> Catalogue? {
         switch tab {
-        case .all: return nil
+        case .all, .favourites: return nil
         case .gifs: return .gifs
         case .stickers: return .stickers
         }
@@ -78,6 +78,13 @@ public enum Giphy {
             self.stillURL = stillURL
             self.fileURL = fileURL
         }
+
+        /// Names the result once saved in the meme folder ("gifs-abc123"),
+        /// so copying or pinning it again reuses the same file.
+        public var saveKey: String { "\(catalogue.rawValue)-\(id)" }
+
+        /// The tab whose folder the result is saved in: GIFs or Stickers.
+        public var tab: MemeTab { catalogue == .stickers ? .stickers : .gifs }
 
         /// A file name for a pinned result: the title without GIPHY's
         /// " GIF by …" / " Sticker by …" tail ("happy dance").
