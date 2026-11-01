@@ -14,6 +14,8 @@ struct MemeCell: View {
     let meme: Meme
     let isSelected: Bool
     var isFavourite = false
+    /// The star in the corner: adds or removes the favourite.
+    var onToggleFavourite: (() -> Void)?
 
     @State private var image: CGImage?
     @State private var isHovered = false
@@ -61,13 +63,27 @@ struct MemeCell: View {
                 }
             }
             .overlay(alignment: .topLeading) {
-                if isFavourite {
-                    Image(systemName: "star.fill")
-                        .font(.system(size: 10, weight: .bold))
-                        .foregroundStyle(.yellow)
-                        .shadow(radius: 1)
-                        .padding(5)
-                        .accessibilityLabel("Favourite")
+                // Always there on a favourite, on hover otherwise: a click
+                // adds or removes the favourite without copying the meme.
+                if isFavourite || isHovered {
+                    Button {
+                        onToggleFavourite?()
+                    } label: {
+                        Image(systemName: isFavourite ? "star.fill" : "star")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(isFavourite ? Color.yellow : Color.white)
+                            .shadow(color: .black.opacity(0.6), radius: 1.5)
+                            .padding(5)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(onToggleFavourite == nil)
+                    .help(isFavourite
+                        ? LocalizedStringKey("Remove from Favourites")
+                        : LocalizedStringKey("Add to Favourites"))
+                    .accessibilityLabel(isFavourite
+                        ? LocalizedStringKey("Remove from Favourites")
+                        : LocalizedStringKey("Add to Favourites"))
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 8))

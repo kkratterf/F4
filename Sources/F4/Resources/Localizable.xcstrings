@@ -134,12 +134,12 @@
         }
       }
     },
-    "Choose GIFs and stickers to add to F4": {
+    "Choose GIFs and stickers to add. F4 copies them into its own folder, so the originals can stay where they are.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scegli le GIF e gli sticker da aggiungere a F4"
+            "value": "Scegli le GIF e gli sticker da aggiungere. F4 li copia nella sua cartella, gli originali possono restare dove sono."
           }
         }
       }
@@ -160,6 +160,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Scegli…"
+          }
+        }
+      }
+    },
+    "Click the star on a meme, or select it and press ⌘D, to keep it here. Do it again to remove it.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clicca la stella su un meme, o selezionalo e premi ⌘D, per tenerlo qui. Rifallo per toglierlo."
           }
         }
       }
@@ -224,6 +234,16 @@
         }
       }
     },
+    "Everything else": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto il resto"
+          }
+        }
+      }
+    },
     "F4 Settings": {
       "localizations": {
         "it": {
@@ -275,12 +295,12 @@
         }
       }
     },
-    "Favourite": {
+    "Favourites": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Preferito"
+            "value": "Preferiti"
           }
         }
       }
@@ -291,6 +311,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cartella"
+          }
+        }
+      }
+    },
+    "From GIPHY": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Da GIPHY"
           }
         }
       }
@@ -351,6 +381,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ancora nessuna GIF"
+          }
+        }
+      }
+    },
+    "No favourites yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora nessun preferito"
           }
         }
       }
@@ -581,6 +621,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cerca meme"
+          }
+        }
+      }
+    },
+    "Search…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca…"
           }
         }
       }
