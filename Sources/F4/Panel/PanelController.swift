@@ -208,6 +208,13 @@ final class PanelController: NSObject, NSWindowDelegate {
         show(keepingQuery: false)
     }
 
+    /// Opens the panel with `query` already typed in (`f4://search`).
+    func show(query: String) {
+        model.prepareForShow()
+        model.query = query
+        show(keepingQuery: true)
+    }
+
     private func show(keepingQuery: Bool) {
         if !keepingQuery { model.prepareForShow() }
         position(on: screenWithMouse())

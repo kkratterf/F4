@@ -115,6 +115,23 @@ The empty state draws the basito face in code. A file named `.basito.png`, `.bas
 
 The F4 Raycast extension, in https://github.com/kkratterf/f4/tree/main/raycast, has one command, "Search Memes", that searches the same folder (set in the extension preferences, `~/Pictures/Memes` by default) and copies or pastes a meme as a file, so GIFs stay animated there too. It is not in the Raycast Store yet; install it from the repository with `cd raycast && npm install && npm run dev`.
 
+## Automation: f4:// URLs
+
+Anything that can open a URL can drive F4: Shortcuts ("Open URLs"), Raycast or Alfred quicklinks, a Stream Deck, AppleScript, a shell script or an AI agent with a terminal (`open "f4://copy?name=this%20is%20fine"`). Query values are URL-encoded; `+` also counts as a space.
+
+| URL | What it does |
+| --- | --- |
+| `f4://open` | Shows the panel |
+| `f4://search?q=this%20is%20fine` | Shows the panel with the search typed in |
+| `f4://copy?name=this%20is%20fine` | Copies the best match without showing the panel (beeps if nothing matches) |
+| `f4://reload` | Rescans the meme folder |
+| `f4://settings` | Opens Settings |
+
+- `f4://copy` copies the meme the panel would show first for that search: the best fuzzy match, with favourites and then recently copied memes winning a tie. It counts as a copy (it moves to the top of the recents) but never auto-pastes, even with auto-paste on. Nothing matches: F4 beeps and the clipboard is left alone.
+- Commands are case-insensitive. `f4:open` and a trailing slash work too; `q` and `query` are accepted for search, `name`, `q` and `query` for copy.
+- If F4 is not running, the URL starts it and then does what it asks (a copy waits for the first folder scan, and shows nothing).
+- Unknown commands are ignored.
+
 ## Update
 
 F4 updates itself with Sparkle: it checks https://f4.kkratter.com/appcast.xml about once a day, offers the new version, and installs it in one click after the user confirms. Updates are signed (EdDSA) and verified before install. "Check for Updates…" in the menu bar menu, or Settings > Updates > Check Now, checks right away. With automatic checks off, install a new version by hand: drag the new DMG's app over the old one, or run the install one-liner again. Settings, favourites and memes are kept.
@@ -161,6 +178,6 @@ open dist/F4.app
 - No cloud sync, no meme search on the internet, no bundled meme packs: F4 shows only the user's own files.
 - One meme folder at a time (with subfolders).
 - No tags beyond folder names, no OCR of the text inside images.
-- No URL scheme, Shortcuts actions, command line tool or MCP server yet. They are planned so that scripts and AI agents can search and copy memes; until then an agent can work with the meme folder directly (it is a plain folder of files) and with the Raycast extension.
+- No Shortcuts actions, command line tool or MCP server yet; they are planned. Until then scripts and AI agents use the `f4://` URLs above, the meme folder directly (it is a plain folder of files) or the Raycast extension.
 
 The roadmap is the issue list, labelled by version: https://github.com/kkratterf/f4/issues

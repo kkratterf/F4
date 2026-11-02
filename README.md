@@ -56,6 +56,20 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 
 The empty state draws the basito face in code. Drop a `.basito.png` (or `.gif`, `.jpg`) in the meme folder to use your own face instead. Typing a few lines from Boris or The Office in the search field — or the Konami code — does something. Find out which.
 
+### Automation: `f4://` URLs
+
+Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 by opening a URL, for example `open "f4://copy?name=this%20is%20fine"` in Terminal.
+
+| URL | What it does |
+| --- | --- |
+| `f4://open` | Shows the panel |
+| `f4://search?q=this%20is%20fine` | Shows the panel with the search typed in |
+| `f4://copy?name=this%20is%20fine` | Copies the best match without showing the panel (beeps if nothing matches) |
+| `f4://reload` | Rescans the meme folder |
+| `f4://settings` | Opens Settings |
+
+`f4://copy` picks the meme the panel would put first for that search (favourites and recents win a tie) and never auto-pastes. If F4 is not running, the URL starts it.
+
 ### Settings
 
 From the menu bar icon: the shortcut, open at login, show in the menu bar, the meme folder, auto-paste, and automatic update checks.
@@ -166,7 +180,7 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 **F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works. Or record another shortcut in Settings.
 
-**Can a script or an AI assistant use F4?** Not yet, but it is being built: a `f4://` URL scheme, Shortcuts actions, a command line tool and an MCP server. Until then, facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
+**Can a script or an AI assistant use F4?** Yes, with [`f4://` URLs](#automation-f4-urls): `open "f4://copy?name=basito"` copies a meme from anywhere. Shortcuts actions, a command line tool and an MCP server are on the way. Facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
 
 ---
 
