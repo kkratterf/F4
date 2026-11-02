@@ -8,6 +8,9 @@ final class MemeLibrary: ObservableObject {
     @Published private(set) var memes: [Meme] = []
     /// Set when the folder cannot be read.
     @Published private(set) var error: String?
+    /// True once the first scan has finished, so a command that needs the
+    /// memes (`f4://copy` at launch) can wait for them.
+    @Published private(set) var hasLoaded = false
 
     @Published private(set) var folder: URL
     /// Whether the starter pack is listed after the user's memes.
@@ -79,6 +82,7 @@ final class MemeLibrary: ObservableObject {
                 }
             }.value
             guard !Task.isCancelled, let self else { return }
+            defer { if !self.hasLoaded { self.hasLoaded = true } }
             switch result {
             case .success(let memes):
                 self.memes = memes
