@@ -38,8 +38,8 @@ try {
     await tab.waitForTimeout(SETTLE_MS);
     const live = await tab.evaluate(() => document.querySelector('.grainient').classList.contains('is-live'));
     if (!live) throw new Error('the gradient did not start (no WebGL 2?)');
-    const serif = await tab.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter(f => f.family.replace(/"/g, '') === 'DM Serif Display' && f.status === 'loaded').length; });
-    if (serif < 2) throw new Error('DM Serif Display did not load (site/fonts/dm-serif-display-latin-400*.woff2 missing?)');
+    const display = await tab.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter(f => f.family.replace(/"/g, '') === 'Bricolage Grotesque' && f.status === 'loaded').length; });
+    if (display < 1) throw new Error('Bricolage Grotesque did not load (site/fonts/bricolage-grotesque-latin.wght.woff2 missing?)');
     mkdirSync(dirname(join(root, out)), { recursive: true });
     await tab.locator('#bg').screenshot({ path: join(root, out) });
     console.log(`Wrote ${out}`);
