@@ -50,8 +50,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     }
 
     /// "F4" in Inter Display Black, in the logo's 1024 design space (y down,
-    /// centred on (512, 458)): the same outlines as scripts/make-icon.swift
-    /// and site/logo.svg. The third outline is the hole in the 4.
+    /// centred on (512, 458)): the same outlines as site/logo.svg. The third outline is the hole in the 4.
     private static let glyphOutlines: [[(CGFloat, CGFloat)]] = [
         [(311.1, 578), (378.1, 578), (378.1, 491.7), (484.9, 491.7), (484.9, 437.2), (378.1, 437.2), (378.1, 394.7), (491.3, 394.7), (491.3, 338), (311.1, 338)],
         [(506.1, 531.6), (623.4, 531.6), (623.4, 578), (686.2, 578), (686.2, 531.6), (712.9, 531.6), (712.9, 482.3), (686.2, 482.3), (686.2, 338), (603.9, 338), (506.1, 481)],
