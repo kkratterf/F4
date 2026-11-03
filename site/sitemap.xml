@@ -1,9 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://f4.kkratter.com/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://f4.kkratter.com/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://f4.kkratter.com/it/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://f4.kkratter.com/"/>
   </url>
   <url>
-    <loc>https://f4.kkratter.com/faq.html</loc>
+    <loc>https://f4.kkratter.com/it/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://f4.kkratter.com/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://f4.kkratter.com/it/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://f4.kkratter.com/"/>
+  </url>
+  <url>
+    <loc>https://f4.kkratter.com/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://f4.kkratter.com/faq/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://f4.kkratter.com/it/faq/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://f4.kkratter.com/faq/"/>
+  </url>
+  <url>
+    <loc>https://f4.kkratter.com/it/faq/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://f4.kkratter.com/faq/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://f4.kkratter.com/it/faq/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://f4.kkratter.com/faq/"/>
   </url>
 </urlset>

@@ -1,0 +1,42 @@
+<!doctype html>
+<!-- Social preview cards (og.jpg, og-it.jpg), rendered by scripts/render-og.mjs.
+     #it switches the copy to Italian.
+     Bricolage Grotesque is by Ateliertriay, SIL Open Font License 1.1 (site/fonts/). -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Bricolage Grotesque"; font-weight: 200 800; src: url(../../site/fonts/bricolage-grotesque-latin.wght.woff2) format("woff2"); }
+  html, body { margin: 0; background: #0a0908; }
+  #card { position: relative; width: 1200px; height: 630px; overflow: hidden; font-family: Inter, -apple-system, system-ui, sans-serif; color: #f4efe9; }
+  .grainient, .grainient canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(10 9 8 / 72%) 0%, rgb(10 9 8 / 35%) 55%, rgb(10 9 8 / 0%) 100%); }
+  .copy { position: absolute; left: 80px; top: 72px; bottom: 72px; width: 640px; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 16px; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-variation-settings: "opsz" 96; font-size: 40px; letter-spacing: -0.03em; }
+  .brand img { width: 60px; height: 60px; border-radius: 15px; object-fit: cover; }
+  h1 { margin: auto 0 0; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-variation-settings: "opsz" 96; font-size: 68px; line-height: 1.02; letter-spacing: -0.03em; }
+  h1 span { display: block; color: #ffd36e; }
+  p { margin: 28px 0 0; font-weight: 500; font-size: 27px; color: rgb(244 239 233 / 72%); letter-spacing: -0.01em; }
+  .face { position: absolute; right: 76px; top: 50%; width: 370px; height: 370px; transform: translateY(-50%) rotate(3deg);
+          border-radius: 86px; overflow: hidden; box-shadow: 0 30px 80px rgb(0 0 0 / 45%), 0 0 0 1px rgb(255 255 255 / 14%); }
+  .face img { width: 100%; height: 100%; display: block; object-fit: cover; }
+</style>
+</head>
+<body>
+<div id="card">
+  <div class="grainient" data-grainient data-colors="#0a0908,#1f1404,#7a4a06,#ffab1a,#ffc43d" data-angle="20" data-speed="0.8" data-flow="0.9" data-silk="0.3" data-grain-amount="0.03" data-dpr="1"><canvas></canvas></div>
+  <div class="shade"></div>
+  <div class="copy">
+    <div class="brand"><img src="../../Resources/logo/logo.png" alt=""> F4</div>
+    <h1 data-en="Your shortcut<span>to every meme</span>" data-it="La tua scorciatoia<span>per ogni meme</span>"></h1>
+    <p data-en="Free meme and GIF search for the Mac" data-it="Cerca meme e GIF sul Mac, gratis"></p>
+  </div>
+  <div class="face"><img src="../../Resources/logo/logo.png" alt=""></div>
+</div>
+<script>
+  const lang = location.hash === '#it' ? 'it' : 'en';
+  for (const el of document.querySelectorAll('[data-en]')) el.innerHTML = el.dataset[lang];
+</script>
+<script src="../../site/grainient.js"></script>
+</body>
+</html>
