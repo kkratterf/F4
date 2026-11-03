@@ -7,10 +7,14 @@ final class UsageStore: ObservableObject {
     private enum Key {
         static let favourites = "favouriteMemes"
         static let recents = "recentMemes"
+        static let savedWebMemes = "savedGiphyMemes"
     }
 
     @Published private(set) var favourites: Set<URL>
     @Published private(set) var recents: [URL]
+    /// GIPHY results already saved in the meme folder, by `Giphy.Result`
+    /// catalogue and id ("gifs-abc123"), so copying one again reuses the file.
+    private var savedWebMemes: [String: String]
 
     private let defaults: UserDefaults
 
@@ -21,6 +25,7 @@ final class UsageStore: ObservableObject {
         }
         favourites = Set(urls(Key.favourites))
         recents = urls(Key.recents)
+        savedWebMemes = defaults.dictionary(forKey: Key.savedWebMemes) as? [String: String] ?? [:]
     }
 
     func isFavourite(_ meme: Meme) -> Bool {
@@ -40,6 +45,18 @@ final class UsageStore: ObservableObject {
     func addFavourite(_ url: URL) {
         favourites.insert(url)
         defaults.set(favourites.map(\.path).sorted(), forKey: Key.favourites)
+    }
+
+    /// The file a GIPHY result was saved as, if it is still there.
+    func savedFile(forWebMeme key: String) -> URL? {
+        guard let path = savedWebMemes[key], FileManager.default.fileExists(atPath: path) else { return nil }
+        return URL(fileURLWithPath: path)
+    }
+
+    /// Remembers that the GIPHY result `key` was saved at `url`.
+    func recordSave(ofWebMeme key: String, at url: URL) {
+        savedWebMemes[key] = url.path
+        defaults.set(savedWebMemes, forKey: Key.savedWebMemes)
     }
 
     func recordCopy(_ meme: Meme) {

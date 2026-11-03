@@ -3,8 +3,13 @@ import SwiftUI
 
 /// A regular window for the settings. F4 is an accessory app with no main
 /// menu, so it owns this window instead of relying on SwiftUI's `Settings` scene.
+///
+/// While the window is open F4 turns into a regular app (Dock icon, ⌘Tab).
+/// An accessory app's window opens over whatever is in front, even a
+/// full-screen app on its own Space; a regular app's window opens on a
+/// desktop like any other app's. F4 goes back to the menu bar on close.
 @MainActor
-final class SettingsWindowController {
+final class SettingsWindowController: NSObject, NSWindowDelegate {
     private var window: NSWindow?
     private let settings: AppSettings
     private let state = SettingsWindowState()
@@ -22,14 +27,23 @@ final class SettingsWindowController {
         if window == nil {
             let window = NSWindow(contentViewController: NSHostingController(rootView: SettingsRoot(settings: settings, state: state)))
             window.title = String(localized: "F4 Settings")
-            window.styleMask = [.titled, .closable]
+            window.styleMask = [.titled, .closable, .miniaturizable]
             window.isReleasedWhenClosed = false
+            window.collectionBehavior = [.managed, .participatesInCycle, .fullScreenNone]
+            window.delegate = self
             window.center()
             self.window = window
         }
-        // An accessory app must activate itself, or the window opens behind the front app.
+        NSApp.setActivationPolicy(.regular)
+        // An app must activate itself, or the window opens behind the front app.
         NSApp.activate(ignoringOtherApps: true)
         window?.makeKeyAndOrderFront(nil)
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        // Back to a menu bar app, without a Dock icon; the app that was in
+        // front before Settings gets the focus back.
+        NSApp.setActivationPolicy(.accessory)
     }
 }
 

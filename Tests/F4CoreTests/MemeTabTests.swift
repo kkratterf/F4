@@ -35,10 +35,19 @@ final class MemeTabTests: XCTestCase {
         XCTAssertEqual(MemeTab.stickers.filter(memes).map(\.name), ["z", "m"])
     }
 
+    func testFavouritesShowsOnlyFavourites() {
+        let memes = [meme("a.gif"), meme("b.png"), meme("c.jpg", in: "old")]
+        let favourites: Set<URL> = [memes[0].url, memes[2].url]
+        XCTAssertEqual(MemeTab.favourites.filter(memes, favourites: favourites).map(\.name), ["a", "c"])
+        XCTAssertTrue(MemeTab.favourites.filter(memes).isEmpty)
+        XCTAssertEqual(MemeTab.all.filter(memes, favourites: favourites), memes)
+    }
+
     func testNextWrapsAround() {
-        XCTAssertEqual(MemeTab.all.next(), .gifs)
+        XCTAssertEqual(MemeTab.all.next(), .favourites)
+        XCTAssertEqual(MemeTab.favourites.next(), .gifs)
         XCTAssertEqual(MemeTab.stickers.next(), .all)
         XCTAssertEqual(MemeTab.all.next(backwards: true), .stickers)
-        XCTAssertEqual(MemeTab.gifs.next(backwards: true), .all)
+        XCTAssertEqual(MemeTab.favourites.next(backwards: true), .all)
     }
 }

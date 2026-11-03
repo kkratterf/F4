@@ -4,6 +4,7 @@ import XCTest
 final class GiphyTests: XCTestCase {
     func testTabsMapToCatalogues() {
         XCTAssertNil(Giphy.catalogue(for: .all))
+        XCTAssertNil(Giphy.catalogue(for: .favourites))
         XCTAssertEqual(Giphy.catalogue(for: .gifs), .gifs)
         XCTAssertEqual(Giphy.catalogue(for: .stickers), .stickers)
     }
@@ -69,5 +70,15 @@ final class GiphyTests: XCTestCase {
 
     func testRejectsAnErrorBody() {
         XCTAssertThrowsError(try Giphy.results(from: Data(#"{"message": "Invalid authentication credentials"}"#.utf8), catalogue: .gifs))
+    }
+
+    func testSavedResultsAreKeyedByCatalogueAndLandInTheirTab() {
+        let url = URL(string: "https://media.giphy.com/media/abc/giphy.gif")!
+        let gif = Giphy.Result(id: "abc", catalogue: .gifs, title: "t", pageURL: nil, previewURL: url, stillURL: nil, fileURL: url)
+        let sticker = Giphy.Result(id: "abc", catalogue: .stickers, title: "t", pageURL: nil, previewURL: url, stillURL: nil, fileURL: url)
+        XCTAssertEqual(gif.saveKey, "gifs-abc")
+        XCTAssertEqual(sticker.saveKey, "stickers-abc")
+        XCTAssertEqual(gif.tab, .gifs)
+        XCTAssertEqual(sticker.tab, .stickers)
     }
 }

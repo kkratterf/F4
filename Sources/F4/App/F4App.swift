@@ -1,4 +1,5 @@
 import AppKit
+import Carbon
 import Combine
 import F4Core
 import SwiftUI
@@ -29,6 +30,22 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         self?.panel?.show()
     }
     private var cancellables: Set<AnyCancellable> = []
+    /// `f4://` URLs that arrive before the app has finished launching.
+    private var pendingURLs: [URL] = []
+    private var hasLaunched = false
+
+    /// Handles `f4://` URLs with an Apple Event handler rather than
+    /// `application(_:open:)`, which the SwiftUI app lifecycle does not
+    /// reliably forward. Installed before launch finishes, so a URL that
+    /// starts F4 is not lost.
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        NSAppleEventManager.shared().setEventHandler(
+            self,
+            andSelector: #selector(handleGetURL(_:withReplyEvent:)),
+            forEventClass: AEEventClass(kInternetEventClass),
+            andEventID: AEEventID(kAEGetURL)
+        )
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         // No Dock icon and no menu bar of our own (also set via LSUIElement in the bundle).
@@ -67,13 +84,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         startMediaF4Key()
         // Auto-update; a no-op until Info.plist has a real Sparkle public key.
         AppUpdater.shared.start()
-        if shouldOfferF4WithoutFn {
+        hasLaunched = true
+        if pendingURLs.isEmpty && shouldOfferF4WithoutFn {
             // Once, on a Mac whose F4 key is Spotlight or Launchpad: offer
             // F4 alone first. The panel opens when the window closes.
             f4KeyWelcome.show()
-        } else {
+        } else if pendingURLs.isEmpty {
             // Opening the app from Finder or Spotlight shows the panel right away.
             panel.show()
+        } else {
+            // Started by a URL: do what it asks instead (f4://copy shows nothing).
+            let urls = pendingURLs
+            pendingURLs = []
+            urls.forEach(handle)
         }
     }
 
@@ -109,6 +132,67 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 self.statusItem?.update(shortcut: self.settings.toggleShortcut.displayString)
             }
             .store(in: &cancellables)
+    }
+
+    // MARK: f4:// URLs
+
+    @objc private func handleGetURL(_ event: NSAppleEventDescriptor, withReplyEvent reply: NSAppleEventDescriptor) {
+        guard let string = event.paramDescriptor(forKeyword: AEKeyword(keyDirectObject))?.stringValue,
+              let url = URL(string: string)
+        else { return }
+        if hasLaunched {
+            handle(url)
+        } else {
+            pendingURLs.append(url)
+        }
+    }
+
+    private func handle(_ url: URL) {
+        guard let command = URLCommand(url: url) else {
+            NSLog("F4: ignoring %@, not a known f4:// command", url.absoluteString)
+            return
+        }
+        switch command {
+        case .open:
+            panel?.show()
+        case .search(let query):
+            panel?.show(query: query)
+        case .copy(let name):
+            whenLibraryLoaded { [weak self] in self?.copyBestMatch(for: name) }
+        case .reload:
+            library.reload()
+        case .settings:
+            settingsWindow.show()
+        }
+    }
+
+    /// Runs `action` now, or after the first scan when F4 was just started.
+    private func whenLibraryLoaded(_ action: @escaping () -> Void) {
+        guard !library.hasLoaded else { return action() }
+        library.$hasLoaded
+            .first { $0 }
+            .sink { _ in action() }
+            .store(in: &cancellables)
+    }
+
+    /// Copies the meme that best matches `name` without showing the panel,
+    /// as if it had been picked there, but never auto-pastes: the front app
+    /// is whatever sent the URL, not where the user wants the meme. Beeps
+    /// when nothing matches.
+    private func copyBestMatch(for name: String) {
+        guard let meme = URLCommand.bestMatch(
+            for: name,
+            in: library.memes,
+            favourites: usage.favourites,
+            recents: usage.recents
+        ) else {
+            NSLog("F4: no meme matches %@", name)
+            NSSound.beep()
+            return
+        }
+        if MemeClipboard.copy(meme) {
+            usage.recordCopy(meme)
+        }
     }
 
     /// The shortcut (the F4 key by default) shows or hides the panel from anywhere.
