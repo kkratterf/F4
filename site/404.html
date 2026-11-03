@@ -3,28 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Not found · F4</title>
+  <title>Page not found · F4</title>
   <meta name="robots" content="noindex">
   <meta name="color-scheme" content="dark">
-  <!-- Served for any missing path, so every link is absolute. -->
-  <!-- The favicon is the real "F4, basito" still, the maintainer's choice; the app icon stays drawn in code. -->
+  <!-- Served for any missing path, so every link is absolute (from the domain root). -->
   <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
   <link rel="stylesheet" href="/styles.css">
   <script src="/analytics.js" async></script>
 </head>
 <body>
   <main>
-    <section class="outro">
+    <section class="section outro" aria-labelledby="h-404">
       <div class="wrap">
         <!-- Loads from The Office's official GIPHY channel; never committed. -->
-        <span class="gif outro-gif"><img src="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/giphy.webp" alt="Shocked, The Office" width="420" height="315"></span>
-        <h1>F4, basito</h1>
-        <p>This page does not exist. Even the GIF is shocked.</p>
+        <div class="clip"><img src="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w.webp" alt="Shocked, The Office" width="200" height="200"></div>
+        <h1 id="h-404">F4, basito</h1>
+        <p>This page does not exist. Even the GIF is shocked. <span lang="it">Questa pagina non esiste.</span></p>
         <a class="btn btn-primary" href="/">Back to F4</a>
       </div>
     </section>
