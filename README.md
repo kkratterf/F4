@@ -1,4 +1,4 @@
-<p align="center"><img src="site/logo.svg" width="128" height="128" alt="The F4 logo: an F4 key"></p>
+<p align="center"><img src="Resources/logo/icon.png" width="128" height="128" alt="The F4 logo: Stanis from Boris, basito"></p>
 
 # F4
 
