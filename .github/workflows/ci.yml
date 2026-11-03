@@ -45,6 +45,11 @@ jobs:
           test -d "$app/Contents/Frameworks/Sparkle.framework"
           otool -L "$app/Contents/MacOS/F4" | grep Sparkle
           otool -l "$app/Contents/MacOS/F4" | grep -A2 LC_RPATH
+          # Starter pack: committed GIFs plus stickers drawn at build time.
+          gifs=$(find "$app/Contents/Resources/Starter/GIFs" -name '*.gif' | wc -l)
+          stickers=$(find "$app/Contents/Resources/Starter/Stickers" -name '*.png' 2>/dev/null | wc -l)
+          test "$gifs" -ge 20 || { echo "::error::starter GIFs missing from F4.app ($gifs)"; exit 1; }
+          test "$stickers" -ge 10 || { echo "::error::starter stickers missing from F4.app ($stickers)"; exit 1; }
           # Smoke test: the app must launch and stay up.
           "$app/Contents/MacOS/F4" &
           pid=$!
@@ -56,6 +61,29 @@ jobs:
           fi
           kill "$pid"
           echo "::notice::F4.app $(lipo -archs "$app/Contents/MacOS/F4"), bundle $(du -sk "$app" | cut -f1) KB"
+
+      - name: Check f4:// URLs
+        run: |
+          app="$PWD/dist/F4.app"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleURLTypes:0:CFBundleURLSchemes:0' "$app/Contents/Info.plist")" = f4
+          /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$app"
+          open "$app"
+          sleep 6
+          # Copies a starter GIF without showing the panel, through Launch Services.
+          printf 'nothing' | pbcopy
+          open "f4://copy?name=clown"
+          copied=""
+          for _ in 1 2 3 4 5 6 7 8 9 10; do
+            sleep 1
+            copied=$(osascript -l JavaScript -e 'ObjC.import("AppKit"); $.NSPasteboard.generalPasteboard.stringForType("public.file-url").js' 2>/dev/null || true)
+            [ -n "$copied" ] && break
+          done
+          pkill -x F4 || true
+          echo "clipboard: $copied"
+          case "$copied" in
+            */Starter/GIFs/clown.gif) ;;
+            *) echo "::error::f4://copy?name=clown did not copy the clown GIF"; exit 1 ;;
+          esac
 
       - name: Upload F4.app
         uses: actions/upload-artifact@v4
@@ -81,6 +109,30 @@ jobs:
           codesign --verify --verbose=1 "$mnt/F4.app" || status=1
           hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
           exit $status
+
+      - name: Screenshot the installer window
+        # Opens the DMG in Finder like a user would and captures the window
+        # at the bounds set by build-dmg.sh, so the look can be checked
+        # without a Mac. Best effort: a runner without a display just skips it.
+        continue-on-error: true
+        run: |
+          dmg=$(ls dist/F4-*.dmg)
+          mnt=$(hdiutil attach -noverify "$dmg" | grep -E 'Apple_HFS' | sed -E 's/^.*Apple_HFS[[:space:]]+//' | head -n 1)
+          open "$mnt"
+          sleep 5
+          mkdir -p dist/screenshots
+          screencapture -x -o -R 200,120,660,448 dist/screenshots/dmg-window.png
+          hdiutil detach "$mnt" -quiet || hdiutil detach "$mnt" -force
+
+      - name: Upload the installer screenshot
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: F4-dmg-window
+          path: dist/screenshots/*.png
+          if-no-files-found: ignore
+          retention-days: 14
 
       - name: Upload the DMG
         uses: actions/upload-artifact@v4
@@ -160,6 +212,8 @@ jobs:
           tap="$(brew --repository)/Library/Taps/f4/homebrew-ci"
           mkdir -p "$tap/Casks"
           cp Casks/f4.rb "$tap/Casks/f4.rb"
+          # Newer Homebrew refuses casks from taps it has not been told to trust.
+          if brew commands --quiet | grep -qx trust; then brew trust f4/ci; fi
           if ! brew audit --cask --strict f4/ci/f4 > audit.log 2>&1; then
             cat audit.log
             # Surface the findings as annotations, so they show on the PR.

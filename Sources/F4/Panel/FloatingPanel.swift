@@ -16,7 +16,9 @@ final class FloatingPanel: NSPanel {
         isFloatingPanel = true
         level = .floating
         collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .transient, .ignoresCycle]
-        isMovableByWindowBackground = true
+        // The panel moves itself when dragged by its search bar or footer
+        // (`WindowDragArea`), so it can snap to guides on the way.
+        isMovableByWindowBackground = false
         hidesOnDeactivate = false
         isReleasedWhenClosed = false
         animationBehavior = .utilityWindow

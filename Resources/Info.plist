@@ -22,9 +22,20 @@
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleShortVersionString</key>
-    <string>0.2.1</string>
+    <string>0.3.3</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLName</key>
+            <string>com.kkratterf.f4</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>f4</string>
+            </array>
+        </dict>
+    </array>
     <key>LSApplicationCategoryType</key>
     <string>public.app-category.utilities</string>
     <key>LSMinimumSystemVersion</key>
@@ -34,7 +45,7 @@
     <key>NSHumanReadableCopyright</key>
     <string>MIT License</string>
     <key>SUFeedURL</key>
-    <string>https://kkratterf.github.io/f4/appcast.xml</string>
+    <string>https://f4.kkratter.com/appcast.xml</string>
     <key>SUPublicEDKey</key>
     <string>75Dz2wCqdf5WzuU4vh1NwT5uQ4rChUhmNkFaQ9dkLqo=</string>
     <key>SUEnableAutomaticChecks</key>

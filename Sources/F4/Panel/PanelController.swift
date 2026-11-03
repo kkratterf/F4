@@ -20,20 +20,26 @@ final class PanelController: NSObject, NSWindowDelegate {
     private let library: MemeLibrary
     private let model: DeckModel
     private var keyMonitor: Any?
+    private let guides = SnapGuideWindow()
+    /// True once a drag has actually moved the panel.
+    private var didDrag = false
 
     private let usage: UsageStore
 
     init(library: MemeLibrary, usage: UsageStore) {
         self.library = library
         self.usage = usage
-        model = DeckModel(library: library, usage: usage)
+        model = DeckModel(library: library, usage: usage, giphy: .shared)
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
         let deck = DeckView(
             model: model,
             library: library,
             onPick: { [weak self] meme in self?.pick(meme) },
-            onAdd: { [weak self] in self?.chooseFiles() }
+            onAdd: { [weak self] in self?.chooseFiles() },
+            onPickWeb: { [weak self] result in self?.pick(result) },
+            onPinWeb: { [weak self] result in self?.pin(result) },
+            onDrag: { [weak self] drag in self?.drag(drag) }
         )
         let hosting = DropHostingView(rootView: deck)
         hosting.onDragChange = { [weak self] inside in self?.dragIsInside = inside }
@@ -45,8 +51,9 @@ final class PanelController: NSObject, NSWindowDelegate {
         panel.onCancel = { [weak self] in self?.hide() }
     }
 
-    /// Copies the meme and gets out of the way, so the user can paste right away.
-    private func pick(_ meme: Meme) {
+    /// Copies the meme and gets out of the way, so the user can paste right
+    /// away. Also used by the recent memes in the menu bar menu.
+    func pick(_ meme: Meme) {
         guard MemeClipboard.copy(meme) else {
             hide()
             return
@@ -90,14 +97,19 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     /// The Add button: a file picker. F4 comes to the front for it (an open
     /// panel needs an active app), and the panel waits behind it.
+    ///
+    /// The picker only chooses files: they are copied into the meme folder,
+    /// wherever they are. It starts in Downloads, where saved GIFs usually
+    /// land, instead of the last folder any app's picker was in.
     private func chooseFiles() {
         let picker = NSOpenPanel()
+        picker.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
         picker.canChooseFiles = true
         picker.canChooseDirectories = false
         picker.allowsMultipleSelection = true
         picker.allowedContentTypes = MemeKind.allCases.compactMap { UTType($0.typeIdentifier) }
         picker.prompt = String(localized: "Add")
-        picker.message = String(localized: "Choose GIFs and stickers to add to F4")
+        picker.message = String(localized: "Choose GIFs and stickers to add. F4 copies them into its own folder, so the originals can stay where they are.")
         isChoosingFiles = true
         NSApp.activate(ignoringOtherApps: true)
         picker.level = .modalPanel
@@ -121,6 +133,10 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     private func added(_ urls: [URL]) {
         guard let first = urls.first else { return }
+        // Added from the Favourites tab: that's where the user wants them.
+        if model.tab == .favourites {
+            for url in urls { usage.addFavourite(url) }
+        }
         let folder = first.deletingLastPathComponent().lastPathComponent
         model.show(notice: urls.count == 1
             ? String(localized: "Added to \(folder)")
@@ -136,6 +152,52 @@ final class PanelController: NSObject, NSWindowDelegate {
         if panel.isVisible { panel.makeKeyAndOrderFront(nil) }
     }
 
+    // MARK: GIPHY
+
+    /// Copies a GIPHY result. It is saved in the meme folder first (GIFs/
+    /// or Stickers/), so it pastes animated like any meme, shows up in the
+    /// recents, and stays there for next time, offline too.
+    private func pick(_ result: Giphy.Result) {
+        model.show(notice: String(localized: "Downloading from GIPHY…"))
+        Task {
+            do {
+                let url = try await save(result)
+                let meme = Meme(url: url, kind: MemeKind(url: url) ?? .gif, modificationDate: Date())
+                guard MemeClipboard.copy(meme) else { return hide() }
+                usage.recordCopy(meme)
+                library.reload()
+                hide()
+                if AppSettings.shared.pasteAfterCopy { AutoPaster.pasteSoon() }
+            } catch {
+                model.show(notice: String(localized: "Couldn't download the GIF from GIPHY."))
+            }
+        }
+    }
+
+    /// Saves a GIPHY result in the meme folder as a favourite: from then on
+    /// it is local, instant and offline.
+    private func pin(_ result: Giphy.Result) {
+        Task {
+            do {
+                let url = try await save(result)
+                usage.addFavourite(url)
+                added([url])
+            } catch {
+                failed(error)
+            }
+        }
+    }
+
+    /// The GIPHY result as a file in the meme folder: downloaded and saved
+    /// the first time, the same file every time after.
+    private func save(_ result: Giphy.Result) async throws -> URL {
+        if let saved = usage.savedFile(forWebMeme: result.saveKey) { return saved }
+        let file = try await model.giphy.file(for: result)
+        let url = try await MemeImporter.pin(file, name: result.name, into: library.folder, tab: result.tab)
+        usage.recordSave(ofWebMeme: result.saveKey, at: url)
+        return url
+    }
+
     var isVisible: Bool { panel.isVisible }
 
     func toggle() {
@@ -144,6 +206,13 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     func show() {
         show(keepingQuery: false)
+    }
+
+    /// Opens the panel with `query` already typed in (`f4://search`).
+    func show(query: String) {
+        model.prepareForShow()
+        model.query = query
+        show(keepingQuery: true)
     }
 
     private func show(keepingQuery: Bool) {
@@ -159,6 +228,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         mouseUpTimer?.invalidate()
         mouseUpTimer = nil
         stopArrowKeys()
+        guides.hide()
         panel.orderOut(nil)
     }
 
@@ -180,7 +250,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
     }
 
-    /// Tab / ⇧Tab cycle the tabs; ⌘1, ⌘2, ⌘3 jump to one. Returns true when
+    /// Tab / ⇧Tab cycle the tabs; ⌘1 to ⌘4 jump to one. Returns true when
     /// the key was taken. The search field has no use for Tab here.
     private func switchTab(for event: NSEvent) -> Bool {
         let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
@@ -189,7 +259,7 @@ final class PanelController: NSObject, NSWindowDelegate {
             return true
         }
         guard modifiers == .command else { return false }
-        let tabs: [Int: MemeTab] = [kVK_ANSI_1: .all, kVK_ANSI_2: .gifs, kVK_ANSI_3: .stickers]
+        let tabs: [Int: MemeTab] = [kVK_ANSI_1: .all, kVK_ANSI_2: .favourites, kVK_ANSI_3: .gifs, kVK_ANSI_4: .stickers]
         guard let tab = tabs[Int(event.keyCode)] else { return false }
         model.tab = tab
         return true
@@ -265,15 +335,56 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
     }
 
-    /// Centred horizontally and a little above the middle, where Spotlight sits.
+    // MARK: Position
+
+    /// Where the user last left the panel, as `PanelPlacement.relativeCentre`;
+    /// nil until they move it, or after they snap it back to the default spot.
+    private static let positionKey = "panelPosition"
+
+    private var savedCentre: CGPoint? {
+        get {
+            guard let values = UserDefaults.standard.array(forKey: Self.positionKey) as? [Double],
+                  values.count == 2 else { return nil }
+            return CGPoint(x: values[0], y: values[1])
+        }
+        set {
+            if let newValue {
+                UserDefaults.standard.set([Double(newValue.x), Double(newValue.y)], forKey: Self.positionKey)
+            } else {
+                UserDefaults.standard.removeObject(forKey: Self.positionKey)
+            }
+        }
+    }
+
+    /// Opens on the screen with the mouse, where the user last dragged the
+    /// panel (at the same place relative to that screen), or where Spotlight sits.
     private func position(on screen: NSScreen?) {
         guard let visible = (screen ?? NSScreen.main)?.visibleFrame else { return }
         let size = panel.frame.size
-        let origin = NSPoint(
-            x: visible.midX - size.width / 2,
-            y: visible.minY + (visible.height - size.height) * 0.6
-        )
+        let origin = savedCentre.map { PanelPlacement.origin(relativeCentre: $0, size: size, in: visible) }
+            ?? PanelPlacement.defaultOrigin(size: size, in: visible)
         panel.setFrameOrigin(origin)
+    }
+
+    /// Moves the panel with the mouse, snapping to the screen's centre lines
+    /// and the default height, and remembers where it was left.
+    private func drag(_ drag: PanelDrag) {
+        switch drag {
+        case .began:
+            didDrag = false
+        case .moved(let proposed):
+            guard let screen = screenWithMouse() ?? panel.screen else { return }
+            let snap = PanelPlacement.snap(proposed, size: panel.frame.size, in: screen.visibleFrame)
+            panel.setFrameOrigin(snap.origin)
+            guides.show(snap.guides, on: screen, below: panel)
+            didDrag = true
+        case .ended:
+            guides.hide()
+            guard didDrag, let screen = panel.screen else { return }
+            let visible = screen.visibleFrame
+            let snap = PanelPlacement.snap(panel.frame.origin, size: panel.frame.size, in: visible)
+            savedCentre = snap.isDefault ? nil : PanelPlacement.relativeCentre(of: panel.frame, in: visible)
+        }
     }
 
     private func screenWithMouse() -> NSScreen? {

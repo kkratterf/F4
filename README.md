@@ -7,13 +7,13 @@
 [![CI](https://github.com/kkratterf/f4/actions/workflows/ci.yml/badge.svg)](https://github.com/kkratterf/f4/actions/workflows/ci.yml)
 [![Release](https://img.shields.io/github/v/release/kkratterf/f4)](https://github.com/kkratterf/f4/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](#license)
-[![Website](https://img.shields.io/badge/website-kkratterf.github.io%2Ff4-FFC43D)](https://kkratterf.github.io/f4/)
+[![Website](https://img.shields.io/badge/website-f4.kkratter.com-FFC43D)](https://f4.kkratter.com/)
 
 Press **F4**, type a few letters, hit Enter: the meme is on your clipboard — GIF animation included — ready to paste into Slack, Discord or Telegram. A native macOS app in Swift (SwiftUI and AppKit), free and open source, no account and no tracking.
 
 *F4, basito.* Named after the most famous face in [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)).
 
-**Website:** [kkratterf.github.io/f4](https://kkratterf.github.io/f4/)
+**Website:** [f4.kkratter.com](https://f4.kkratter.com/)
 
 **Install** (macOS 14+, free, no special permissions):
 
@@ -31,7 +31,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The meme is copied; paste it with ⌘V, or let F4 paste it for you.
 
-**Esc**, or a click outside, closes the panel.
+**Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen, and opens where you left it next time.
 
 ## Features
 
@@ -39,13 +39,15 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | --- | --- |
 | 🎞️ **GIFs stay animated** | F4 writes the file URL (`public.file-url`) and the raw bytes under the file's UTI, never a decoded `NSImage`, so Slack, Discord and Telegram paste the animation. |
 | ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the hovered or selected GIF animates. |
-| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (⌘D, or right-click a meme) and the ones you used last come first. |
-| 🗂️ **GIFs and stickers** | Tabs split the panel into All, GIFs and Stickers (Tab or ⌘1–⌘3). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
+| 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (click the star on a meme, or ⌘D) get their own section on top, then the ones you used last. |
+| 🗂️ **GIFs and stickers** | Tabs split the panel into All, Favourites, GIFs and Stickers (Tab or ⌘1–⌘4). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
+| 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), listed after your memes. Turn them off in Settings. |
+| 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one and saves it in your folder, so next time it is local, instant and offline; **⌘D** saves it as a favourite. |
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied GIF, sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. GIFs go into `GIFs/`, stickers into `Stickers/` in your folder. No Finder needed. |
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. This is the only feature that needs the Accessibility permission, and it is off by default. |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. |
-| 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, the meme folder, the settings and the update check. |
+| 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, copies one of your last 5 memes in a click, and leads to the meme folder, the settings and the update check. You can hide it in Settings. |
 | 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Settings → Updates). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
 | 🧩 **Raycast** | A [Raycast extension](raycast) searches the same folder, if that is where your hands already are. |
@@ -54,9 +56,23 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 
 The empty state draws the basito face in code. Drop a `.basito.png` (or `.gif`, `.jpg`) in the meme folder to use your own face instead. Typing a few lines from Boris or The Office in the search field — or the Konami code — does something. Find out which.
 
+### Automation: `f4://` URLs
+
+Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 by opening a URL, for example `open "f4://copy?name=this%20is%20fine"` in Terminal.
+
+| URL | What it does |
+| --- | --- |
+| `f4://open` | Shows the panel |
+| `f4://search?q=this%20is%20fine` | Shows the panel with the search typed in |
+| `f4://copy?name=this%20is%20fine` | Copies the best match without showing the panel (beeps if nothing matches) |
+| `f4://reload` | Rescans the meme folder |
+| `f4://settings` | Opens Settings |
+
+`f4://copy` picks the meme the panel would put first for that search (favourites and recents win a tie) and never auto-pastes. If F4 is not running, the URL starts it.
+
 ### Settings
 
-From the menu bar icon: the shortcut, the meme folder, open at login, auto-paste, and automatic update checks.
+From the menu bar icon: the shortcut, open at login, show in the menu bar, the meme folder, auto-paste, and automatic update checks.
 
 ---
 
@@ -152,7 +168,7 @@ open dist/F4.app
 
 ## Privacy
 
-F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for two things only: the update check against the release feed on [the website](https://kkratterf.github.io/f4/appcast.xml), which you can turn off in Settings, and downloading an image link you paste or drop into the panel yourself.
+F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); GIPHY, only while you are in the GIFs or Stickers tab of the open panel; and downloading an image link you paste or drop into the panel yourself. Both the update check and GIPHY can be turned off in Settings.
 
 ## FAQ
 
@@ -164,7 +180,7 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 **F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works. Or record another shortcut in Settings.
 
-**Can a script or an AI assistant use F4?** Not yet, but it is being built: a `f4://` URL scheme, Shortcuts actions, a command line tool and an MCP server. Until then, facts for AI assistants live in [llms.txt](https://kkratterf.github.io/f4/llms.txt) and the full reference in [llms-full.txt](https://kkratterf.github.io/f4/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
+**Can a script or an AI assistant use F4?** Yes, with [`f4://` URLs](#automation-f4-urls): `open "f4://copy?name=basito"` copies a meme from anywhere. Shortcuts actions, a command line tool and an MCP server are on the way. Facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
 
 ---
 
@@ -174,7 +190,7 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the short 
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE). The animated emoji in the starter pack are [Noto Emoji](https://googlefonts.github.io/noto-emoji-animation/) by Google, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), downscaled for F4.
 
 ---
 
