@@ -48,10 +48,20 @@ struct HotKeyCombo: Equatable {
         UserDefaults.standard.bool(forKey: "com.apple.keyboard.fnState")
     }
 
+    /// The F4 key with no modifier, the default.
+    var isF4Alone: Bool {
+        modifiers == 0 && Int(keyCode) == ShortcutRules.f4KeyCode
+    }
+
+    /// Set while `MediaF4KeyTap` runs: then F4 alone opens the panel on a
+    /// Mac keyboard too, and the shortcut is shown as plain "F4".
+    static var mediaF4KeyIsCaught = false
+
     /// A bare function key that, on this Mac, only reaches F4 with fn held:
     /// without it the key opens Spotlight, Launchpad or changes the volume.
     var needsFn: Bool {
         isBareFunctionKey && !HotKeyCombo.functionKeysAreStandard
+            && !(isF4Alone && HotKeyCombo.mediaF4KeyIsCaught)
     }
 
     /// Human readable form in the macOS order, e.g. "⌃⌥⌘P", or "fn F4" when
