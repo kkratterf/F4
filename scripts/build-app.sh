@@ -86,24 +86,21 @@ if [ ! -f "$RES/it.lproj/Localizable.strings" ]; then
 fi
 echo "Localizations: $(find "$RES" -maxdepth 1 -name '*.lproj' -exec basename {} \; | sort | tr '\n' ' ')"
 
-# App icon: drawn in code by scripts/make-icon.swift, so no binary is
-# committed. A failure here only costs the icon, never the build.
-ICON_DIR="$ROOT/.build/icon"
-rm -rf "$ICON_DIR"
-mkdir -p "$ICON_DIR"
-if swift "$ROOT/scripts/make-icon.swift" "$ICON_DIR/AppIcon.iconset" \
-  && iconutil -c icns "$ICON_DIR/AppIcon.iconset" -o "$ICON_DIR/AppIcon.icns"; then
-  cp "$ICON_DIR/AppIcon.icns" "$RES/AppIcon.icns"
+# App icon: Stanis, "F4, basito", built by scripts/make-logo.py and
+# committed as Resources/AppIcon.icns. A missing file only costs the icon.
+ICNS="$ROOT/Resources/AppIcon.icns"
+if [ -f "$ICNS" ]; then
+  cp "$ICNS" "$RES/AppIcon.icns"
   /usr/libexec/PlistBuddy -c "Set :CFBundleIconFile AppIcon" "$APP/Contents/Info.plist" 2>/dev/null \
     || /usr/libexec/PlistBuddy -c "Add :CFBundleIconFile string AppIcon" "$APP/Contents/Info.plist"
   echo "Added the app icon ($(wc -c < "$RES/AppIcon.icns" | tr -d ' ') bytes)"
 else
-  echo "warning: could not draw the app icon, building without it" >&2
+  echo "warning: Resources/AppIcon.icns missing, building without an icon" >&2
 fi
 
 # Starter pack (issue #92): what a new user sees before adding their own.
 # The GIFs are Google's Noto Animated Emoji (CC BY 4.0, credited in the app
-# and the README); the stickers are drawn in code like the icon. They stay in
+# and the README); the stickers are drawn in code. They stay in
 # the bundle and are never copied into the user's meme folder.
 STARTER="$RES/Starter"
 rm -rf "$STARTER"
