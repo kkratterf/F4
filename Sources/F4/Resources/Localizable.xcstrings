@@ -71,6 +71,16 @@
         }
       }
     },
+    "All set: press F4 to open your memes. fn F4 works too.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fatto: premi F4 per aprire i tuoi meme. Funziona anche fn F4."
+          }
+        }
+      }
+    },
     "Allow F4 in System Settings → General → Login Items.": {
       "localizations": {
         "it": {
@@ -254,12 +264,32 @@
         }
       }
     },
+    "F4 can catch the F4 key before macOS does, so the key alone opens your memes. It needs Accessibility access for that: F4 only acts on the F4 key and lets every other key through.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 può intercettare il tasto F4 prima di macOS, così basta il tasto da solo per aprire i tuoi meme. Per farlo serve l'accesso ad Accessibilità: F4 agisce solo sul tasto F4 e lascia passare tutti gli altri."
+          }
+        }
+      }
+    },
     "F4 can only add GIF, PNG, JPEG and WebP images.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "F4 può aggiungere solo immagini GIF, PNG, JPEG e WebP."
+          }
+        }
+      }
+    },
+    "F4 needs Accessibility access to catch the F4 key before Spotlight or Launchpad. Until then, press fn F4.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 ha bisogno dell'accesso ad Accessibilità per intercettare il tasto F4 prima di Spotlight o Launchpad. Fino ad allora, premi fn F4."
           }
         }
       }
@@ -365,6 +395,26 @@
         }
       }
     },
+    "Keep fn F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tieni fn F4"
+          }
+        }
+      }
+    },
+    "Later": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Più tardi"
+          }
+        }
+      }
+    },
     "Meme folder": {
       "localizations": {
         "it": {
@@ -435,6 +485,16 @@
         }
       }
     },
+    "On this Mac the F4 key opens Spotlight or Launchpad, so for now F4 opens with fn F4.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Su questo Mac il tasto F4 apre Spotlight o Launchpad, quindi per ora F4 si apre con fn F4."
+          }
+        }
+      }
+    },
     "Open F4": {
       "localizations": {
         "it": {
@@ -451,6 +511,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apri F4 all'avvio"
+          }
+        }
+      }
+    },
+    "Open F4 with the F4 key": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri F4 con il tasto F4"
+          }
+        }
+      }
+    },
+    "Open F4 with the F4 key alone, without fn": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri F4 con il solo tasto F4, senza fn"
           }
         }
       }
@@ -491,6 +571,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Facoltativa"
+          }
+        }
+      }
+    },
+    "Or use F1, F2, etc. as standard function keys for every app": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oppure usa F1, F2, ecc. come tasti funzione standard in tutte le app"
           }
         }
       }
@@ -705,6 +795,16 @@
         }
       }
     },
+    "Start": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inizia"
+          }
+        }
+      }
+    },
     "Starter pack": {
       "localizations": {
         "it": {
@@ -725,6 +825,16 @@
         }
       }
     },
+    "The F4 key opens F4 instead of Spotlight or Launchpad. fn F4 works too.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il tasto F4 apre F4 invece di Spotlight o Launchpad. Funziona anche fn F4."
+          }
+        }
+      }
+    },
     "This build has no GIPHY key. Create a free one at developers.giphy.com and paste it here to search GIPHY.": {
       "localizations": {
         "it": {
@@ -741,6 +851,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Per tornare qui, riapri F4 dal Finder o da Spotlight."
+          }
+        }
+      }
+    },
+    "Turn on F4 in System Settings › Privacy & Security › Accessibility. This window updates as soon as you do.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attiva F4 in Impostazioni di Sistema › Privacy e sicurezza › Accessibilità. Questa finestra si aggiorna appena lo fai."
+          }
+        }
+      }
+    },
+    "Until then, or if you prefer not to, fn F4 opens F4. You can change this later in F4's Settings.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fino ad allora, o se preferisci non farlo, F4 si apre con fn F4. Puoi cambiare idea più tardi nelle Impostazioni di F4."
           }
         }
       }
@@ -766,12 +896,32 @@
         }
       }
     },
+    "Use the F4 key alone": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa solo il tasto F4"
+          }
+        }
+      }
+    },
     "Use ~/Pictures/Memes": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Usa ~/Immagini/Memes"
+          }
+        }
+      }
+    },
+    "Welcome to F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benvenuto in F4"
           }
         }
       }

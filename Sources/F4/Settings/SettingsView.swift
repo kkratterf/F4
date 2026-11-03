@@ -8,6 +8,7 @@ struct SettingsView: View {
     let shortcutError: String?
     @StateObject private var loginItem = LoginItem()
     @ObservedObject private var updater = AppUpdater.shared
+    @ObservedObject private var tap = MediaF4KeyTap.shared
     @State private var isTrusted = AutoPaster.isTrusted
 
     var body: some View {
@@ -21,10 +22,31 @@ struct SettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.red)
                 }
-                if settings.toggleShortcut.needsFn {
-                    Text("On this Mac the F-keys control the system first, so hold fn with the key. To press it alone, turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                if settings.toggleShortcut.isF4Alone && !HotKeyCombo.functionKeysAreStandard {
+                    Toggle("Open F4 with the F4 key alone, without fn", isOn: Binding(
+                        get: { settings.pressF4WithoutFn },
+                        set: { isOn in
+                            settings.pressF4WithoutFn = isOn
+                            if isOn { isTrusted = AutoPaster.requestTrust() }
+                        }
+                    ))
+                    if settings.pressF4WithoutFn && !tap.isRunning {
+                        HStack {
+                            Text("F4 needs Accessibility access to catch the F4 key before Spotlight or Launchpad. Until then, press fn F4.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Button("Open Settings") { AutoPaster.openAccessibilitySettings() }
+                        }
+                    } else if settings.pressF4WithoutFn {
+                        Text("The F4 key opens F4 instead of Spotlight or Launchpad. fn F4 works too.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        fnCaption
+                    }
+                } else if settings.toggleShortcut.needsFn {
+                    fnCaption
                 }
                 Toggle("Open F4 at login", isOn: Binding(
                     get: { loginItem.isEnabled },
@@ -130,6 +152,12 @@ struct SettingsView: View {
         }
         .frame(width: 520)
         .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var fnCaption: some View {
+        Text("On this Mac the F-keys control the system first, so hold fn with the key. To press it alone, turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.")
+            .font(.caption)
+            .foregroundStyle(.secondary)
     }
 
     private func chooseFolder() {

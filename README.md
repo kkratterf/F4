@@ -28,7 +28,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 ## How it works
 
 1. Put your memes, GIFs and stickers in a folder. `~/Pictures/Memes` by default, or any folder you pick in Settings. Subfolders become categories.
-2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
+2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or let F4 catch the key: on the first launch, and in Settings, F4 offers **Open F4 with the F4 key alone, without fn** (needs Accessibility; without it fn F4 keeps working). On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The meme is copied; paste it with ⌘V, or let F4 paste it for you.
 
 **Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen, and opens where you left it next time.
@@ -45,8 +45,8 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one and saves it in your folder, so next time it is local, instant and offline; **⌘D** saves it as a favourite. |
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied GIF, sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. GIFs go into `GIFs/`, stickers into `Stickers/` in your folder. No Finder needed. |
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
-| 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. This is the only feature that needs the Accessibility permission, and it is off by default. |
-| 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. |
+| 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. Off by default; it needs the Accessibility permission. |
+| 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. Only two optional features ask for Accessibility: auto-paste, and the F4 key alone without fn on a Mac keyboard. |
 | 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, copies one of your last 5 memes in a click, and leads to the meme folder, the settings and the update check. You can hide it in Settings. |
 | 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Settings → Updates). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
@@ -72,7 +72,7 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 
 ### Settings
 
-From the menu bar icon: the shortcut, open at login, show in the menu bar, the meme folder, auto-paste, and automatic update checks.
+From the menu bar icon: the shortcut, the F4 key alone without fn (Mac keyboards), open at login, show in the menu bar, the meme folder, auto-paste, and automatic update checks.
 
 ---
 
@@ -178,7 +178,7 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 **Can I change the shortcut?** Yes, in Settings. F4 is only the default: any function key works on its own, any other key with ⌘, ⌥ or ⌃.
 
-**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works. Or record another shortcut in Settings.
+**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or turn on **Open F4 with the F4 key alone, without fn** in Settings: F4 catches the key before Spotlight or Launchpad, which needs the Accessibility permission (without it, fn F4 still works). On most other keyboards F4 just works. Or record another shortcut in Settings.
 
 **Can a script or an AI assistant use F4?** Yes, with [`f4://` URLs](#automation-f4-urls): `open "f4://copy?name=basito"` copies a meme from anywhere. Shortcuts actions, a command line tool and an MCP server are on the way. Facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
 
