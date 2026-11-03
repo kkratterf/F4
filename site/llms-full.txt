@@ -6,7 +6,7 @@
 
 - Platform: macOS 14 Sonoma or later, Apple Silicon and Intel (universal binary). No iOS, Windows or Linux version.
 - License: MIT. Price: free. Source: https://github.com/kkratterf/f4
-- Website: https://f4.kkratter.com/
+- Website: https://f4.kkratter.com/ (English) and https://f4.kkratter.com/it/ (Italian); FAQ: https://f4.kkratter.com/faq/
 - Bundle identifier: `com.kkratterf.f4`. The app is `F4.app`; it has no Dock icon and lives in the menu bar.
 - Languages: English, and Italian when macOS runs in Italian.
 - Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (can be turned off), for GIPHY while the user is in the GIFs or Stickers tab of the open panel (can be turned off), and to download an image link the user pastes or drops into the panel.
