@@ -43,6 +43,8 @@ final class DropHostingView<Content: View>: NSHostingView<Content> {
     }
 
     private func accepts(_ sender: NSDraggingInfo) -> Bool {
+        // A sticker dragged out of the panel itself is already in the library.
+        guard sender.draggingSource == nil else { return false }
         let pasteboard = sender.draggingPasteboard
         let promises = NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) }
         return MemeImporter.canImport(pasteboard) || pasteboard.types?.contains(where: { promises.contains($0) }) == true

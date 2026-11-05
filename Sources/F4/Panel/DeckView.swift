@@ -297,6 +297,12 @@ extension DeckView {
             if case .active = phase { model.pointerMoved(to: NSEvent.mouseLocation, over: index) }
         }
         .onTapGesture { onPick(meme) }
+        // Drag a sticker out into a chat, a document or Finder: the file
+        // itself, so a GIF arrives animated. The panel stays open.
+        .onDrag {
+            model.selection = index
+            return NSItemProvider(contentsOf: meme.url) ?? NSItemProvider()
+        }
         .contextMenu {
             Button("Copy") { onPick(meme) }
             Button(model.usage.isFavourite(meme)
