@@ -17,7 +17,7 @@ public struct Meme: Identifiable, Hashable, Sendable {
     /// `searchText` as search compares it (folded case and accents),
     /// worked out once here, off the main thread when the folder is scanned,
     /// rather than for every meme on every key typed.
-    let searchKey: [Character]
+    let searchKey: [Int]
 
     public var id: URL { url }
 
