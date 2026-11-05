@@ -74,7 +74,7 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 
 F4 has no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
 
-- **Open Meme Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder) and **Choose Meme Folder…**
+- **Open Meme Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Packs ▸** (when F4 lists a pack: a click downloads its GIFs and stickers from GIPHY into your folder, and again only fetches what is missing) and **Choose Meme Folder…**
 - **Paste After Copying**: F4 presses ⌘V in the front app for you (needs Accessibility).
 - **F4 Key Without fn**: on a Mac keyboard, the F4 key alone opens F4 instead of Spotlight or Launchpad (needs Accessibility; fn F4 always works).
 - **Search GIPHY** and **Open at Login**, plus **Show Starter Pack** when you use a folder of your own.
@@ -175,7 +175,7 @@ open dist/F4.app
 
 ## Privacy
 
-F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); GIPHY, only while you are in the GIFs or Stickers tab of the open panel; and downloading an image link you paste or drop into the panel yourself. GIPHY can be turned off in the menu (Search GIPHY), and the update check when Sparkle first asks.
+F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for four things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); GIPHY, only while you are in the GIFs or Stickers tab of the open panel; downloading an image link you paste or drop into the panel yourself; and downloading a pack you pick in the menu bar's **Packs**. GIPHY can be turned off in the menu (Search GIPHY), and the update check when Sparkle first asks.
 
 ## FAQ
 

@@ -9,7 +9,7 @@
 - Website: https://f4.kkratter.com/ (English) and https://f4.kkratter.com/it/ (Italian); FAQ: https://f4.kkratter.com/faq/
 - Bundle identifier: `com.kkratterf.f4`. The app is `F4.app`; it has no Dock icon and lives in the menu bar.
 - Languages: English, and Italian when macOS runs in Italian.
-- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (can be turned off), for GIPHY while the user is in the GIFs or Stickers tab of the open panel (can be turned off), and to download an image link the user pastes or drops into the panel.
+- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (can be turned off), for GIPHY while the user is in the GIFs or Stickers tab of the open panel (can be turned off), to download an image link the user pastes or drops into the panel, and to download a pack the user picks in the menu bar's Packs.
 - Permissions: none needed. Only two optional features ask for Accessibility: auto-paste, and the F4 key alone without fn on a Mac keyboard.
 - The name comes from "F4, basito", the stunned face of Stanis in the Italian TV series Boris.
 
@@ -92,7 +92,7 @@ F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and i
 
 F4 has no Settings window: like Maramao's, its menu bar menu holds the options. In order:
 
-Open F4 · Shortcut: (the current shortcut, as a reminder, or why macOS refused it) · Recent Memes (the last 5 copied, with a thumbnail; a click copies one again without opening the panel) · Open Meme Folder · Folders ▸ (New Folder…, then each folder of the library ▸ Rename…, Move to Trash, with a confirmation that counts its memes) · Choose Meme Folder… · Options (below) · Check for Updates… (or "Update to Version x…" once Sparkle found one) · About F4 (credits) · Quit F4 (Command-Q). The icon is always shown; opening F4 again from Finder or Spotlight shows the panel, and `f4://settings` opens this menu under the pointer.
+Open F4 · Shortcut: (the current shortcut, as a reminder, or why macOS refused it) · Recent Memes (the last 5 copied, with a thumbnail; a click copies one again without opening the panel) · Open Meme Folder · Folders ▸ (New Folder…, then each folder of the library ▸ Rename…, Move to Trash, with a confirmation that counts its memes) · Packs ▸ (shown when F4 lists a pack: a click downloads the pack's GIFs and stickers from GIPHY's media host into `GIFs/<pack>` and `Stickers/<pack>` of the meme folder; a checkmark marks a pack already downloaded, and picking it again only fetches what is missing, never overwriting a file) · Choose Meme Folder… · Options (below) · Check for Updates… (or "Update to Version x…" once Sparkle found one) · About F4 (credits) · Quit F4 (Command-Q). The icon is always shown; opening F4 again from Finder or Spotlight shows the panel, and `f4://settings` opens this menu under the pointer.
 
 ### Options
 

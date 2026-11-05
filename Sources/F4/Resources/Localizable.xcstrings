@@ -1,6 +1,16 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ could not be downloaded. Pick the pack again to retry.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ non si sono potuti scaricare. Scegli di nuovo il pacchetto per riprovare."
+          }
+        }
+      }
+    },
     "%@ is taken by another app. Pick another shortcut.": {
       "localizations": {
         "it": {
@@ -51,12 +61,32 @@
         }
       }
     },
+    "Added %@ memes from %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiunti %@ meme da %@"
+          }
+        }
+      }
+    },
     "Added %@ memes to %@": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ meme aggiunti in %2$@"
+          }
+        }
+      }
+    },
+    "Added 1 meme from %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiunto 1 meme da %@"
           }
         }
       }
@@ -218,6 +248,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Crea"
+          }
+        }
+      }
+    },
+    "Downloading %@…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Download di %@…"
           }
         }
       }
@@ -558,6 +598,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Oppure usa F1, F2, ecc. come tasti funzione standard in tutte le app"
+          }
+        }
+      }
+    },
+    "Packs": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pacchetti"
           }
         }
       }
