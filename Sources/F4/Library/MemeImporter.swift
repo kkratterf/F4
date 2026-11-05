@@ -209,6 +209,10 @@ enum MemeImporter {
         if MemeKind(url: link) == nil, let slug = StickerPackLink.slug(from: link) {
             return try await downloadPack(slug: slug, title: StickerPackLink.title(from: link), into: folder)
         }
+        // A Signal pack link (signal.art/addstickers): the whole pack.
+        if let pack = SignalStickerPack(url: link) {
+            return try await downloadSignalPack(pack, into: folder)
+        }
         let giphy = MemeImport.giphyMedia(for: link)
         let source = giphy?.url ?? link
         let configuration = URLSessionConfiguration.ephemeral
@@ -256,6 +260,32 @@ extension MemeImporter {
         defer { session.finishTasksAndInvalidate() }
         let (added, existing) = await Task.detached(priority: .userInitiated) {
             await StickerPackFetcher.fetch(slug: slug, into: target, session: session)
+        }.value
+        if added.isEmpty {
+            if existing > 0 { throw Failure.packAlreadyAdded(name) }
+            throw Failure.download(String(localized: "the pack has no stickers F4 can download"))
+        }
+        return added
+    }
+}
+
+extension MemeImporter {
+    /// Downloads a Signal pack into a folder named after its title.
+    fileprivate static func downloadSignalPack(_ pack: SignalStickerPack, into folder: URL) async throws -> [URL] {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        let session = URLSession(configuration: configuration)
+        defer { session.finishTasksAndInvalidate() }
+        let manifest: SignalStickerPack.Manifest
+        do {
+            manifest = try await SignalPackFetcher.manifest(of: pack, session: session)
+        } catch SignalPackFetcher.Failure.manifest(let reason) {
+            throw Failure.download(reason)
+        }
+        let name = LibraryFolders.folderName(manifest.title) ?? "Signal"
+        let target = folder.appendingPathComponent(name, isDirectory: true)
+        let (added, existing) = await Task.detached(priority: .userInitiated) {
+            await SignalPackFetcher.fetch(pack, stickers: manifest.stickers, into: target, session: session)
         }.value
         if added.isEmpty {
             if existing > 0 { throw Failure.packAlreadyAdded(name) }

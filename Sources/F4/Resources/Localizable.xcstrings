@@ -542,6 +542,16 @@
         }
       }
     },
+    "the link's key does not open this pack": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la chiave del link non apre questo pacchetto"
+          }
+        }
+      }
+    },
     "the pack has no stickers F4 can download": {
       "localizations": {
         "it": {
