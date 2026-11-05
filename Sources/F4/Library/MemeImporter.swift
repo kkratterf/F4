@@ -170,12 +170,14 @@ enum MemeImporter {
 
     /// Saves `data` in `folder` as `name`, or, when `name` is nil, as what
     /// `StickerNamer` reads on the picture (its caption, or what it shows),
-    /// and "sticker" when it reads nothing.
+    /// and "sticker" when it reads nothing; what it shows also becomes the
+    /// file's Finder tags.
     private static func write(_ data: Data, kind: MemeKind, name: String?, into folder: URL, convert: Bool) async throws -> URL {
         let target = folder
         let fallback = String(localized: "sticker")
         return try await Task.detached(priority: .userInitiated) {
-            let name = name ?? StickerNamer.name(for: data).map { MemeImport.baseName($0) } ?? fallback
+            let reading = name == nil ? StickerNamer.reading(for: data) : nil
+            let name = name ?? reading?.name.map { MemeImport.baseName($0) } ?? fallback
             var (data, kind) = (data, kind)
             if convert, Self.isConvertible(kind), let sticker = StickerConverter.sticker(from: data) {
                 (data, kind) = (sticker, .png)
@@ -183,6 +185,9 @@ enum MemeImporter {
             try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
             let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
             try data.write(to: url, options: .withoutOverwriting)
+            if let tags = reading?.tags, !tags.isEmpty {
+                try? (url as NSURL).setResourceValue(tags, forKey: .tagNamesKey)
+            }
             return url
         }.value
     }

@@ -56,6 +56,16 @@ public enum StickerNaming {
             .map { $0.identifier.replacingOccurrences(of: "_", with: " ") }
     }
 
+    /// Up to `limit` labels to tag the sticker with, most confident first,
+    /// vague ones left out, underscores as spaces.
+    public static func tags(_ labels: [Label], limit: Int = 3, minimumConfidence: Float = 0.3) -> [String] {
+        labels
+            .filter { $0.confidence >= minimumConfidence && !vague.contains($0.identifier) }
+            .sorted { $0.confidence > $1.confidence }
+            .prefix(limit)
+            .map { $0.identifier.replacingOccurrences(of: "_", with: " ") }
+    }
+
     /// Labels too broad to name a sticker by.
     static let vague: Set<String> = [
         "adult", "animal", "art", "blue_sky", "cartoon", "clothing", "container", "document",

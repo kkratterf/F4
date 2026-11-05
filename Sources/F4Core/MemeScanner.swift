@@ -17,7 +17,7 @@ public enum MemeScanner {
     /// sorts them. Hidden files and folders, packages and other file types are
     /// skipped. Blocking: call it off the main thread.
     public static func scan(folder: URL, fileManager: FileManager = .default) throws -> [Meme] {
-        let keys: [URLResourceKey] = [.isRegularFileKey, .isDirectoryKey, .contentModificationDateKey]
+        let keys: [URLResourceKey] = [.isRegularFileKey, .isDirectoryKey, .contentModificationDateKey, .tagNamesKey]
         // contentsOfDirectory throws for a missing or unreadable folder; the
         // enumerator would silently return nothing.
         _ = try fileManager.contentsOfDirectory(atPath: folder.path)
@@ -42,7 +42,8 @@ public enum MemeScanner {
                 url: url,
                 kind: kind,
                 modificationDate: values?.contentModificationDate ?? .distantPast,
-                category: category
+                category: category,
+                tags: values?.tagNames ?? []
             ))
         }
         return memes.sorted(by: finderOrder)

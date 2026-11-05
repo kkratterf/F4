@@ -242,6 +242,16 @@
         }
       }
     },
+    "Edit Tags…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modifica tag…"
+          }
+        }
+      }
+    },
     "Everything else": {
       "localizations": {
         "it": {
@@ -572,6 +582,16 @@
         }
       }
     },
+    "Removed the tags of %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tolti i tag di %@"
+          }
+        }
+      }
+    },
     "Rename": {
       "localizations": {
         "it": {
@@ -622,6 +642,16 @@
         }
       }
     },
+    "Save": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salva"
+          }
+        }
+      }
+    },
     "Search actions": {
       "localizations": {
         "it": {
@@ -662,6 +692,16 @@
         }
       }
     },
+    "Separate tags with commas. Search finds a sticker by its tags too.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Separa i tag con una virgola. La ricerca trova uno sticker anche dai suoi tag."
+          }
+        }
+      }
+    },
     "Show in Finder": {
       "localizations": {
         "it": {
@@ -698,6 +738,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sticker"
+          }
+        }
+      }
+    },
+    "Tagged %@: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag di %1$@: %2$@"
+          }
+        }
+      }
+    },
+    "Tags for %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag di %@"
           }
         }
       }

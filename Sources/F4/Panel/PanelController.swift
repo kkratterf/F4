@@ -251,7 +251,7 @@ final class PanelController: NSObject, NSWindowDelegate {
 
     // MARK: Actions
 
-    /// ⌘K actions, ⌘M move to a folder, ⌘D favourite, ⌘R rename and, with
+    /// ⌘K actions, ⌘M move to a folder, ⌘D favourite, ⌘R rename, ⌘T tags and, with
     /// an empty search field, ⌘⌫ to the Trash, on the selected sticker.
     /// Returns true when the key was taken.
     private func command(for event: NSEvent) -> Bool {
@@ -267,6 +267,8 @@ final class PanelController: NSObject, NSWindowDelegate {
             openMoveTo(meme)
         case kVK_ANSI_R where editable:
             organize(meme, .rename)
+        case kVK_ANSI_T where editable:
+            organize(meme, .editTags)
         case kVK_Delete where editable && model.query.isEmpty:
             organize(meme, .trash)
         default:
@@ -311,6 +313,9 @@ final class PanelController: NSObject, NSWindowDelegate {
                 },
                 .init(title: String(localized: "Rename…"), systemImage: "pencil", shortcut: "⌘R") { [weak self] in
                     self?.organize(meme, .rename)
+                },
+                .init(title: String(localized: "Edit Tags…"), systemImage: "tag", shortcut: "⌘T") { [weak self] in
+                    self?.organize(meme, .editTags)
                 },
                 .init(title: String(localized: "Show in Finder"), systemImage: "magnifyingglass") {
                     NSWorkspace.shared.activateFileViewerSelecting([meme.url])

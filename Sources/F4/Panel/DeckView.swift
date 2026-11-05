@@ -121,7 +121,8 @@ struct DeckView: View {
     private var footer: some View {
         HStack(spacing: 10) {
             if let meme = model.selectedMeme {
-                Text(verbatim: meme.category.map { "\($0)/\(meme.name)" } ?? meme.name)
+                Text(verbatim: (meme.category.map { "\($0)/\(meme.name)" } ?? meme.name)
+                    + (meme.tags.isEmpty ? "" : "  ·  " + MemeTags.text(meme.tags)))
                     .lineLimit(1)
                     .truncationMode(.middle)
                     .foregroundStyle(.secondary)
@@ -317,6 +318,7 @@ extension DeckView {
                     Button("New Folder…") { onOrganize(meme, .moveToNewFolder) }
                 }
                 Button("Rename…") { onOrganize(meme, .rename) }
+                Button("Edit Tags…") { onOrganize(meme, .editTags) }
                 Button("Show in Finder") {
                     NSWorkspace.shared.activateFileViewerSelecting([meme.url])
                 }
