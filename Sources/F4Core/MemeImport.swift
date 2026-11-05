@@ -21,17 +21,6 @@ public enum MemeImport {
         MemeKind.allCases.first { $0.typeIdentifier == typeIdentifier }
     }
 
-    /// The subfolder of the meme folder a new meme goes into: the one of the
-    /// tab the user is in, otherwise the one its kind belongs to. JPEG memes
-    /// go to the top level outside the Stickers tab.
-    public static func folder(for kind: MemeKind, tab: MemeTab) -> String? {
-        switch (tab, kind) {
-        case (.stickers, _), (_, .png), (_, .webp): return MemeTab.stickersFolder
-        case (_, .gif): return MemeTab.gifsFolder
-        case (_, .jpeg): return nil
-        }
-    }
-
     /// A file name (without extension) made from `suggested`: no path
     /// separators or control characters, no leading dot (hidden files are
     /// skipped by the scan), spaces collapsed, at most `maxLength` characters.

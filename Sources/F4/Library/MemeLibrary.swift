@@ -39,7 +39,7 @@ final class MemeLibrary: ObservableObject {
         folder.standardizedFileURL == LibraryFolders.appLibrary().standardizedFileURL
     }
 
-    /// The GIFs and stickers built into F4 (`Contents/Resources/Starter`,
+    /// The stickers built into F4 (`Contents/Resources/Starter`,
     /// added by build-app.sh), so a new user never starts from an empty
     /// panel. Copied once into F4's own library; listed read-only from the
     /// bundle after the memes of any other folder. Nil when running outside
@@ -123,7 +123,7 @@ final class MemeLibrary: ObservableObject {
         }
     }
 
-    /// Copies the starter pack (GIFs/, Stickers/) into `folder`, skipping
+    /// Copies the starter pack (Emoji/, F4/) into `folder`, skipping
     /// files already there, so the memes become the user's to move or
     /// delete. True when it ran to the end. Blocking: off the main thread.
     nonisolated private static func copyStarterPack(from starter: URL, into folder: URL) -> Bool {

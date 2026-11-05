@@ -5,9 +5,9 @@ import F4Core
 /// the user turns it on in the menu bar's Packs submenu: never on its own.
 /// Turning it off moves its folders to the Trash (`LibraryOrganizer`).
 ///
-/// Each GIF or sticker comes straight from GIPHY's media host, so no API key
-/// is needed. Files already in the pack's folder are skipped, so downloading
-/// again only fetches what is missing; nothing is ever overwritten.
+/// Each sticker comes straight from the link in the pack. Files already in
+/// the pack's folder are skipped, so downloading again only fetches what is
+/// missing; nothing is ever overwritten.
 @MainActor
 final class PackDownloader: ObservableObject {
     /// The packs listed in the app bundle (`Packs.json`, from
@@ -40,12 +40,16 @@ final class PackDownloader: ObservableObject {
         downloading = pack.id
         let folder = library.folder
         let items = pack.items
+        let stickerPacks = pack.stickerPacks
+        let target = LibraryFolders.url(of: pack.category, in: folder)
         Task {
             let (added, failed) = await Task.detached(priority: .utility) {
-                await Self.fetch(items, into: folder)
+                let (added, failed) = await Self.fetch(items, into: folder)
+                let (packAdded, packFailed) = await Self.fetchStickerPacks(stickerPacks, into: target)
+                return (added + packAdded, failed + packFailed)
             }.value
             downloading = nil
-            if failed < items.count {
+            if failed < items.count + stickerPacks.count {
                 downloaded.insert(pack.id)
                 defaults.set(downloaded.sorted(), forKey: Self.downloadedKey)
             }
@@ -81,6 +85,24 @@ final class PackDownloader: ObservableObject {
                     }
                 }
             }
+        }
+        return (added, failed)
+    }
+
+    /// The getstickerpack packs of the list, each downloaded sticker after
+    /// sticker into the pack's folder. A pack with nothing found counts as failed.
+    nonisolated private static func fetchStickerPacks(_ stickerPacks: [String], into target: URL) async -> (Int, Int) {
+        guard !stickerPacks.isEmpty else { return (0, 0) }
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        let session = URLSession(configuration: configuration)
+        defer { session.finishTasksAndInvalidate() }
+        var added = 0
+        var failed = 0
+        for slug in stickerPacks {
+            let result = await StickerPackFetcher.fetch(slug: slug, into: target, session: session)
+            added += result.added.count
+            if result.added.isEmpty && result.existing == 0 { failed += 1 }
         }
         return (added, failed)
     }

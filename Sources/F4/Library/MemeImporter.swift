@@ -2,7 +2,7 @@ import AppKit
 import F4Core
 import UniformTypeIdentifiers
 
-/// Adds memes to the meme folder from the panel: ⌘V, a drop, or the + button.
+/// Adds stickers to the library from the panel: ⌘V, a drop, or the + button.
 ///
 /// One reader serves the clipboard and drag and drop, since both hand over
 /// an `NSPasteboard`: files (Finder), promised files (apps that drag out a
@@ -16,13 +16,16 @@ enum MemeImporter {
     enum Failure: LocalizedError {
         case nothingToAdd
         case download(String)
+        case packAlreadyAdded(String)
 
         var errorDescription: String? {
             switch self {
             case .nothingToAdd:
-                return String(localized: "F4 can only add GIF, PNG, JPEG and WebP images.")
+                return String(localized: "F4 can only add GIF, PNG, JPEG and WebP images, and WhatsApp sticker packs (.wastickers).")
             case .download(let reason):
                 return String(localized: "Couldn't download the image: \(reason)")
+            case .packAlreadyAdded(let folder):
+                return String(localized: "You already have every sticker of \(folder).")
             }
         }
     }
@@ -48,13 +51,13 @@ enum MemeImporter {
         return false
     }
 
-    /// Saves what the pasteboard holds into the meme folder, in the subfolder
-    /// of `tab`, and returns the new files. Throws when there is nothing F4 can add.
-    static func importItems(from pasteboard: NSPasteboard, into folder: URL, tab: MemeTab) async throws -> [URL] {
+    /// Saves what the pasteboard holds into `folder` (the top of the
+    /// library) and returns the new files. Throws when there is nothing F4 can add.
+    static func importItems(from pasteboard: NSPasteboard, into folder: URL) async throws -> [URL] {
         // 1. Files, from Finder or any app that drags real files.
         let files = (pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL]) ?? []
         if !files.isEmpty {
-            let saved = try await copy(files.filter { MemeKind(url: $0) != nil }, into: folder, tab: tab)
+            let saved = try await copy(files.filter(isImportable), into: folder)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -63,7 +66,7 @@ enum MemeImporter {
         if let receivers = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self]) as? [NSFilePromiseReceiver],
            !receivers.isEmpty {
             let received = try await receive(receivers)
-            let saved = try await copy(received.filter { MemeKind(url: $0) != nil }, into: folder, tab: tab)
+            let saved = try await copy(received.filter(isImportable), into: folder)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -76,37 +79,30 @@ enum MemeImporter {
         if !images.isEmpty {
             var saved: [URL] = []
             for (data, kind) in images {
-                saved.append(try await write(data, kind: kind, name: defaultName(for: kind, tab: tab), into: folder, tab: tab))
+                saved.append(try await write(data, kind: kind, name: String(localized: "sticker"), into: folder))
             }
             return saved
         }
 
-        // 4. A link to an image (or a GIPHY page) on the web.
+        // 4. A link to an image or a sticker pack file on the web.
         let link = (pasteboard.readObjects(forClasses: [NSURL.self]) as? [URL])?.first { !$0.isFileURL }
             ?? pasteboard.string(forType: .string).flatMap(MemeImport.webURL(in:))
         if let link {
-            return [try await download(link, into: folder, tab: tab)]
+            return try await download(link, into: folder)
         }
         throw Failure.nothingToAdd
     }
 
     /// Copies files picked with the + button.
-    static func importFiles(_ urls: [URL], into folder: URL, tab: MemeTab) async throws -> [URL] {
-        let saved = try await copy(urls.filter { MemeKind(url: $0) != nil }, into: folder, tab: tab)
+    static func importFiles(_ urls: [URL], into folder: URL) async throws -> [URL] {
+        let saved = try await copy(urls.filter(isImportable), into: folder)
         if saved.isEmpty { throw Failure.nothingToAdd }
         return saved
     }
 
-    /// Copies a downloaded GIPHY file into the meme folder under `name`.
-    static func pin(_ file: URL, name: String, into folder: URL, tab: MemeTab) async throws -> URL {
-        let kind = MemeKind(url: file) ?? .gif
-        let target = destination(for: kind, in: folder, tab: tab)
-        return try await Task.detached(priority: .userInitiated) {
-            try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
-            let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
-            try FileManager.default.copyItem(at: file, to: url)
-            return url
-        }.value
+    /// An image F4 keeps as a sticker, or a sticker pack file (`.wastickers`).
+    private static func isImportable(_ url: URL) -> Bool {
+        MemeKind(url: url) != nil || StickerArchive.isArchive(url)
     }
 
     // MARK: Reading
@@ -125,12 +121,6 @@ enum MemeImporter {
             return (png, .png)
         }
         return nil
-    }
-
-    private static func defaultName(for kind: MemeKind, tab: MemeTab) -> String {
-        MemeImport.folder(for: kind, tab: tab) == MemeTab.stickersFolder
-            ? String(localized: "sticker")
-            : kind == .gif ? "gif" : "meme"
     }
 
     private static func receive(_ receivers: [NSFilePromiseReceiver]) async throws -> [URL] {
@@ -154,24 +144,22 @@ enum MemeImporter {
 
     // MARK: Writing
 
-    private static func destination(for kind: MemeKind, in folder: URL, tab: MemeTab) -> URL {
-        MemeImport.folder(for: kind, tab: tab).map { folder.appendingPathComponent($0, isDirectory: true) } ?? folder
-    }
-
-    private static func copy(_ files: [URL], into folder: URL, tab: MemeTab) async throws -> [URL] {
-        let jobs = files.compactMap { file in MemeKind(url: file).map { (file, $0, destination(for: $0, in: folder, tab: tab)) } }
+    private static func copy(_ files: [URL], into folder: URL) async throws -> [URL] {
+        let jobs = files.compactMap { file in MemeKind(url: file).map { (file, $0, folder) } }
+        let archives = files.filter(StickerArchive.isArchive)
         return try await Task.detached(priority: .userInitiated) {
-            try jobs.map { file, kind, target in
+            let copied = try jobs.map { file, kind, target in
                 try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
                 let url = MemeImport.uniqueURL(name: file.deletingPathExtension().lastPathComponent, kind: kind, in: target)
                 try FileManager.default.copyItem(at: file, to: url)
                 return url
             }
+            return try copied + archives.flatMap { try unpack($0, into: folder) }
         }.value
     }
 
-    private static func write(_ data: Data, kind: MemeKind, name: String, into folder: URL, tab: MemeTab) async throws -> URL {
-        let target = destination(for: kind, in: folder, tab: tab)
+    private static func write(_ data: Data, kind: MemeKind, name: String, into folder: URL) async throws -> URL {
+        let target = folder
         return try await Task.detached(priority: .userInitiated) {
             try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
             let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
@@ -180,7 +168,47 @@ enum MemeImporter {
         }.value
     }
 
-    private static func download(_ link: URL, into folder: URL, tab: MemeTab) async throws -> URL {
+    /// Unpacks a sticker pack file into a folder of the library named after
+    /// the pack, and returns the stickers it added. Blocking: off the main thread.
+    nonisolated private static func unpack(_ archive: URL, into folder: URL) throws -> [URL] {
+        let fileManager = FileManager.default
+        let temporary = fileManager.temporaryDirectory
+            .appendingPathComponent("F4-pack-\(UUID().uuidString)", isDirectory: true)
+        try fileManager.createDirectory(at: temporary, withIntermediateDirectories: true)
+        defer { try? fileManager.removeItem(at: temporary) }
+        // ditto ships with macOS and unpacks zip archives, which is what a
+        // .wastickers file is.
+        let ditto = Process()
+        ditto.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
+        ditto.arguments = ["-x", "-k", archive.path, temporary.path]
+        try ditto.run()
+        ditto.waitUntilExit()
+        guard ditto.terminationStatus == 0 else { throw Failure.nothingToAdd }
+        let root = temporary.resolvingSymlinksInPath().path + "/"
+        let files = (fileManager.enumerator(at: temporary, includingPropertiesForKeys: nil)?.allObjects as? [URL] ?? [])
+            .map { url -> String in
+                let path = url.resolvingSymlinksInPath().path
+                return path.hasPrefix(root) ? String(path.dropFirst(root.count)) : url.lastPathComponent
+            }
+        let titleFile = files.first { ($0 as NSString).lastPathComponent.lowercased() == "title.txt" }
+        let title = titleFile.flatMap { try? String(contentsOf: temporary.appendingPathComponent($0), encoding: .utf8) }
+        let target = folder.appendingPathComponent(StickerArchive.folderName(title: title, archive: archive), isDirectory: true)
+        try fileManager.createDirectory(at: target, withIntermediateDirectories: true)
+        return try StickerArchive.stickers(in: files).compactMap { path in
+            let source = temporary.appendingPathComponent(path)
+            guard let kind = MemeKind(url: source) else { return nil }
+            let url = MemeImport.uniqueURL(name: source.deletingPathExtension().lastPathComponent, kind: kind, in: target)
+            try fileManager.copyItem(at: source, to: url)
+            return url
+        }
+    }
+
+    private static func download(_ link: URL, into folder: URL) async throws -> [URL] {
+        // A getstickerpack pack (its page or its "Add to WhatsApp" link):
+        // the whole pack. A link to one of its files is just that sticker.
+        if MemeKind(url: link) == nil, let slug = StickerPackLink.slug(from: link) {
+            return try await downloadPack(slug: slug, title: StickerPackLink.title(from: link), into: folder)
+        }
         let giphy = MemeImport.giphyMedia(for: link)
         let source = giphy?.url ?? link
         let configuration = URLSessionConfiguration.ephemeral
@@ -202,9 +230,38 @@ enum MemeImporter {
         guard data.count <= maxDownloadBytes else {
             throw Failure.download(String(localized: "the file is larger than 50 MB"))
         }
+        if StickerArchive.isArchive(source), data.starts(with: [0x50, 0x4B]) {
+            // A link to a sticker pack file ("PK", a zip): unpack it.
+            let file = FileManager.default.temporaryDirectory.appendingPathComponent(source.lastPathComponent)
+            try data.write(to: file, options: .atomic)
+            defer { try? FileManager.default.removeItem(at: file) }
+            let added = try await Task.detached(priority: .userInitiated) { try unpack(file, into: folder) }.value
+            if added.isEmpty { throw Failure.nothingToAdd }
+            return added
+        }
         guard let kind = MemeImport.kind(sniffing: data) else { throw Failure.nothingToAdd }
         let name = giphy?.name ?? MemeImport.suggestedName(for: source)
-        return try await write(data, kind: kind, name: name, into: folder, tab: tab)
+        return [try await write(data, kind: kind, name: name, into: folder)]
+    }
+}
+
+extension MemeImporter {
+    /// Downloads a getstickerpack pack into a folder named after it.
+    fileprivate static func downloadPack(slug: String, title: String?, into folder: URL) async throws -> [URL] {
+        let name = StickerPackLink.folderName(slug: slug, title: title)
+        let target = folder.appendingPathComponent(name, isDirectory: true)
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        let session = URLSession(configuration: configuration)
+        defer { session.finishTasksAndInvalidate() }
+        let (added, existing) = await Task.detached(priority: .userInitiated) {
+            await StickerPackFetcher.fetch(slug: slug, into: target, session: session)
+        }.value
+        if added.isEmpty {
+            if existing > 0 { throw Failure.packAlreadyAdded(name) }
+            throw Failure.download(String(localized: "the pack has no stickers F4 can download"))
+        }
+        return added
     }
 }
 

@@ -3,7 +3,7 @@
 // Usage: swift scripts/make-stickers.swift <out-folder>
 //
 // Nothing is committed: build-app.sh runs this and puts the stickers in
-// F4.app/Contents/Resources/Starter/Stickers. Each sticker is a word or two
+// F4.app/Contents/Resources/Starter/F4. Each sticker is a word or two
 // in the classic sticker style (thick white border, soft shadow, a slight
 // tilt), plus the F4 keycap from the app icon. The file name is what the
 // panel shows and searches.

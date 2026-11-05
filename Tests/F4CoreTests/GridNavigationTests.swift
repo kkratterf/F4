@@ -50,7 +50,7 @@ final class SectionedGridNavigationTests: XCTestCase {
     //  0  1  2            (favourites)
     //  3  4  5  6  7      (the rest)
     //  8  9
-    // 10 11               (GIPHY)
+    // 10 11               (a third section)
     private func move(_ direction: GridDirection, _ index: Int, sections: [Int] = [3, 7, 2]) -> Int {
         GridNavigation.move(direction, from: index, sections: sections, columns: 5)
     }

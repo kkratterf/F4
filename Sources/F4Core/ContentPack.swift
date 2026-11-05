@@ -1,72 +1,70 @@
 import Foundation
 
-/// A pack of GIFs and stickers F4 can download into the library in one
-/// click ("Boris", "The Office"...). The app ships only the list of GIPHY
-/// links (`Resources/Packs/packs.json`), never the files: the clips belong
-/// to their owners. The files are downloaded only when the user asks, and
-/// from then on they are local, ordinary memes.
+/// A pack of stickers F4 can download into the library in one click
+/// ("Boris", "The Office"...), like the sticker packs people add to
+/// WhatsApp. The app ships only the list of links
+/// (`Resources/Packs/packs.json`), never the files: the stickers belong to
+/// their owners. The files are downloaded only when the user turns the
+/// pack on, and from then on they are local, ordinary stickers in a folder
+/// named after the pack.
 public struct ContentPack: Codable, Equatable, Sendable {
     /// Stable id, kept in the user's defaults once downloaded ("boris").
     public let id: String
     /// Shown in the menu, and the folder name in the library ("Boris").
     public let name: String
-    /// GIPHY page links ("https://giphy.com/gifs/boris-basito-AbC123").
-    public let gifs: [String]
-    /// GIPHY sticker page links ("https://giphy.com/stickers/...").
+    /// Links to the sticker files ("https://example.com/pack/sticker_1.webp"),
+    /// GIPHY page links, which become their GIF, or getstickerpack pack
+    /// links, which bring the whole pack (`StickerPackLink`).
     public let stickers: [String]
 
-    public init(id: String, name: String, gifs: [String] = [], stickers: [String] = []) {
+    public init(id: String, name: String, stickers: [String]) {
         self.id = id
         self.name = name
-        self.gifs = gifs
         self.stickers = stickers
-    }
-
-    private enum CodingKeys: String, CodingKey { case id, name, gifs, stickers }
-
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        name = try container.decode(String.self, forKey: .name)
-        gifs = try container.decodeIfPresent([String].self, forKey: .gifs) ?? []
-        stickers = try container.decodeIfPresent([String].self, forKey: .stickers) ?? []
     }
 
     /// One file to download: where it comes from and where it goes.
     public struct Item: Equatable, Sendable {
         public let source: URL
-        /// Category in the library: `GIFs/Boris` or `Stickers/Boris`, so
-        /// the stickers land in the Stickers tab.
+        /// Category in the library: the pack's folder ("Boris").
         public let category: String
         /// File name without extension, from the link's words.
         public let name: String
     }
 
-    /// The library folders the pack fills (`GIFs/Boris`, `Stickers/Boris`):
-    /// what turning it off moves to the Trash.
-    public var categories: [String] {
-        var seen: [String] = []
-        for item in items where !seen.contains(item.category) { seen.append(item.category) }
-        return seen
-    }
+    /// The library folder the pack fills ("Boris"): what turning it off
+    /// moves to the Trash.
+    public var category: String { LibraryFolders.folderName(name) ?? id }
 
-    /// The pack's files, GIFs first. Links that are not GIPHY page links
-    /// are skipped.
-    public var items: [Item] {
-        let folder = LibraryFolders.folderName(name) ?? id
-        func items(_ links: [String], in parent: String) -> [Item] {
-            links.compactMap { link in
-                guard let url = URL(string: link), let media = MemeImport.giphyMedia(for: url) else { return nil }
-                return Item(source: media.url, category: "\(parent)/\(folder)", name: media.name)
-            }
+    /// The getstickerpack packs among the links ("memes-19"): their
+    /// stickers are found by downloading them one after the other.
+    public var stickerPacks: [String] {
+        stickers.compactMap { link in
+            MemeImport.webURL(in: link).flatMap(Self.stickerPack(in:))
         }
-        return items(gifs, in: "GIFs") + items(stickers, in: MemeTab.stickersFolder)
     }
 
-    /// The packs in `packs.json`: `{"packs": [{"id", "name", "gifs", "stickers"}]}`.
+    /// The pack's files, named after their link. Anything that is not an
+    /// http(s) link is skipped, and so are the getstickerpack pack links
+    /// (`stickerPacks`).
+    public var items: [Item] {
+        stickers.compactMap { link in
+            guard let url = MemeImport.webURL(in: link), Self.stickerPack(in: url) == nil else { return nil }
+            if let media = MemeImport.giphyMedia(for: url) {
+                return Item(source: media.url, category: category, name: media.name)
+            }
+            return Item(source: url, category: category, name: MemeImport.suggestedName(for: url))
+        }
+    }
+
+    private static func stickerPack(in url: URL) -> String? {
+        MemeKind(url: url) == nil ? StickerPackLink.slug(from: url) : nil
+    }
+
+    /// The packs in `packs.json`: `{"packs": [{"id", "name", "stickers"}]}`.
     /// A pack with no usable link is left out.
     public static func packs(from data: Data) throws -> [ContentPack] {
         struct File: Decodable { let packs: [ContentPack] }
-        return try JSONDecoder().decode(File.self, from: data).packs.filter { !$0.items.isEmpty }
+        return try JSONDecoder().decode(File.self, from: data).packs.filter { !$0.items.isEmpty || !$0.stickerPacks.isEmpty }
     }
 }

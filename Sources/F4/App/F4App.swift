@@ -31,9 +31,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let usage = UsageStore()
     private lazy var organizer = LibraryOrganizer(library: library, usage: usage)
     private lazy var packs = PackDownloader(library: library)
-    private lazy var f4KeyWelcome = F4KeyWelcomeWindowController(settings: settings) { [weak self] in
-        self?.panel?.show()
-    }
     private var cancellables: Set<AnyCancellable> = []
     /// `f4://` URLs that arrive before the app has finished launching.
     private var pendingURLs: [URL] = []
@@ -86,15 +83,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             onChooseFolder: { [weak self] in self?.chooseFolder() }
         )
         registerToggleShortcut()
-        startMediaF4Key()
         // Auto-update; a no-op until Info.plist has a real Sparkle public key.
         AppUpdater.shared.start()
         hasLaunched = true
-        if pendingURLs.isEmpty && shouldOfferF4WithoutFn {
-            // Once, on a Mac whose F4 key is Spotlight or Launchpad: offer
-            // F4 alone first. The panel opens when the window closes.
-            f4KeyWelcome.show()
-        } else if pendingURLs.isEmpty {
+        if pendingURLs.isEmpty {
             // Opening the app from Finder or Spotlight shows the panel right away.
             panel.show()
         } else {
@@ -103,40 +95,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             pendingURLs = []
             urls.forEach(handle)
         }
-    }
-
-    private var shouldOfferF4WithoutFn: Bool {
-        !settings.didOfferF4WithoutFn
-            && !settings.pressF4WithoutFn
-            && settings.toggleShortcut.isF4Alone
-            && !HotKeyCombo.functionKeysAreStandard
-    }
-
-    /// "F4 without fn": while the setting is on and the shortcut is F4 alone,
-    /// `MediaF4KeyTap` catches the Spotlight or Launchpad key too. The Carbon
-    /// hot key stays registered, so fn F4 works with or without the tap.
-    private func startMediaF4Key() {
-        let tap = MediaF4KeyTap.shared
-        tap.onPress = { [weak self] in self?.panel?.toggle() }
-        settings.$pressF4WithoutFn
-            .combineLatest(settings.$toggleShortcut)
-            .sink { isOn, combo in
-                tap.setWanted(MediaF4Key.shouldCatch(
-                    settingIsOn: isOn,
-                    shortcutKeyCode: Int(combo.keyCode),
-                    shortcutModifiers: Int(combo.modifiers),
-                    functionKeysAreStandard: HotKeyCombo.functionKeysAreStandard
-                ))
-            }
-            .store(in: &cancellables)
-        tap.$isRunning
-            .removeDuplicates()
-            .sink { [weak self] isRunning in
-                HotKeyCombo.mediaF4KeyIsCaught = isRunning
-                guard let self else { return }
-                self.statusItem?.update(shortcut: self.settings.toggleShortcut.displayString)
-            }
-            .store(in: &cancellables)
     }
 
     // MARK: f4:// URLs
@@ -241,7 +199,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    /// "Choose Meme Folder…" in the menu: any folder on the Mac.
+    /// "Choose Sticker Folder…" in the menu: any folder on the Mac.
     private func chooseFolder() {
         let picker = NSOpenPanel()
         picker.canChooseDirectories = true
@@ -250,7 +208,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         picker.allowsMultipleSelection = false
         picker.directoryURL = settings.memeFolder
         picker.prompt = String(localized: "Use Folder")
-        picker.message = String(localized: "Choose the folder with your memes")
+        picker.message = String(localized: "Choose the folder with your stickers")
         // An accessory app must activate itself, or the picker opens behind the front app.
         NSApp.activate(ignoringOtherApps: true)
         if picker.runModal() == .OK, let url = picker.url {
