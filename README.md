@@ -28,7 +28,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 ## How it works
 
 1. Paste (⌘V), drop or **Add** your stickers in the panel, and switch on the packs you want from the menu bar (**Packs**). They go in F4's own library, `~/Library/Application Support/F4/Memes`, which comes with a starter pack already in it; or pick any folder of yours from the menu bar (Choose Sticker Folder…). Subfolders become categories.
-2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or let F4 catch the key: on the first launch, and in its menu (**F4 Key Without fn**), F4 offers the F4 key alone (needs Accessibility; without it fn F4 keeps working). On most other keyboards F4 just works.
+2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The sticker is copied; paste it with ⌘V, or let F4 paste it for you.
 
 **Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen, and opens where you left it next time.
@@ -46,7 +46,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied sticker, a sticker pack or an image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. No Finder needed. |
 | 🗂️ **Folders without Finder** | Each subfolder is a category you can search by name. Right-click a sticker in the panel to **Move To** a folder (or a **New Folder…**), **Rename…** it or **Move to Trash**; the menu bar's **Folders** creates, renames and trashes folders. Favourites and recents follow the files. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. Off by default; it needs the Accessibility permission. |
-| 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. Only two optional features ask for Accessibility: auto-paste, and the F4 key alone without fn on a Mac keyboard. |
+| 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. Only the optional auto-paste asks for Accessibility. |
 | 🖥️ **Menu bar** | No Dock icon and no Settings window. The menu bar icon opens the panel, copies one of your last 5 stickers in a click, leads to the sticker folder, and holds every option as a checkmark. |
 | 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Check for Updates… in the menu bar). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
@@ -76,7 +76,6 @@ F4 has no Settings window: everything is in the menu bar menu, like [Maramao](ht
 
 - **Open Sticker Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its stickers into a folder named after it, off moves that folder to the Trash) and **Choose Sticker Folder…**
 - **Paste After Copying**: F4 presses ⌘V in the front app for you (needs Accessibility).
-- **F4 Key Without fn**: on a Mac keyboard, the F4 key alone opens F4 instead of Spotlight or Launchpad (needs Accessibility; fn F4 always works).
 - **Open at Login**, plus **Show Starter Pack** when you use a folder of your own.
 - **Shortcut ▸**: fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
 - **Check for Updates…** and **About F4** (credits).
@@ -185,7 +184,7 @@ F4 has no analytics, no account and no server. It reads the files in your sticke
 
 **Can I change the shortcut?** Yes, in the menu bar: Shortcut ▸ fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
 
-**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or turn on **Open F4 with the F4 key alone, without fn** in Settings: F4 catches the key before Spotlight or Launchpad, which needs the Accessibility permission (without it, fn F4 still works). On most other keyboards F4 just works. Or record another shortcut in Settings.
+**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works. Or pick another shortcut in the menu bar menu (**Shortcut**).
 
 **Can a script or an AI assistant use F4?** Yes, with [`f4://` URLs](#automation-f4-urls): `open "f4://copy?name=basito"` copies a sticker from anywhere. Shortcuts actions, a command line tool and an MCP server are on the way. Facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
 

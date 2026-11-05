@@ -191,21 +191,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         paste.state = settings.pasteAfterCopy ? .on : .off
         paste.toolTip = String(localized: "Presses ⌘V in the front app after copying. Needs Accessibility access; without it F4 only copies.")
         items.append(paste)
-        var needsAccessibility = settings.pasteAfterCopy && !AutoPaster.isTrusted
-
-        // Only on a Mac whose F4 key is Spotlight or Launchpad, with F4 as the shortcut.
-        if settings.toggleShortcut.isF4Alone && !HotKeyCombo.functionKeysAreStandard {
-            let withoutFn = item(String(localized: "F4 Key Without fn")) { [weak self] in
-                guard let self else { return }
-                self.settings.pressF4WithoutFn.toggle()
-                if self.settings.pressF4WithoutFn { AutoPaster.requestTrust() }
-            }
-            withoutFn.state = settings.pressF4WithoutFn ? .on : .off
-            withoutFn.toolTip = String(localized: "The F4 key alone opens F4 instead of Spotlight or Launchpad. Needs Accessibility access; fn F4 always works.")
-            items.append(withoutFn)
-            if settings.pressF4WithoutFn && !MediaF4KeyTap.shared.isRunning { needsAccessibility = true }
-        }
-        if needsAccessibility {
+        if settings.pasteAfterCopy && !AutoPaster.isTrusted {
             // An option is on but macOS has not let F4 act on keys yet.
             items.append(accessibilityItem())
         }

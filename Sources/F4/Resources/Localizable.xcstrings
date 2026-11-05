@@ -101,16 +101,6 @@
         }
       }
     },
-    "All set: press F4 to open your stickers. fn F4 works too.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fatto: premi F4 per aprire i tuoi sticker. Funziona anche fn F4."
-          }
-        }
-      }
-    },
     "Allow Accessibility…": {
       "localizations": {
         "it": {
@@ -252,32 +242,12 @@
         }
       }
     },
-    "F4 can catch the F4 key before macOS does, so the key alone opens your stickers. It needs Accessibility access for that: F4 only acts on the F4 key and lets every other key through.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "F4 può intercettare il tasto F4 prima di macOS, così basta il tasto da solo per aprire i tuoi sticker. Per farlo serve l'accesso ad Accessibilità: F4 agisce solo sul tasto F4 e lascia passare tutti gli altri."
-          }
-        }
-      }
-    },
     "F4 can only add GIF, PNG, JPEG and WebP images, and WhatsApp sticker packs (.wastickers).": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "F4 può aggiungere solo immagini GIF, PNG, JPEG e WebP, e pacchetti di sticker di WhatsApp (.wastickers)."
-          }
-        }
-      }
-    },
-    "F4 Key Without fn": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tasto F4 senza fn"
           }
         }
       }
@@ -308,26 +278,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le cartelle fanno da categorie: la ricerca trova uno sticker anche dalla sua cartella."
-          }
-        }
-      }
-    },
-    "Keep fn F4": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tieni fn F4"
-          }
-        }
-      }
-    },
-    "Later": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Più tardi"
           }
         }
       }
@@ -432,16 +382,6 @@
         }
       }
     },
-    "On this Mac the F4 key opens Spotlight or Launchpad, so for now F4 opens with fn F4.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Su questo Mac il tasto F4 apre Spotlight o Launchpad, quindi per ora F4 si apre con fn F4."
-          }
-        }
-      }
-    },
     "Open at Login": {
       "localizations": {
         "it": {
@@ -462,26 +402,6 @@
         }
       }
     },
-    "Open F4 with the F4 key": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri F4 con il tasto F4"
-          }
-        }
-      }
-    },
-    "Open Settings": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri Impostazioni"
-          }
-        }
-      }
-    },
     "Open Sticker Folder": {
       "localizations": {
         "it": {
@@ -498,16 +418,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Opzioni"
-          }
-        }
-      }
-    },
-    "Or use F1, F2, etc. as standard function keys for every app": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Oppure usa F1, F2, ecc. come tasti funzione standard in tutte le app"
           }
         }
       }
@@ -712,16 +622,6 @@
         }
       }
     },
-    "Start": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inizia"
-          }
-        }
-      }
-    },
     "Stickers": {
       "localizations": {
         "it": {
@@ -738,16 +638,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vanno anche i %@ sticker che contiene. Puoi recuperarli dal Cestino."
-          }
-        }
-      }
-    },
-    "The F4 key alone opens F4 instead of Spotlight or Launchpad. Needs Accessibility access; fn F4 always works.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il solo tasto F4 apre F4 invece di Spotlight o Launchpad. Serve l'accesso Accessibilità; fn F4 funziona sempre."
           }
         }
       }
@@ -802,26 +692,6 @@
         }
       }
     },
-    "Turn on F4 in System Settings › Privacy & Security › Accessibility. This window updates as soon as you do.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Attiva F4 in Impostazioni di Sistema › Privacy e sicurezza › Accessibilità. Questa finestra si aggiorna appena lo fai."
-          }
-        }
-      }
-    },
-    "Until then, or if you prefer not to, fn F4 opens F4. You can change this later in F4's menu (F4 Key Without fn).": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fino ad allora, o se preferisci di no, F4 si apre con fn F4. Puoi cambiarlo dopo dal menu di F4 (Tasto F4 senza fn)."
-          }
-        }
-      }
-    },
     "Update to Version %@…": {
       "localizations": {
         "it": {
@@ -838,26 +708,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Usa cartella"
-          }
-        }
-      }
-    },
-    "Use the F4 key alone": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usa solo il tasto F4"
-          }
-        }
-      }
-    },
-    "Welcome to F4": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Benvenuto in F4"
           }
         }
       }

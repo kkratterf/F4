@@ -12,8 +12,6 @@ final class AppSettings: ObservableObject {
         static let shortcutModifiers = "toggleShortcutModifiers"
         static let pasteAfterCopy = "pasteAfterCopy"
         static let showStarterPack = "showStarterPack"
-        static let pressF4WithoutFn = "pressF4WithoutFn"
-        static let didOfferF4WithoutFn = "didOfferF4WithoutFn"
         static let didSeedLibrary = "didSeedLibrary"
     }
 
@@ -39,20 +37,6 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(pasteAfterCopy, forKey: Key.pasteAfterCopy) }
     }
 
-    /// Catch the F4 key of a Mac keyboard (Spotlight or Launchpad) so F4
-    /// alone opens the panel, without fn. Needs Accessibility; off by
-    /// default, and fn F4 keeps working without it (`MediaF4KeyTap`).
-    @Published var pressF4WithoutFn: Bool {
-        didSet { defaults.set(pressF4WithoutFn, forKey: Key.pressF4WithoutFn) }
-    }
-
-    /// Whether F4 already showed the first-launch window that offers
-    /// `pressF4WithoutFn`. It is shown once.
-    var didOfferF4WithoutFn: Bool {
-        get { defaults.bool(forKey: Key.didOfferF4WithoutFn) }
-        set { defaults.set(newValue, forKey: Key.didOfferF4WithoutFn) }
-    }
-
     /// Whether the starter pack was already copied into F4's own library. It
     /// is copied once: memes the user deletes stay deleted.
     var didSeedLibrary: Bool {
@@ -70,7 +54,6 @@ final class AppSettings: ObservableObject {
         self.defaults = defaults
         showStarterPack = defaults.object(forKey: Key.showStarterPack) as? Bool ?? true
         pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
-        pressF4WithoutFn = defaults.bool(forKey: Key.pressF4WithoutFn)
         let initial = LibraryFolders.initialFolder(
             savedPath: defaults.string(forKey: Key.memeFolder),
             legacyHasMemes: Self.hasMemes(LibraryFolders.legacyFolder())
