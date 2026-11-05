@@ -11,22 +11,12 @@
         }
       }
     },
-    "%@ is taken by another app. Pick another shortcut.": {
+    "%@ is taken by another app.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ è già usata da un'altra app. Scegline un'altra."
-          }
-        }
-      }
-    },
-    "About F4": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Informazioni su F4"
+            "value": "%@ è già usato da un'altra app."
           }
         }
       }
@@ -101,26 +91,6 @@
         }
       }
     },
-    "Allow Accessibility…": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Consenti Accessibilità…"
-          }
-        }
-      }
-    },
-    "Allow F4 in System Settings → General → Login Items.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Consenti F4 in Impostazioni di Sistema → Generali → Elementi login."
-          }
-        }
-      }
-    },
     "Can't read the sticker folder": {
       "localizations": {
         "it": {
@@ -152,16 +122,6 @@
         }
       }
     },
-    "Choose Sticker Folder…": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli la cartella degli sticker…"
-          }
-        }
-      }
-    },
     "Choose stickers or WhatsApp sticker packs (.wastickers) to add. F4 copies them into its own folder, so the originals can stay where they are.": {
       "localizations": {
         "it": {
@@ -172,22 +132,22 @@
         }
       }
     },
-    "Choose the folder with your stickers": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli la cartella con i tuoi sticker"
-          }
-        }
-      }
-    },
     "Click the star on a sticker, or select it and press ⌘D, to keep it here. Do it again to remove it.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Clicca la stella su uno sticker, o selezionalo e premi ⌘D, per tenerlo qui. Rifallo per toglierlo."
+          }
+        }
+      }
+    },
+    "Copied to Clipboard": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copiato negli appunti"
           }
         }
       }
@@ -382,32 +342,12 @@
         }
       }
     },
-    "Open at Login": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri al login"
-          }
-        }
-      }
-    },
     "Open F4": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Apri F4"
-          }
-        }
-      }
-    },
-    "Open Sticker Folder": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri la cartella degli sticker"
           }
         }
       }
@@ -438,26 +378,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Incolla uno sticker o un link con ⌘V, trascina i file qui o fai clic su Aggiungi. Vengono salvati in %@."
-          }
-        }
-      }
-    },
-    "Paste After Copying": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Incolla dopo la copia"
-          }
-        }
-      }
-    },
-    "Presses ⌘V in the front app after copying. Needs Accessibility access; without it F4 only copies.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preme ⌘V nell'app in primo piano dopo la copia. Serve l'accesso Accessibilità; senza, F4 copia e basta."
           }
         }
       }
@@ -572,26 +492,6 @@
         }
       }
     },
-    "Shortcut": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scorciatoia"
-          }
-        }
-      }
-    },
-    "Shortcut: %@": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scorciatoia: %@"
-          }
-        }
-      }
-    },
     "Show in Finder": {
       "localizations": {
         "it": {
@@ -652,16 +552,6 @@
         }
       }
     },
-    "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). F4 goes online only for updates, links you paste or drop, and packs you turn on.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Il pacchetto iniziale usa le Noto Animated Emoji di Google (CC BY 4.0). F4 va online solo per gli aggiornamenti, per i link che incolli o trascini e per i pacchetti che attivi."
-          }
-        }
-      }
-    },
     "The sticker in it goes too. You can put it back from the Trash.": {
       "localizations": {
         "it": {
@@ -698,16 +588,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiorna alla versione %@…"
-          }
-        }
-      }
-    },
-    "Use Folder": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usa cartella"
           }
         }
       }

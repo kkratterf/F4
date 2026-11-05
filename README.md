@@ -27,9 +27,9 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 
 ## How it works
 
-1. Paste (⌘V), drop or **Add** your stickers in the panel, and switch on the packs you want from the menu bar (**Packs**). They go in F4's own library, `~/Library/Application Support/F4/Memes`, which comes with a starter pack already in it; or pick any folder of yours from the menu bar (Choose Sticker Folder…). Subfolders become categories.
+1. Paste (⌘V), drop or **Add** your stickers in the panel, and switch on the packs you want from the menu bar (**Packs**). They go in F4's own library, `~/Library/Application Support/F4/Memes`, which comes with a starter pack already in it. Subfolders become categories.
 2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
-3. Type to search, move with the arrow keys, press **Enter**. The sticker is copied; paste it with ⌘V, or let F4 paste it for you.
+3. Type to search, move with the arrow keys, press **Enter**. The sticker is copied and a small **Copied to Clipboard** toast says so; paste it with ⌘V wherever you want.
 
 **Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen, and opens where you left it next time.
 
@@ -45,9 +45,9 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | 📥 **WhatsApp sticker packs** | Drop a `.wastickers` file (the format WhatsApp sticker packs come in) on the panel, paste it with ⌘V, pick it with **Add**, or paste a link to one: F4 unpacks it into a folder named after the pack. Packs from [getstickerpack.com](https://getstickerpack.com/stickers) (what the "Sticker Maker" apps use) work from their link: paste the pack page or its "Add to WhatsApp" link and F4 downloads all its stickers into a folder named after it. Single stickers work too: in WhatsApp for Mac, right-click a sticker → Copy, then ⌘V in the panel. |
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied sticker, a sticker pack or an image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. No Finder needed. |
 | 🗂️ **Folders without Finder** | Each subfolder is a category you can search by name. Right-click a sticker in the panel to **Move To** a folder (or a **New Folder…**), **Rename…** it or **Move to Trash**; the menu bar's **Folders** creates, renames and trashes folders. Favourites and recents follow the files. |
-| 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. Off by default; it needs the Accessibility permission. |
-| 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. Only the optional auto-paste asks for Accessibility. |
-| 🖥️ **Menu bar** | No Dock icon and no Settings window. The menu bar icon opens the panel, copies one of your last 5 stickers in a click, leads to the sticker folder, and holds every option as a checkmark. |
+| ✅ **Copied, and it tells you** | After a copy a small toast at the bottom of the screen says **Copied to Clipboard**, then fades. It takes no clicks and no focus, so ⌘V works right away. |
+| 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. F4 asks for no permission at all. |
+| 🖥️ **Menu bar** | No Dock icon and no Settings window. The menu bar icon opens the panel, copies one of your last 5 stickers in a click, and manages folders and packs. F4 starts at login on its own. |
 | 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Check for Updates… in the menu bar). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
 | 🧩 **Raycast** | A [Raycast extension](raycast) searches the same folder, if that is where your hands already are. |
@@ -68,17 +68,18 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 | `f4://reload` | Rescans the sticker folder |
 | `f4://settings` | Opens the menu bar menu under the pointer, where the options are |
 
-`f4://copy` picks the sticker the panel would put first for that search (favourites and recents win a tie) and never auto-pastes. If F4 is not running, the URL starts it.
+`f4://copy` picks the sticker the panel would put first for that search (favourites and recents win a tie) and shows the same Copied toast. If F4 is not running, the URL starts it.
 
 ### Options
 
 F4 has no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
 
-- **Open Sticker Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its stickers into a folder named after it, off moves that folder to the Trash) and **Choose Sticker Folder…**
-- **Paste After Copying**: F4 presses ⌘V in the front app for you (needs Accessibility).
-- **Open at Login**, plus **Show Starter Pack** when you use a folder of your own.
-- **Shortcut ▸**: fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
-- **Check for Updates…** and **About F4** (credits).
+- **Open F4** and your **Recent Stickers**.
+- **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder) and **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its stickers into a folder named after it, off moves that folder to the Trash).
+- **Show Starter Pack**, only if you use a sticker folder picked in a version before 0.4.3.
+- **Check for Updates…** and **Quit F4**.
+
+There is nothing else to set. The shortcut is always **fn F4** (F4 alone with standard function keys) and can't be changed. F4 adds itself to your login items on the first launch, so it is always there; macOS shows a notification, and you can still remove it in System Settings → General → Login Items.
 
 ---
 
@@ -137,7 +138,7 @@ The install script does this for you. You only need to do it once per version.
 
 ### 5. Where is it?
 
-F4 has no Dock icon. Press **F4** (**fn F4** on a Mac keyboard), or look for the F4 key in the **menu bar**, top right. To start it at login, turn on **Open at Login** in its menu.
+F4 has no Dock icon. Press **F4** (**fn F4** on a Mac keyboard), or look for the F4 key in the **menu bar**, top right. It starts at login on its own (System Settings → General → Login Items to remove it).
 
 ### 6. Updating
 
@@ -182,9 +183,9 @@ F4 has no analytics, no account and no server. It reads the files in your sticke
 
 **Where do the stickers come from?** From you: stickers you paste or drop, WhatsApp sticker packs (`.wastickers`), and the packs you switch on. F4 itself ships only openly licensed emoji and stickers drawn in code: the packs are lists of links, downloaded on your Mac when you switch them on.
 
-**Can I change the shortcut?** Yes, in the menu bar: Shortcut ▸ fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
+**Can I change the shortcut?** No: F4 is the F4 key, fn F4 on a Mac keyboard, and it stays that way.
 
-**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works. Or pick another shortcut in the menu bar menu (**Shortcut**).
+**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
 
 **Can a script or an AI assistant use F4?** Yes, with [`f4://` URLs](#automation-f4-urls): `open "f4://copy?name=basito"` copies a sticker from anywhere. Shortcuts actions, a command line tool and an MCP server are on the way. Facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
 
