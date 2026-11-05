@@ -220,15 +220,6 @@ final class StatusItemController: NSObject, NSMenuDelegate {
             items.append(starter)
         }
 
-        if GiphyClient.shared.hasKey {
-            let giphy = item(String(localized: "Search GIPHY")) { [weak self] in
-                self?.settings.searchGiphy.toggle()
-            }
-            giphy.state = settings.searchGiphy ? .on : .off
-            giphy.toolTip = String(localized: "Searches GIPHY stickers only while the panel is open on the Stickers tab.")
-            items.append(giphy)
-        }
-
         let login = item(String(localized: "Open at Login")) { [weak self] in
             guard let self else { return }
             self.loginItem.setEnabled(!self.loginItem.isEnabled)
@@ -348,7 +339,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     /// The standard About panel, with the starter pack's credit (CC BY 4.0
     /// asks for it) and F4's promise about the network.
     private static func showAbout() {
-        let credits = String(localized: "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). Sticker search powered by GIPHY. F4 goes online only for updates, GIPHY while you search it, links you paste or drop, and packs you turn on.")
+        let credits = String(localized: "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). F4 goes online only for updates, links you paste or drop, and packs you turn on.")
         let options: [NSApplication.AboutPanelOptionKey: Any] = [
             .credits: NSAttributedString(
                 string: credits,

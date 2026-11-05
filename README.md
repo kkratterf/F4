@@ -42,8 +42,8 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | 🔎 **Fuzzy search** | Type a few letters of the name or the folder: "tif" finds "this is fine". Favourites (click the star on a sticker, or ⌘D) get their own section on top and their own tab (Tab, ⌘1 and ⌘2), then the ones you used last. |
 | 📦 **Packs you switch on** | The menu bar's **Packs** lists sticker packs: switch one on and F4 downloads it into a folder of your library, switch it off and it goes to the Trash. F4 ships only the list of links, never the files, and downloads nothing until you switch a pack on. |
 | 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji (`Emoji/`) and its own stickers (`F4/`: "basito", "dai dai dai", the F4 keycap...), copied into F4's library on the first launch, so they are yours to move, rename or delete. With a folder of your own they are listed after your stickers instead (Show Starter Pack in the menu bar). |
-| 🔍 **GIPHY stickers** | GIPHY stickers follow your own: trending when the search is empty. **Enter** copies one and saves it in `GIPHY/` in your library, so next time it is local, instant and offline; **⌘D** saves it as a favourite. |
-| ➕ **Add from the panel** | Press ⌘V in the panel to add a copied sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. No Finder needed. |
+| 📥 **WhatsApp sticker packs** | Drop a `.wastickers` file (the format WhatsApp sticker packs come in) on the panel, paste it with ⌘V, pick it with **Add**, or paste a link to one: F4 unpacks it into a folder named after the pack. Single stickers work too: in WhatsApp for Mac, right-click a sticker → Copy, then ⌘V in the panel. |
+| ➕ **Add from the panel** | Press ⌘V in the panel to add a copied sticker, a sticker pack or an image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. No Finder needed. |
 | 🗂️ **Folders without Finder** | Each subfolder is a category you can search by name. Right-click a sticker in the panel to **Move To** a folder (or a **New Folder…**), **Rename…** it or **Move to Trash**; the menu bar's **Folders** creates, renames and trashes folders. Favourites and recents follow the files. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. Off by default; it needs the Accessibility permission. |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. Only two optional features ask for Accessibility: auto-paste, and the F4 key alone without fn on a Mac keyboard. |
@@ -77,7 +77,7 @@ F4 has no Settings window: everything is in the menu bar menu, like [Maramao](ht
 - **Open Sticker Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its stickers into a folder named after it, off moves that folder to the Trash) and **Choose Sticker Folder…**
 - **Paste After Copying**: F4 presses ⌘V in the front app for you (needs Accessibility).
 - **F4 Key Without fn**: on a Mac keyboard, the F4 key alone opens F4 instead of Spotlight or Launchpad (needs Accessibility; fn F4 always works).
-- **Search GIPHY** and **Open at Login**, plus **Show Starter Pack** when you use a folder of your own.
+- **Open at Login**, plus **Show Starter Pack** when you use a folder of your own.
 - **Shortcut ▸**: fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
 - **Check for Updates…** and **About F4** (credits).
 
@@ -175,13 +175,13 @@ open dist/F4.app
 
 ## Privacy
 
-F4 has no analytics, no account and no server. It reads the files in your sticker folder locally and writes the one you pick to the clipboard. It goes online for four things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); GIPHY stickers, only while the panel is open on its Stickers tab; downloading an image link you paste or drop into the panel yourself; and downloading a pack you pick in the menu bar's **Packs**. GIPHY can be turned off in the menu (Search GIPHY), and the update check when Sparkle first asks.
+F4 has no analytics, no account and no server. It reads the files in your sticker folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); downloading a link you paste or drop into the panel yourself; and downloading a pack you switch on in the menu bar's **Packs**. The update check can be turned off when Sparkle first asks.
 
 ## FAQ
 
 **Which files does it understand?** GIF, PNG, JPEG and WebP (WhatsApp and Telegram stickers). HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
 
-**Where do the stickers come from?** From you, the packs you switch on, and GIPHY. F4 itself ships only openly licensed emoji and stickers drawn in code: the packs are lists of links, downloaded on your Mac when you switch them on.
+**Where do the stickers come from?** From you: stickers you paste or drop, WhatsApp sticker packs (`.wastickers`), and the packs you switch on. F4 itself ships only openly licensed emoji and stickers drawn in code: the packs are lists of links, downloaded on your Mac when you switch them on.
 
 **Can I change the shortcut?** Yes, in the menu bar: Shortcut ▸ fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
 

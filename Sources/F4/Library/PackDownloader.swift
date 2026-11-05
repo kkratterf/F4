@@ -5,9 +5,9 @@ import F4Core
 /// the user turns it on in the menu bar's Packs submenu: never on its own.
 /// Turning it off moves its folders to the Trash (`LibraryOrganizer`).
 ///
-/// Each GIF or sticker comes straight from GIPHY's media host, so no API key
-/// is needed. Files already in the pack's folder are skipped, so downloading
-/// again only fetches what is missing; nothing is ever overwritten.
+/// Each sticker comes straight from the link in the pack. Files already in
+/// the pack's folder are skipped, so downloading again only fetches what is
+/// missing; nothing is ever overwritten.
 @MainActor
 final class PackDownloader: ObservableObject {
     /// The packs listed in the app bundle (`Packs.json`, from

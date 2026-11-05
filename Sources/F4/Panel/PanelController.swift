@@ -31,7 +31,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         self.library = library
         self.usage = usage
         self.organizer = organizer
-        model = DeckModel(library: library, usage: usage, giphy: .shared)
+        model = DeckModel(library: library, usage: usage)
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
         let deck = DeckView(
@@ -39,8 +39,6 @@ final class PanelController: NSObject, NSWindowDelegate {
             library: library,
             onPick: { [weak self] meme in self?.pick(meme) },
             onAdd: { [weak self] in self?.chooseFiles() },
-            onPickWeb: { [weak self] result in self?.pick(result) },
-            onPinWeb: { [weak self] result in self?.pin(result) },
             onDrag: { [weak self] drag in self?.drag(drag) },
             onOrganize: { [weak self] meme, action in self?.organize(meme, action) }
         )
@@ -110,8 +108,9 @@ final class PanelController: NSObject, NSWindowDelegate {
         picker.canChooseDirectories = false
         picker.allowsMultipleSelection = true
         picker.allowedContentTypes = MemeKind.allCases.compactMap { UTType($0.typeIdentifier) }
+            + [UTType(filenameExtension: "wastickers"), UTType.zip].compactMap { $0 }
         picker.prompt = String(localized: "Add")
-        picker.message = String(localized: "Choose stickers to add. F4 copies them into its own folder, so the originals can stay where they are.")
+        picker.message = String(localized: "Choose stickers or WhatsApp sticker packs (.wastickers) to add. F4 copies them into its own folder, so the originals can stay where they are.")
         isShowingDialog = true
         NSApp.activate(ignoringOtherApps: true)
         picker.level = .modalPanel
@@ -162,56 +161,6 @@ final class PanelController: NSObject, NSWindowDelegate {
     private func failed(_ error: Error) {
         model.show(notice: error.localizedDescription)
         if panel.isVisible { panel.makeKeyAndOrderFront(nil) }
-    }
-
-    // MARK: GIPHY
-
-    /// Copies a GIPHY sticker. It is saved in the library first (GIPHY/),
-    /// so it pastes animated like any sticker, shows up in the
-    /// recents, and stays there for next time, offline too.
-    private func pick(_ result: Giphy.Result) {
-        model.show(notice: String(localized: "Downloading from GIPHY…"))
-        Task {
-            do {
-                let url = try await save(result)
-                let meme = Meme(url: url, kind: MemeKind(url: url) ?? .gif, modificationDate: Date())
-                guard MemeClipboard.copy(meme) else { return hide() }
-                usage.recordCopy(meme)
-                library.reload()
-                hide()
-                if AppSettings.shared.pasteAfterCopy { AutoPaster.pasteSoon() }
-            } catch {
-                model.show(notice: String(localized: "Couldn't download the sticker from GIPHY."))
-            }
-        }
-    }
-
-    /// Saves a GIPHY result in the meme folder as a favourite: from then on
-    /// it is local, instant and offline.
-    private func pin(_ result: Giphy.Result) {
-        Task {
-            do {
-                let url = try await save(result)
-                usage.addFavourite(url)
-                added([url])
-            } catch {
-                failed(error)
-            }
-        }
-    }
-
-    /// The GIPHY result as a file in the meme folder: downloaded and saved
-    /// the first time, the same file every time after.
-    private func save(_ result: Giphy.Result) async throws -> URL {
-        if let saved = usage.savedFile(forWebMeme: result.saveKey) { return saved }
-        let file = try await model.giphy.file(for: result)
-        let url = try await MemeImporter.pin(
-            file,
-            name: result.name,
-            into: library.folder.appendingPathComponent(Giphy.folder, isDirectory: true)
-        )
-        usage.recordSave(ofWebMeme: result.saveKey, at: url)
-        return url
     }
 
     var isVisible: Bool { panel.isVisible }

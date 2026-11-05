@@ -172,12 +172,12 @@
         }
       }
     },
-    "Choose stickers to add. F4 copies them into its own folder, so the originals can stay where they are.": {
+    "Choose stickers or WhatsApp sticker packs (.wastickers) to add. F4 copies them into its own folder, so the originals can stay where they are.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Scegli gli sticker da aggiungere. F4 li copia nella sua cartella, gli originali possono restare dove sono."
+            "value": "Scegli gli sticker o i pacchetti di sticker di WhatsApp (.wastickers) da aggiungere. F4 li copia nella sua cartella, gli originali possono restare dove sono."
           }
         }
       }
@@ -222,16 +222,6 @@
         }
       }
     },
-    "Couldn't download the sticker from GIPHY.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impossibile scaricare lo sticker da GIPHY."
-          }
-        }
-      }
-    },
     "Create": {
       "localizations": {
         "it": {
@@ -248,16 +238,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Download di %@…"
-          }
-        }
-      }
-    },
-    "Downloading from GIPHY…": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Download da GIPHY…"
           }
         }
       }
@@ -282,12 +262,12 @@
         }
       }
     },
-    "F4 can only add GIF, PNG, JPEG and WebP images.": {
+    "F4 can only add GIF, PNG, JPEG and WebP images, and WhatsApp sticker packs (.wastickers).": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "F4 può aggiungere solo immagini GIF, PNG, JPEG e WebP."
+            "value": "F4 può aggiungere solo immagini GIF, PNG, JPEG e WebP, e pacchetti di sticker di WhatsApp (.wastickers)."
           }
         }
       }
@@ -328,16 +308,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le cartelle fanno da categorie: la ricerca trova uno sticker anche dalla sua cartella."
-          }
-        }
-      }
-    },
-    "From GIPHY": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Da GIPHY"
           }
         }
       }
@@ -512,16 +482,6 @@
         }
       }
     },
-    "Open on GIPHY": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri su GIPHY"
-          }
-        }
-      }
-    },
     "Open Sticker Folder": {
       "localizations": {
         "it": {
@@ -578,16 +538,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Incolla dopo la copia"
-          }
-        }
-      }
-    },
-    "Pin to F4": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi a F4"
           }
         }
       }
@@ -692,32 +642,12 @@
         }
       }
     },
-    "Search GIPHY": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cerca su GIPHY"
-          }
-        }
-      }
-    },
     "Search stickers": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Cerca sticker"
-          }
-        }
-      }
-    },
-    "Searches GIPHY stickers only while the panel is open on the Stickers tab.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cerca sticker su GIPHY solo mentre il pannello è aperto sulla scheda Sticker."
           }
         }
       }
@@ -822,12 +752,12 @@
         }
       }
     },
-    "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). Sticker search powered by GIPHY. F4 goes online only for updates, GIPHY while you search it, links you paste or drop, and packs you turn on.": {
+    "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). F4 goes online only for updates, links you paste or drop, and packs you turn on.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il pacchetto iniziale usa le Noto Animated Emoji di Google (CC BY 4.0). Ricerca sticker powered by GIPHY. F4 va online solo per gli aggiornamenti, per GIPHY mentre lo cerchi, per i link che incolli o trascini e per i pacchetti che attivi."
+            "value": "Il pacchetto iniziale usa le Noto Animated Emoji di Google (CC BY 4.0). F4 va online solo per gli aggiornamenti, per i link che incolli o trascini e per i pacchetti che attivi."
           }
         }
       }

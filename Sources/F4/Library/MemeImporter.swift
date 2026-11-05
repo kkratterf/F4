@@ -20,7 +20,7 @@ enum MemeImporter {
         var errorDescription: String? {
             switch self {
             case .nothingToAdd:
-                return String(localized: "F4 can only add GIF, PNG, JPEG and WebP images.")
+                return String(localized: "F4 can only add GIF, PNG, JPEG and WebP images, and WhatsApp sticker packs (.wastickers).")
             case .download(let reason):
                 return String(localized: "Couldn't download the image: \(reason)")
             }
@@ -54,7 +54,7 @@ enum MemeImporter {
         // 1. Files, from Finder or any app that drags real files.
         let files = (pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL]) ?? []
         if !files.isEmpty {
-            let saved = try await copy(files.filter { MemeKind(url: $0) != nil }, into: folder)
+            let saved = try await copy(files.filter(isImportable), into: folder)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -63,7 +63,7 @@ enum MemeImporter {
         if let receivers = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self]) as? [NSFilePromiseReceiver],
            !receivers.isEmpty {
             let received = try await receive(receivers)
-            let saved = try await copy(received.filter { MemeKind(url: $0) != nil }, into: folder)
+            let saved = try await copy(received.filter(isImportable), into: folder)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -81,32 +81,25 @@ enum MemeImporter {
             return saved
         }
 
-        // 4. A link to an image (or a GIPHY page) on the web.
+        // 4. A link to an image or a sticker pack file on the web.
         let link = (pasteboard.readObjects(forClasses: [NSURL.self]) as? [URL])?.first { !$0.isFileURL }
             ?? pasteboard.string(forType: .string).flatMap(MemeImport.webURL(in:))
         if let link {
-            return [try await download(link, into: folder)]
+            return try await download(link, into: folder)
         }
         throw Failure.nothingToAdd
     }
 
     /// Copies files picked with the + button.
     static func importFiles(_ urls: [URL], into folder: URL) async throws -> [URL] {
-        let saved = try await copy(urls.filter { MemeKind(url: $0) != nil }, into: folder)
+        let saved = try await copy(urls.filter(isImportable), into: folder)
         if saved.isEmpty { throw Failure.nothingToAdd }
         return saved
     }
 
-    /// Copies a downloaded GIPHY file into `folder` under `name`.
-    static func pin(_ file: URL, name: String, into folder: URL) async throws -> URL {
-        let kind = MemeKind(url: file) ?? .gif
-        let target = folder
-        return try await Task.detached(priority: .userInitiated) {
-            try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
-            let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
-            try FileManager.default.copyItem(at: file, to: url)
-            return url
-        }.value
+    /// An image F4 keeps as a sticker, or a sticker pack file (`.wastickers`).
+    private static func isImportable(_ url: URL) -> Bool {
+        MemeKind(url: url) != nil || StickerArchive.isArchive(url)
     }
 
     // MARK: Reading
@@ -150,13 +143,15 @@ enum MemeImporter {
 
     private static func copy(_ files: [URL], into folder: URL) async throws -> [URL] {
         let jobs = files.compactMap { file in MemeKind(url: file).map { (file, $0, folder) } }
+        let archives = files.filter(StickerArchive.isArchive)
         return try await Task.detached(priority: .userInitiated) {
-            try jobs.map { file, kind, target in
+            let copied = try jobs.map { file, kind, target in
                 try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
                 let url = MemeImport.uniqueURL(name: file.deletingPathExtension().lastPathComponent, kind: kind, in: target)
                 try FileManager.default.copyItem(at: file, to: url)
                 return url
             }
+            return try copied + archives.flatMap { try unpack($0, into: folder) }
         }.value
     }
 
@@ -170,7 +165,42 @@ enum MemeImporter {
         }.value
     }
 
-    private static func download(_ link: URL, into folder: URL) async throws -> URL {
+    /// Unpacks a sticker pack file into a folder of the library named after
+    /// the pack, and returns the stickers it added. Blocking: off the main thread.
+    nonisolated private static func unpack(_ archive: URL, into folder: URL) throws -> [URL] {
+        let fileManager = FileManager.default
+        let temporary = fileManager.temporaryDirectory
+            .appendingPathComponent("F4-pack-\(UUID().uuidString)", isDirectory: true)
+        try fileManager.createDirectory(at: temporary, withIntermediateDirectories: true)
+        defer { try? fileManager.removeItem(at: temporary) }
+        // ditto ships with macOS and unpacks zip archives, which is what a
+        // .wastickers file is.
+        let ditto = Process()
+        ditto.executableURL = URL(fileURLWithPath: "/usr/bin/ditto")
+        ditto.arguments = ["-x", "-k", archive.path, temporary.path]
+        try ditto.run()
+        ditto.waitUntilExit()
+        guard ditto.terminationStatus == 0 else { throw Failure.nothingToAdd }
+        let root = temporary.resolvingSymlinksInPath().path + "/"
+        let files = (fileManager.enumerator(at: temporary, includingPropertiesForKeys: nil)?.allObjects as? [URL] ?? [])
+            .map { url -> String in
+                let path = url.resolvingSymlinksInPath().path
+                return path.hasPrefix(root) ? String(path.dropFirst(root.count)) : url.lastPathComponent
+            }
+        let titleFile = files.first { ($0 as NSString).lastPathComponent.lowercased() == "title.txt" }
+        let title = titleFile.flatMap { try? String(contentsOf: temporary.appendingPathComponent($0), encoding: .utf8) }
+        let target = folder.appendingPathComponent(StickerArchive.folderName(title: title, archive: archive), isDirectory: true)
+        try fileManager.createDirectory(at: target, withIntermediateDirectories: true)
+        return try StickerArchive.stickers(in: files).compactMap { path in
+            let source = temporary.appendingPathComponent(path)
+            guard let kind = MemeKind(url: source) else { return nil }
+            let url = MemeImport.uniqueURL(name: source.deletingPathExtension().lastPathComponent, kind: kind, in: target)
+            try fileManager.copyItem(at: source, to: url)
+            return url
+        }
+    }
+
+    private static func download(_ link: URL, into folder: URL) async throws -> [URL] {
         let giphy = MemeImport.giphyMedia(for: link)
         let source = giphy?.url ?? link
         let configuration = URLSessionConfiguration.ephemeral
@@ -192,9 +222,18 @@ enum MemeImporter {
         guard data.count <= maxDownloadBytes else {
             throw Failure.download(String(localized: "the file is larger than 50 MB"))
         }
+        if StickerArchive.isArchive(source), data.starts(with: [0x50, 0x4B]) {
+            // A link to a sticker pack file ("PK", a zip): unpack it.
+            let file = FileManager.default.temporaryDirectory.appendingPathComponent(source.lastPathComponent)
+            try data.write(to: file, options: .atomic)
+            defer { try? FileManager.default.removeItem(at: file) }
+            let added = try await Task.detached(priority: .userInitiated) { try unpack(file, into: folder) }.value
+            if added.isEmpty { throw Failure.nothingToAdd }
+            return added
+        }
         guard let kind = MemeImport.kind(sniffing: data) else { throw Failure.nothingToAdd }
         let name = giphy?.name ?? MemeImport.suggestedName(for: source)
-        return try await write(data, kind: kind, name: name, into: folder)
+        return [try await write(data, kind: kind, name: name, into: folder)]
     }
 }
 

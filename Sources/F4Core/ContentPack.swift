@@ -1,7 +1,8 @@
 import Foundation
 
 /// A pack of stickers F4 can download into the library in one click
-/// ("Boris", "The Office"...). The app ships only the list of GIPHY links
+/// ("Boris", "The Office"...), like the sticker packs people add to
+/// WhatsApp. The app ships only the list of links
 /// (`Resources/Packs/packs.json`), never the files: the stickers belong to
 /// their owners. The files are downloaded only when the user turns the
 /// pack on, and from then on they are local, ordinary stickers in a folder
@@ -11,8 +12,8 @@ public struct ContentPack: Codable, Equatable, Sendable {
     public let id: String
     /// Shown in the menu, and the folder name in the library ("Boris").
     public let name: String
-    /// GIPHY page links ("https://giphy.com/stickers/boris-basito-AbC123";
-    /// a `gifs/` link works too, as an animated sticker).
+    /// Links to the sticker files ("https://example.com/pack/sticker_1.webp"),
+    /// or GIPHY page links, which become their GIF.
     public let stickers: [String]
 
     public init(id: String, name: String, stickers: [String]) {
@@ -34,11 +35,15 @@ public struct ContentPack: Codable, Equatable, Sendable {
     /// moves to the Trash.
     public var category: String { LibraryFolders.folderName(name) ?? id }
 
-    /// The pack's files. Links that are not GIPHY page links are skipped.
+    /// The pack's files, named after their link. Anything that is not an
+    /// http(s) link is skipped.
     public var items: [Item] {
         stickers.compactMap { link in
-            guard let url = URL(string: link), let media = MemeImport.giphyMedia(for: url) else { return nil }
-            return Item(source: media.url, category: category, name: media.name)
+            guard let url = MemeImport.webURL(in: link) else { return nil }
+            if let media = MemeImport.giphyMedia(for: url) {
+                return Item(source: media.url, category: category, name: media.name)
+            }
+            return Item(source: url, category: category, name: MemeImport.suggestedName(for: url))
         }
     }
 
