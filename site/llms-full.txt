@@ -52,11 +52,11 @@ Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/F4.app`. The inst
 
 ### Where is it after installing?
 
-F4 has no Dock icon and no window at launch. Press F4 (fn-F4 on a Mac keyboard, see Settings below), or click the F4 key icon in the menu bar, top right. To start it at login, turn on "Open F4 at login" in Settings.
+F4 has no Dock icon and no window at launch. Press F4 (fn-F4 on a Mac keyboard, see Options below), or click the F4 key icon in the menu bar, top right. To start it at login, turn on "Open at Login" in the menu bar menu.
 
 ## Use
 
-1. Put memes in a folder: `~/Pictures/Memes` by default, or any folder chosen in Settings. Supported files: GIF, PNG, JPEG, WebP (`.gif`, `.png`, `.jpg`, `.jpeg`, `.webp`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
+1. Put memes in a folder: `~/Pictures/Memes` by default, or any folder chosen with Choose Meme Folder… in the menu bar menu. Supported files: GIF, PNG, JPEG, WebP (`.gif`, `.png`, `.jpg`, `.jpeg`, `.webp`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
 2. Press F4 (fn-F4 on a Mac keyboard) in any app. The panel appears centred on the screen with the mouse, above every window, including full-screen apps.
 3. Type to search, then press Enter. The meme is on the clipboard; paste it with Command-V wherever you want it.
 
@@ -73,12 +73,12 @@ In the panel:
 | Drop on the panel | The same, for files, stickers dragged out of an app, images and links. Press the shortcut while dragging to open the panel under the pointer |
 | Add (top right) | A file picker for GIF, PNG, JPEG and WebP files, starting in Downloads. The picked files are copied into the meme folder (`GIFs/` or `Stickers/`); the originals stay where they are |
 | Command-D | Add the selected meme to Favourites, or remove it |
-| GIPHY row (GIFs and Stickers tabs) | After the local results: GIPHY trending with an empty search, GIPHY search otherwise (GIFs or stickers, rated PG-13, "Powered by GIPHY"). Arrow keys reach them like any meme. Enter saves the result into `GIFs/` or `Stickers/` in the meme folder and copies it as an animated GIF file, so it shows up in the recents and works offline from then on (the same result is saved only once); Command-D or right-click → Pin to F4 does the same and marks it as a favourite. Needs a GIPHY API key: released builds include one; Settings → GIPHY takes your own and can turn the row off |
+| GIPHY row (GIFs and Stickers tabs) | After the local results: GIPHY trending with an empty search, GIPHY search otherwise (GIFs or stickers, rated PG-13, "Powered by GIPHY"). Arrow keys reach them like any meme. Enter saves the result into `GIFs/` or `Stickers/` in the meme folder and copies it as an animated GIF file, so it shows up in the recents and works offline from then on (the same result is saved only once); Command-D or right-click → Pin to F4 does the same and marks it as a favourite. Needs a GIPHY API key: released builds include one when the maintainer's key is set; `defaults write com.kkratterf.f4 giphyAPIKey <key>` sets your own, and Search GIPHY in the menu bar menu turns the row off |
 | Right-click a meme | Copy, Add to Favourites / Remove from Favourites, Show in Finder |
 | The global shortcut again | Hide the panel |
 | Drag the search bar or the bottom bar | Move the panel. It snaps to the screen's centre lines and to its default height, with a guide line, and reopens where it was left (on the screen with the mouse, at the same relative place). Drag it back to the default spot to reset |
 
-Starter pack: F4 ships with 26 animated emoji GIFs (Google's Noto Animated Emoji, CC BY 4.0, downscaled) and 13 stickers drawn in code ("basito", "dai dai dai", "smarmella", "lol", "ship it", the F4 keycap...). They live inside F4.app, are listed after the user's own memes (GIFs in the GIFs tab, stickers in the Stickers tab), can be copied and favourited like any meme, and are never copied into the meme folder. Settings → Starter pack → "Show the GIFs and stickers built into F4" hides them.
+Starter pack: F4 ships with 26 animated emoji GIFs (Google's Noto Animated Emoji, CC BY 4.0, downscaled) and 13 stickers drawn in code ("basito", "dai dai dai", "smarmella", "lol", "ship it", the F4 keycap...). They live inside F4.app, are listed after the user's own memes (GIFs in the GIFs tab, stickers in the Stickers tab), can be copied and favourited like any meme, and are never copied into the meme folder. "Show Starter Pack" in the menu bar menu hides them.
 
 Order of results: with an empty search, favourites first under a "Favourites" heading (click the star in a meme's corner, or Command-D, to add or remove one), then, under "Everything else", recently copied memes (the last 30, most recent first), then the rest in folder order. While typing, the best matches come first (consecutive letters and word starts score higher), and equal matches keep that order. Only the selected or hovered GIF animates; the others show their first frame.
 
@@ -90,23 +90,24 @@ F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and i
 
 ### Menu bar menu
 
-Open F4 · Shortcut: (the current shortcut, as a reminder) · Recent Memes (the last 5 copied, with a thumbnail; a click copies one again without opening the panel) · Open Meme Folder · Settings… (Command-,) · Check for Updates… · Quit F4 (Command-Q).
+F4 has no Settings window: like Maramao's, its menu bar menu holds the options. In order:
 
-### Settings
+Open F4 · Shortcut: (the current shortcut, as a reminder, or why macOS refused it) · Recent Memes (the last 5 copied, with a thumbnail; a click copies one again without opening the panel) · Open Meme Folder · Choose Meme Folder… · Options (below) · Check for Updates… (or "Update to Version x…" once Sparkle found one) · About F4 (credits) · Quit F4 (Command-Q). The icon is always shown; opening F4 again from Finder or Spotlight shows the panel, and `f4://settings` opens this menu under the pointer.
 
-| Section | Setting | Default |
+### Options
+
+| Option | What it does | Default |
 | --- | --- | --- |
-| General | Show and hide F4: the global shortcut, recorded by pressing a new combination. A function key (F1 to F20) can be used alone; any other key needs Command, Option or Control | F4 |
-| General | Open F4 with the F4 key alone, without fn: shown when the shortcut is F4 and the Mac's top row sends media keys. F4 catches the Spotlight or Launchpad key with an event tap, which needs Accessibility; without it fn-F4 keeps working. Offered once in a window on the first launch | Off |
-| General | Open F4 at login (a macOS login item) | Off |
-| General | Show F4 in the menu bar. With the icon hidden, opening F4 again from Finder or Spotlight shows Settings | On |
-| Paste | Paste into the front app after copying: F4 presses Command-V for you | Off |
-| Meme folder | Folder: Choose…, Show in Finder, Use ~/Pictures/Memes | `~/Pictures/Memes` |
-| Updates | Check for updates automatically, and Check Now | On |
+| Paste After Copying | F4 presses Command-V in the front app for you | Off |
+| F4 Key Without fn | Shown when the shortcut is F4 and the Mac's top row sends media keys. F4 catches the Spotlight or Launchpad key with an event tap, which needs Accessibility; without it fn-F4 keeps working. Offered once in a window on the first launch | Off |
+| Show Starter Pack | The GIFs and stickers built into F4, after the user's memes | On |
+| Search GIPHY | The GIPHY row in the GIFs and Stickers tabs; shown only when the build has a GIPHY key | On |
+| Open at Login | A macOS login item | Off |
+| Shortcut ▸ | The global shortcut: F4 (fn F4 on a Mac keyboard), Option-Space, Control-Option-Space, Shift-Command-M or F5. A shortcut set in an older version stays listed | F4 |
 
-Auto-paste needs the Accessibility permission (System Settings > Privacy & Security > Accessibility > F4). Without it F4 only copies, and Settings shows a button to open that pane. "Open F4 with the F4 key alone, without fn" needs the same permission: until it is granted the setting waits for it (F4 checks every couple of seconds) and fn-F4 opens the panel as usual. The event tap only acts on the F4 key in its Spotlight or Launchpad role and passes every other key through. Nothing else in F4 needs a permission: the global shortcut uses Carbon `RegisterEventHotKey`, which needs no Accessibility, Input Monitoring or Screen Recording.
+Auto-paste needs the Accessibility permission (System Settings > Privacy & Security > Accessibility > F4). Without it F4 only copies, and the menu shows "Allow Accessibility…" to open that pane. "Open F4 with the F4 key alone, without fn" needs the same permission: until it is granted the setting waits for it (F4 checks every couple of seconds) and fn-F4 opens the panel as usual. The event tap only acts on the F4 key in its Spotlight or Launchpad role and passes every other key through. Nothing else in F4 needs a permission: the global shortcut uses Carbon `RegisterEventHotKey`, which needs no Accessibility, Input Monitoring or Screen Recording.
 
-Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Preferences/com.kkratterf.f4.plist`): `memeFolderPath`, `toggleShortcutKeyCode`, `toggleShortcutModifiers`, `pasteAfterCopy`, `pressF4WithoutFn`, `didOfferF4WithoutFn` (the first-launch window was shown), `showInMenuBar`, `panelPosition` (where the panel was dragged, as fractions of the screen), `favouriteMemes`, `recentMemes` (file paths), `savedGiphyMemes` (GIPHY results already saved in the meme folder). Change them in Settings rather than with `defaults write` while F4 is running.
+Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Preferences/com.kkratterf.f4.plist`): `memeFolderPath`, `toggleShortcutKeyCode`, `toggleShortcutModifiers`, `pasteAfterCopy`, `pressF4WithoutFn`, `didOfferF4WithoutFn` (the first-launch window was shown), `showStarterPack`, `searchGiphy`, `giphyAPIKey` (your own GIPHY key, empty for the built-in one), `panelPosition` (where the panel was dragged, as fractions of the screen), `favouriteMemes`, `recentMemes` (file paths), `savedGiphyMemes` (GIPHY results already saved in the meme folder). Change them from the menu rather than with `defaults write` while F4 is running (quit F4 first for `giphyAPIKey`).
 
 ### Easter eggs
 
@@ -126,7 +127,7 @@ Anything that can open a URL can drive F4: Shortcuts ("Open URLs"), Raycast or A
 | `f4://search?q=this%20is%20fine` | Shows the panel with the search typed in |
 | `f4://copy?name=this%20is%20fine` | Copies the best match without showing the panel (beeps if nothing matches) |
 | `f4://reload` | Rescans the meme folder |
-| `f4://settings` | Opens Settings |
+| `f4://settings` | Opens the menu bar menu under the pointer, where the options are |
 
 - `f4://copy` copies the meme the panel would show first for that search: the best fuzzy match, with favourites and then recently copied memes winning a tie. It counts as a copy (it moves to the top of the recents) but never auto-pastes, even with auto-paste on. Nothing matches: F4 beeps and the clipboard is left alone.
 - Commands are case-insensitive. `f4:open` and a trailing slash work too; `q` and `query` are accepted for search, `name`, `q` and `query` for copy.
@@ -135,7 +136,7 @@ Anything that can open a URL can drive F4: Shortcuts ("Open URLs"), Raycast or A
 
 ## Update
 
-F4 updates itself with Sparkle: it checks https://f4.kkratter.com/appcast.xml about once a day, offers the new version, and installs it in one click after the user confirms. Updates are signed (EdDSA) and verified before install. "Check for Updates…" in the menu bar menu, or Settings > Updates > Check Now, checks right away. With automatic checks off, install a new version by hand: drag the new DMG's app over the old one, or run the install one-liner again. Settings, favourites and memes are kept.
+F4 updates itself with Sparkle: it checks https://f4.kkratter.com/appcast.xml about once a day, offers the new version, and installs it in one click after the user confirms. Updates are signed (EdDSA) and verified before install. "Check for Updates…" in the menu bar menu checks right away. With automatic checks off (Sparkle asks on the second launch), install a new version by hand: drag the new DMG's app over the old one, or run the install one-liner again. Settings, favourites and memes are kept.
 
 Pre-release versions (for example `0.3.0-beta.1`) are published on GitHub only; automatic updates and Homebrew offer stable versions.
 
@@ -151,7 +152,7 @@ It quits F4, deletes `F4.app` and its settings (`defaults delete com.kkratterf.f
 
 - "Nothing happens when I press F4", or F4 opens Spotlight or Launchpad: on a Mac keyboard the top row sends media keys unless fn is held. Press fn-F4, or turn on "Use F1, F2, etc. keys as standard function keys" in System Settings > Keyboard > Keyboard Shortcuts > Function Keys, or turn on "Open F4 with the F4 key alone, without fn" in Settings > General (needs Accessibility), or record another shortcut in Settings > General (F4 reads that setting: when fn is needed, Settings shows this hint under the shortcut and the menu shows the shortcut as "fn F4"). Also check F4 is running (the F4 key icon in the menu bar); another app may already own the shortcut.
 - Upgrading from 0.2 or earlier: the old default was Command-Shift-M. A shortcut the user recorded themselves is kept; otherwise the new default, F4, applies.
-- "The panel says No memes yet": the folder is empty, missing, or holds only unsupported files. Open it from the menu (Open Meme Folder) or pick another in Settings > Meme folder.
+- "The panel says No memes yet": the folder is empty, missing, or holds only unsupported files. Open it from the menu (Open Meme Folder) or pick another with Choose Meme Folder….
 - "The GIF pastes as a still image": the receiving app takes only images. Most chat apps paste the animation; try pasting into a message field rather than an image editor.
 - "Auto-paste does not paste": grant Accessibility to F4 in System Settings > Privacy & Security > Accessibility, then try again. After an update macOS may need the permission toggled off and on.
 - "macOS says F4 is damaged or cannot be verified": see First launch and Gatekeeper above.

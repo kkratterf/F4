@@ -6,7 +6,7 @@ import F4Core
 /// It only runs while the user is in the GIFs or Stickers tab of the open
 /// panel: never in the background and never at launch. Responses are kept
 /// for ten minutes, so opening the panel again does not ask GIPHY again.
-/// The API key is the user's own (Settings), else the one the release
+/// The API key is the user's own (`giphyAPIKey` default), else the one the release
 /// build was given (`F4GiphyAPIKey` in Info.plist, from the `GIPHY_API_KEY`
 /// secret). Without a key the row is simply not there.
 @MainActor
@@ -35,7 +35,7 @@ final class GiphyClient {
         return builtIn?.isEmpty == false ? builtIn : nil
     }
 
-    /// Whether this build has a key at all (Settings explains when it has not).
+    /// Whether this build has a key at all (the menu hides Search GIPHY when not).
     var hasKey: Bool { apiKey != nil }
 
     /// Whether the panel shows the GIPHY row.
