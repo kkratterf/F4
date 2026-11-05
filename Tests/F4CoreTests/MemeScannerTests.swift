@@ -81,6 +81,16 @@ final class MemeScannerTests: XCTestCase {
         XCTAssertThrowsError(try MemeScanner.scan(folder: folder.appendingPathComponent("nope")))
     }
 
+    func testReadsTheFinderTags() throws {
+        try touch("boh.gif")
+        let url = folder.appendingPathComponent("boh.gif")
+        try (url as NSURL).setResourceValue(["gatto", "reazione"], forKey: .tagNamesKey)
+        let meme = try XCTUnwrap(MemeScanner.scan(folder: folder).first)
+        XCTAssertEqual(meme.tags, ["gatto", "reazione"])
+        XCTAssertEqual(meme.searchText, "boh gatto reazione")
+        XCTAssertEqual(FuzzySearch.filter([meme], query: "gatto").count, 1)
+    }
+
     func testNameDropsTheExtension() {
         let meme = Meme(url: URL(fileURLWithPath: "/m/this is fine.gif"), kind: .gif, modificationDate: .distantPast)
         XCTAssertEqual(meme.name, "this is fine")

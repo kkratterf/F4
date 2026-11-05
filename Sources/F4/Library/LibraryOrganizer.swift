@@ -8,6 +8,8 @@ enum MemeAction {
     /// Into a new folder, named in a prompt.
     case moveToNewFolder
     case rename
+    /// Edit its Finder tags, typed comma separated.
+    case editTags
     case trash
 }
 
@@ -41,6 +43,8 @@ final class LibraryOrganizer {
                 return try move(meme, to: category)
             case .rename:
                 return try rename(meme)
+            case .editTags:
+                return try editTags(meme)
             case .trash:
                 try trash(meme.url)
                 return String(localized: "Moved \(meme.name) to the Trash")
@@ -152,6 +156,24 @@ final class LibraryOrganizer {
         usage.relocate(from: meme.url, to: destination)
         library.reload()
         return String(localized: "Renamed to \(destination.deletingPathExtension().lastPathComponent)")
+    }
+
+    /// ⌘T: the sticker's tags, comma separated. They are the file's Finder
+    /// tags, so Finder shows them too and they follow the file.
+    private func editTags(_ meme: Meme) throws -> String? {
+        guard let typed = prompt(
+            title: String(localized: "Tags for \(meme.name)"),
+            message: String(localized: "Separate tags with commas. Search finds a sticker by its tags too."),
+            value: MemeTags.text(meme.tags),
+            confirm: String(localized: "Save")
+        ) else { return nil }
+        let tags = MemeTags.parse(typed)
+        guard tags != meme.tags else { return nil }
+        try (meme.url as NSURL).setResourceValue(tags, forKey: .tagNamesKey)
+        library.reload()
+        return tags.isEmpty
+            ? String(localized: "Removed the tags of \(meme.name)")
+            : String(localized: "Tagged \(meme.name): \(MemeTags.text(tags))")
     }
 
     private func trash(_ url: URL) throws {

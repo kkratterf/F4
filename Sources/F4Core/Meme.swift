@@ -11,20 +11,25 @@ public struct Meme: Identifiable, Hashable, Sendable {
     public let category: String?
     /// Part of the thumbnail cache key, so an edited file gets a new thumbnail.
     public let modificationDate: Date
+    /// The file's Finder tags ("gatto", "reazione"): set from the panel with
+    /// ⌘T, or by F4 when a pasted picture shows something. Search matches them.
+    public let tags: [String]
 
     public var id: URL { url }
 
-    public init(url: URL, kind: MemeKind, modificationDate: Date, category: String? = nil) {
+    public init(url: URL, kind: MemeKind, modificationDate: Date, category: String? = nil, tags: [String] = []) {
         self.url = url
         self.kind = kind
         self.name = url.deletingPathExtension().lastPathComponent
         self.category = category.flatMap { $0.isEmpty ? nil : $0 }
         self.modificationDate = modificationDate
+        self.tags = tags
     }
 
-    /// What search matches: the subfolders, then the name ("dogs this is fine").
+    /// What search matches: the subfolders, the name, then the tags
+    /// ("dogs this is fine meme").
     public var searchText: String {
-        guard let category else { return name }
-        return category.replacingOccurrences(of: "/", with: " ") + " " + name
+        let parts = [category?.replacingOccurrences(of: "/", with: " ")].compactMap { $0 } + [name] + tags
+        return parts.joined(separator: " ")
     }
 }
