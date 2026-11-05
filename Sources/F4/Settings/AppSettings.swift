@@ -10,6 +10,7 @@ final class AppSettings: ObservableObject {
         static let memeFolder = "memeFolderPath"
         static let showStarterPack = "showStarterPack"
         static let didSeedLibrary = "didSeedLibrary"
+        static let seededStarterFolders = "seededStarterFolders"
         static let didShowWelcome = "didShowWelcome"
     }
 
@@ -27,11 +28,16 @@ final class AppSettings: ObservableObject {
     /// saved by an older version is ignored.
     let toggleShortcut = HotKeyCombo.toggleDefault
 
-    /// Whether the starter pack was already copied into F4's own library. It
-    /// is copied once: memes the user deletes stay deleted.
-    var didSeedLibrary: Bool {
-        get { defaults.bool(forKey: Key.didSeedLibrary) }
-        set { defaults.set(newValue, forKey: Key.didSeedLibrary) }
+    /// The top-level starter folders already copied into F4's own library.
+    /// Each is copied once: memes the user deletes stay deleted, and a
+    /// folder added in an update is copied on the next launch. Up to 0.4
+    /// a single flag (`didSeedLibrary`) meant Emoji and F4.
+    var seededStarterFolders: Set<String> {
+        get {
+            if let list = defaults.stringArray(forKey: Key.seededStarterFolders) { return Set(list) }
+            return defaults.bool(forKey: Key.didSeedLibrary) ? LibraryFolders.firstStarterFolders : []
+        }
+        set { defaults.set(newValue.sorted(), forKey: Key.seededStarterFolders) }
     }
 
     /// Whether "Add your stickers" was shown, on the first launch.

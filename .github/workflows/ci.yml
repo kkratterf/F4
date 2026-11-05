@@ -52,6 +52,8 @@ jobs:
           stickers=$(find "$app/Contents/Resources/Starter/F4" -name '*.png' 2>/dev/null | wc -l)
           test "$gifs" -ge 20 || { echo "::error::starter emoji missing from F4.app ($gifs)"; exit 1; }
           test "$stickers" -ge 10 || { echo "::error::starter stickers missing from F4.app ($stickers)"; exit 1; }
+          cats=$(find "$app/Contents/Resources/Starter/maramao" -name '*.png' | wc -l)
+          test "$cats" -ge 12 || { echo "::error::maramao cats missing from F4.app ($cats)"; exit 1; }
           # Smoke test: the app must launch and stay up.
           "$app/Contents/MacOS/F4" &
           pid=$!

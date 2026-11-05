@@ -83,8 +83,18 @@ public enum LibraryFolders {
     /// The starter files (paths relative to the starter folder, e.g.
     /// "GIFs/clown.gif") still to copy into the library: those whose path is
     /// not taken there yet, so seeding twice never duplicates or overwrites.
-    public static func starterFilesToCopy(_ starter: [String], existing: Set<String>) -> [String] {
-        starter.filter { !existing.contains($0) }
+    public static func starterFilesToCopy(_ starter: [String], existing: Set<String>, seeded: Set<String> = []) -> [String] {
+        starter.filter { !existing.contains($0) && !seeded.contains(topFolder(of: $0)) }
+    }
+
+    /// The top-level starter folders copied by F4 up to 0.4, before it
+    /// kept a list of them (`didSeedLibrary` was a single flag).
+    public static let firstStarterFolders: Set<String> = ["Emoji", "F4"]
+
+    /// The top-level folder of a path relative to the starter pack
+    /// ("maramao/boh.png" is in "maramao"); a file at the top is its own.
+    public static func topFolder(of path: String) -> String {
+        path.split(separator: "/", maxSplits: 1).first.map(String.init) ?? path
     }
 
     /// `path` with the prefix `old` replaced by `new`, or nil when `path` is

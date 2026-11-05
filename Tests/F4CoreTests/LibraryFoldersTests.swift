@@ -75,6 +75,21 @@ final class LibraryFoldersTests: XCTestCase {
         )
     }
 
+    func testANewStarterFolderIsCopiedToALibraryAlreadySeeded() {
+        let starter = ["Emoji/clown.gif", "F4/basito.png", "maramao/boh.png", "maramao/bleh.png"]
+        XCTAssertEqual(
+            LibraryFolders.starterFilesToCopy(starter, existing: [], seeded: LibraryFolders.firstStarterFolders),
+            ["maramao/boh.png", "maramao/bleh.png"]
+        )
+        XCTAssertEqual(
+            LibraryFolders.starterFilesToCopy(starter, existing: [], seeded: ["Emoji", "F4", "maramao"]),
+            []
+        )
+        XCTAssertEqual(LibraryFolders.topFolder(of: "maramao/boh.png"), "maramao")
+        XCTAssertEqual(LibraryFolders.topFolder(of: "a/b/c.png"), "a")
+        XCTAssertEqual(LibraryFolders.topFolder(of: "top.png"), "top.png")
+    }
+
     func testRelocatedPathFollowsMovesAndRenames() {
         XCTAssertEqual(LibraryFolders.relocatedPath("/m/a.gif", from: "/m/a.gif", to: "/m/b.gif"), "/m/b.gif")
         XCTAssertEqual(LibraryFolders.relocatedPath("/m/cats/a.gif", from: "/m/cats", to: "/m/dogs"), "/m/dogs/a.gif")
