@@ -71,46 +71,35 @@ public enum FuzzySearch {
     }
 
     /// Best alignment of `token` as a subsequence of `text`, by dynamic
-    /// programming in O(token × text). `current[j]` is the best score with
-    /// the current token character matched at `text[j]`. Two rows, reused.
+    /// programming over the places each token character occurs (a few
+    /// per character, so far cheaper than every token × text pair).
+    /// `previous` holds, for each place the last character matched, the
+    /// best score of a match ending there.
     private static func score(token: [Int], in text: [Int]) -> Int? {
-        let n = text.count
-        guard token.count <= n else { return nil }
         let none = Int.min / 2
-        var rowA = [Int](repeating: none, count: n)
-        var rowB = [Int](repeating: none, count: n)
-        var best = none
-        text.withUnsafeBufferPointer { text in
-            rowA.withUnsafeMutableBufferPointer { bufferA in
-                rowB.withUnsafeMutableBufferPointer { bufferB in
-                    var previous = bufferA
-                    var current = bufferB
-                    for (i, character) in token.enumerated() {
-                        // Best of previous[0..<j-1], i.e. a match after a gap.
-                        var bestBeforeGap = none
-                        for j in 0..<n {
-                            if j >= 2 { bestBeforeGap = max(bestBeforeGap, previous[j - 2]) }
-                            current[j] = none
-                            guard text[j] == character else { continue }
-                            var gain = 1
-                            if j == 0 || text[j - 1] == space { gain += wordStartBonus }
-                            if j == 0 { gain += nameStartBonus }
-                            if i == 0 {
-                                current[j] = gain
-                            } else {
-                                let afterPrevious = j >= 1 && previous[j - 1] > none ? previous[j - 1] + consecutiveBonus : none
-                                let afterGap = bestBeforeGap > none ? bestBeforeGap - gapPenalty : none
-                                let from = max(afterPrevious, afterGap)
-                                if from > none { current[j] = from + gain }
-                            }
-                        }
-                        swap(&previous, &current)
-                    }
-                    best = previous.max() ?? none
+        var previous: [(position: Int, score: Int)] = []
+        var current: [(position: Int, score: Int)] = []
+        for (i, character) in token.enumerated() {
+            current.removeAll(keepingCapacity: true)
+            for j in text.indices where text[j] == character {
+                var gain = 1
+                if j == 0 || text[j - 1] == space { gain += wordStartBonus }
+                if j == 0 { gain += nameStartBonus }
+                if i == 0 {
+                    current.append((j, gain))
+                    continue
                 }
+                // Right after the previous character, or after a gap.
+                var from = none
+                for match in previous where match.position < j {
+                    from = max(from, match.position == j - 1 ? match.score + consecutiveBonus : match.score - gapPenalty)
+                }
+                if from > none { current.append((j, from + gain)) }
             }
+            guard !current.isEmpty else { return nil }
+            swap(&previous, &current)
         }
-        return best > none ? best : nil
+        return previous.reduce(none) { max($0, $1.score) }
     }
 
     // MARK: - Normalisation
