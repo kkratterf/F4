@@ -1,5 +1,4 @@
 import AppKit
-import Carbon.HIToolbox
 import F4Core
 
 /// The menu bar icon and its menu: a plain `NSMenu`, so it looks and behaves
@@ -7,9 +6,10 @@ import F4Core
 /// finds F4 again, and since F4 has no Settings window it holds the options
 /// too, as Maramao's menu does.
 ///
-/// Sections, each between separators: open F4, the recent memes, the meme
-/// folder and its folders, the options (each a checkmark, the shortcut in a submenu),
-/// updates and About, quit. The menu is rebuilt every time it opens, so the
+/// Sections, each between separators: open F4, the recent stickers, the
+/// folders and the packs (plus one option for a folder picked in an older
+/// version), updates and quit. The shortcut is always fn F4 and F4 always
+/// starts at login, so neither is an option. The menu is rebuilt every time it opens, so the
 /// recents and the checkmarks are always current.
 @MainActor
 final class StatusItemController: NSObject, NSMenuDelegate {
@@ -18,26 +18,13 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     /// Points for the thumbnails next to recent memes.
     private static let thumbnailSide: CGFloat = 18
 
-    /// Shortcuts offered in the Shortcut submenu, F4 first (the default).
-    /// The user's current one is added on top when it is not one of these.
-    static let shortcutPresets: [HotKeyCombo] = [
-        .toggleDefault,
-        HotKeyCombo(keyCode: kVK_Space, modifiers: UInt32(optionKey)),
-        HotKeyCombo(keyCode: kVK_Space, modifiers: UInt32(controlKey | optionKey)),
-        HotKeyCombo(keyCode: kVK_ANSI_M, modifiers: UInt32(cmdKey | shiftKey)),
-        HotKeyCombo(keyCode: kVK_F5, modifiers: 0),
-    ]
-
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let menu = NSMenu()
     private let settings: AppSettings
     private let library: MemeLibrary
     private let organizer: LibraryOrganizer
     private let packs: PackDownloader
-    private let loginItem = LoginItem()
     private let onOpen: () -> Void
-    private let onOpenFolder: () -> Void
-    private let onChooseFolder: () -> Void
     private let recentMemes: () -> [Meme]
     private let onCopy: (Meme) -> Void
     private var shortcut: String
@@ -45,7 +32,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private var shortcutError: String?
 
     /// - Parameters:
-    ///   - shortcut: shown under "Open F4", e.g. "fn F4".
+    ///   - shortcut: shown in the icon's tooltip, e.g. "fn F4".
     ///   - recentMemes: the memes copied last, most recent first.
     ///   - onCopy: copies a meme picked from the menu.
     init(
@@ -56,9 +43,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         shortcut: String,
         recentMemes: @escaping () -> [Meme],
         onCopy: @escaping (Meme) -> Void,
-        onOpen: @escaping () -> Void,
-        onOpenFolder: @escaping () -> Void,
-        onChooseFolder: @escaping () -> Void
+        onOpen: @escaping () -> Void
     ) {
         self.settings = settings
         self.library = library
@@ -67,8 +52,6 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         self.recentMemes = recentMemes
         self.onCopy = onCopy
         self.onOpen = onOpen
-        self.onOpenFolder = onOpenFolder
-        self.onChooseFolder = onChooseFolder
         self.shortcut = shortcut
         super.init()
         menu.delegate = self
@@ -112,13 +95,13 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         return image
     }
 
-    /// Shows a new shortcut in the tooltip and the menu.
+    /// Shows the shortcut in the tooltip.
     func update(shortcut: String) {
         self.shortcut = shortcut
         statusItem.button?.toolTip = "F4 · basito (\(shortcut))"
     }
 
-    /// Shown in place of the shortcut line; nil clears it.
+    /// Shown under "Open F4" when macOS refused the shortcut; nil clears it.
     func setShortcutError(_ message: String?) {
         shortcutError = message
     }
@@ -133,8 +116,6 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     // MARK: NSMenuDelegate
 
     func menuNeedsUpdate(_ menu: NSMenu) {
-        // The user may have changed these in System Settings meanwhile.
-        loginItem.refresh()
         menu.items = makeItems()
     }
 
@@ -147,75 +128,46 @@ final class StatusItemController: NSObject, NSMenuDelegate {
             items.append(contentsOf: recents.map { recentItem($0) })
         }
         items.append(.separator())
-        items.append(item(String(localized: "Open Sticker Folder")) { [weak self] in self?.onOpenFolder() })
         items.append(foldersItem())
         if !packs.packs.isEmpty {
             items.append(packsItem())
         }
-        items.append(item(String(localized: "Choose Sticker Folder…")) { [weak self] in self?.onChooseFolder() })
-        items.append(.separator())
-        items.append(contentsOf: optionItems())
+        let options = optionItems()
+        if !options.isEmpty {
+            items.append(.separator())
+            items.append(contentsOf: options)
+        }
         items.append(.separator())
         let updater = AppUpdater.shared
         if updater.isAvailable {
             items.append(updateItem(updater))
         }
-        items.append(item(String(localized: "About F4")) { Self.showAbout() })
-        items.append(.separator())
         items.append(item(String(localized: "Quit F4"), key: "q") { NSApp.terminate(nil) })
         return items
     }
 
-    /// "Open F4", then a line with the shortcut, or why it does not work.
+    /// "Open F4", and why the F4 key does not open it when another app owns it.
     private func openItems() -> [NSMenuItem] {
-        let open = item(String(localized: "Open F4")) { [weak self] in self?.onOpen() }
-        // The shortcut is global (Carbon), not a menu key equivalent: this line only tells the user.
-        let hint = NSMenuItem(
-            title: shortcutError ?? String(localized: "Shortcut: \(shortcut)"),
-            action: nil,
-            keyEquivalent: ""
-        )
-        hint.isEnabled = false
-        return [open, hint]
+        var items = [item(String(localized: "Open F4")) { [weak self] in self?.onOpen() }]
+        if let shortcutError {
+            let hint = NSMenuItem(title: shortcutError, action: nil, keyEquivalent: "")
+            hint.isEnabled = false
+            items.append(hint)
+        }
+        return items
     }
 
-    /// "Options": the settings that used to live in a window, each a checkmark.
+    /// "Options", shown only with a sticker folder other than F4's own
+    /// library (from older versions): whether to list the starter pack too.
     private func optionItems() -> [NSMenuItem] {
-        var items = [NSMenuItem.sectionHeader(title: String(localized: "Options"))]
-
-        let paste = item(String(localized: "Paste After Copying")) { [weak self] in
-            guard let self else { return }
-            self.settings.pasteAfterCopy.toggle()
-            if self.settings.pasteAfterCopy { AutoPaster.requestTrust() }
-        }
-        paste.state = settings.pasteAfterCopy ? .on : .off
-        paste.toolTip = String(localized: "Presses ⌘V in the front app after copying. Needs Accessibility access; without it F4 only copies.")
-        items.append(paste)
-        if settings.pasteAfterCopy && !AutoPaster.isTrusted {
-            // An option is on but macOS has not let F4 act on keys yet.
-            items.append(accessibilityItem())
-        }
-
         // F4's own library holds a copy of the starter pack: nothing to show on top.
-        if !library.isAppLibrary {
-            let starter = item(String(localized: "Show Starter Pack")) { [weak self] in
-                self?.settings.showStarterPack.toggle()
-            }
-            starter.state = settings.showStarterPack ? .on : .off
-            starter.toolTip = String(localized: "The stickers built into F4, listed after yours.")
-            items.append(starter)
+        guard !library.isAppLibrary else { return [] }
+        let starter = item(String(localized: "Show Starter Pack")) { [weak self] in
+            self?.settings.showStarterPack.toggle()
         }
-
-        let login = item(String(localized: "Open at Login")) { [weak self] in
-            guard let self else { return }
-            self.loginItem.setEnabled(!self.loginItem.isEnabled)
-        }
-        login.state = loginItem.isEnabled ? .on : .off
-        login.toolTip = loginItem.message
-        items.append(login)
-
-        items.append(shortcutItem())
-        return items
+        starter.state = settings.showStarterPack ? .on : .off
+        starter.toolTip = String(localized: "The stickers built into F4, listed after yours.")
+        return [NSMenuItem.sectionHeader(title: String(localized: "Options")), starter]
     }
 
     /// "Folders ▸ New Folder…, then each folder ▸ Rename…, Move to Trash":
@@ -285,30 +237,6 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         }
     }
 
-    /// "Allow Accessibility…": opens System Settings when an option needs it.
-    private func accessibilityItem() -> NSMenuItem {
-        let entry = item(String(localized: "Allow Accessibility…")) { AutoPaster.openAccessibilitySettings() }
-        entry.indentationLevel = 1
-        return entry
-    }
-
-    /// "Shortcut ▸ fn F4, ⌥Space, …": the global shortcut that opens the panel.
-    private func shortcutItem() -> NSMenuItem {
-        let submenu = NSMenu()
-        submenu.autoenablesItems = false
-        let current = settings.toggleShortcut
-        var combos = Self.shortcutPresets
-        if !combos.contains(current) { combos.insert(current, at: 0) }
-        for combo in combos {
-            let entry = item(combo.displayString) { [weak self] in self?.settings.toggleShortcut = combo }
-            entry.state = combo == current ? .on : .off
-            submenu.addItem(entry)
-        }
-        let parent = NSMenuItem(title: String(localized: "Shortcut"), action: nil, keyEquivalent: "")
-        parent.submenu = submenu
-        return parent
-    }
-
     /// "Update to Version x…" once Sparkle found one, "Check for Updates…" otherwise.
     private func updateItem(_ updater: AppUpdater) -> NSMenuItem {
         let title: String
@@ -320,23 +248,6 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         let entry = item(title) { updater.checkForUpdates() }
         entry.isEnabled = updater.pendingUpdateVersion != nil || updater.canCheckForUpdates
         return entry
-    }
-
-    /// The standard About panel, with the starter pack's credit (CC BY 4.0
-    /// asks for it) and F4's promise about the network.
-    private static func showAbout() {
-        let credits = String(localized: "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). F4 goes online only for updates, links you paste or drop, and packs you turn on.")
-        let options: [NSApplication.AboutPanelOptionKey: Any] = [
-            .credits: NSAttributedString(
-                string: credits,
-                attributes: [
-                    .font: NSFont.systemFont(ofSize: NSFont.smallSystemFontSize),
-                    .foregroundColor: NSColor.secondaryLabelColor,
-                ]
-            ),
-        ]
-        NSApp.activate(ignoringOtherApps: true)
-        NSApp.orderFrontStandardAboutPanel(options: options)
     }
 
     /// A recent meme: its name, and its thumbnail when it is already decoded

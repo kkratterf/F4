@@ -75,14 +75,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             shortcut: settings.toggleShortcut.displayString,
             recentMemes: { [weak self] in self?.recentMemes() ?? [] },
             onCopy: { [weak self] meme in self?.panel?.pick(meme) },
-            onOpen: { [weak self] in self?.panel?.show() },
-            onOpenFolder: { [weak self] in
-                guard let self else { return }
-                NSWorkspace.shared.open(self.library.folder)
-            },
-            onChooseFolder: { [weak self] in self?.chooseFolder() }
+            onOpen: { [weak self] in self?.panel?.show() }
         )
         registerToggleShortcut()
+        // F4 always starts at login: registered once, on the first launch.
+        LoginItem.enableOnFirstLaunch()
         // Auto-update; a no-op until Info.plist has a real Sparkle public key.
         AppUpdater.shared.start()
         hasLaunched = true
@@ -140,8 +137,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     /// Copies the meme that best matches `name` without showing the panel,
-    /// as if it had been picked there, but never auto-pastes: the front app
-    /// is whatever sent the URL, not where the user wants the meme. Beeps
+    /// as if it had been picked there, with the same "Copied" toast. Beeps
     /// when nothing matches.
     private func copyBestMatch(for name: String) {
         guard let meme = URLCommand.bestMatch(
@@ -156,32 +152,24 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         if MemeClipboard.copy(meme) {
             usage.recordCopy(meme)
+            CopiedToast.shared.show()
         }
     }
 
-    /// The shortcut (the F4 key by default) shows or hides the panel from anywhere.
-    /// Carbon hot keys need no Accessibility or Input Monitoring permission and
-    /// swallow the key press. Re-registered whenever the user records a new one.
+    /// The F4 key (fn F4 on a Mac keyboard) shows or hides the panel from
+    /// anywhere. It is fixed: there is no other shortcut. Carbon hot keys
+    /// need no Accessibility or Input Monitoring permission and swallow the
+    /// key press.
     private func registerToggleShortcut() {
-        apply(settings.toggleShortcut)
-        settings.$toggleShortcut
-            .dropFirst()
-            .removeDuplicates()
-            .sink { [weak self] combo in self?.apply(combo) }
-            .store(in: &cancellables)
-    }
-
-    private func apply(_ combo: HotKeyCombo) {
+        let combo = settings.toggleShortcut
         let registered = HotKeyCenter.shared.register(id: Self.toggleShortcutID, combo: combo) { [weak self] in
             self?.panel?.toggle()
         }
         statusItem?.update(shortcut: combo.displayString)
-        if registered {
-            statusItem?.setShortcutError(nil)
-        } else {
-            // Usually another app owns the combination.
+        if !registered {
+            // Usually another app owns the key.
             NSLog("F4: could not register %@, another app may be using it", combo.displayString)
-            statusItem?.setShortcutError(String(localized: "\(combo.displayString) is taken by another app. Pick another shortcut."))
+            statusItem?.setShortcutError(String(localized: "\(combo.displayString) is taken by another app."))
         }
     }
 
@@ -197,22 +185,5 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         panel?.show()
         return false
-    }
-
-    /// "Choose Sticker Folder…" in the menu: any folder on the Mac.
-    private func chooseFolder() {
-        let picker = NSOpenPanel()
-        picker.canChooseDirectories = true
-        picker.canChooseFiles = false
-        picker.canCreateDirectories = true
-        picker.allowsMultipleSelection = false
-        picker.directoryURL = settings.memeFolder
-        picker.prompt = String(localized: "Use Folder")
-        picker.message = String(localized: "Choose the folder with your stickers")
-        // An accessory app must activate itself, or the picker opens behind the front app.
-        NSApp.activate(ignoringOtherApps: true)
-        if picker.runModal() == .OK, let url = picker.url {
-            settings.memeFolder = url
-        }
     }
 }

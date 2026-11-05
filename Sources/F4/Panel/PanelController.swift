@@ -61,9 +61,7 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
         usage.recordCopy(meme)
         hide()
-        if AppSettings.shared.pasteAfterCopy {
-            AutoPaster.pasteSoon()
-        }
+        CopiedToast.shared.show()
     }
 
     // MARK: Adding memes

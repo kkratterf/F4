@@ -88,7 +88,7 @@ jobs:
 
       - name: Screenshot the UI
         # Opens the app as a user would and captures the screen: the panel,
-        # a search and the menu bar menu. The pictures land on the
+        # a search, the Copied toast and the menu bar menu. The pictures land on the
         # ui-screenshots/pr-N branch (job below), so changes to the UI can
         # be looked at before a release. Best effort.
         continue-on-error: true
@@ -101,9 +101,14 @@ jobs:
           open "f4://search?q=clown"
           sleep 3
           screencapture -x dist/ui/2-search.png
+          # The "Copied to Clipboard" toast, caught before it fades.
+          open "f4://copy?name=clown"
+          sleep 0.6
+          screencapture -x dist/ui/3-toast.png
+          sleep 2
           open "f4://settings"
           sleep 3
-          screencapture -x dist/ui/3-menu.png
+          screencapture -x dist/ui/4-menu.png
           pkill -x F4 || true
           ls -la dist/ui
 

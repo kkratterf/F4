@@ -3,37 +3,23 @@ import ServiceManagement
 
 /// Starts F4 when the user logs in, with `SMAppService.mainApp`.
 ///
-/// The state lives in macOS (System Settings → General → Login Items), not in
-/// our defaults, so the toggle always reads it back from the system.
-@MainActor
-final class LoginItem: ObservableObject {
-    @Published private(set) var isEnabled = false
-    /// Set when macOS refused the change, or wants the user to approve it.
-    @Published private(set) var message: String?
+/// F4 always opens at login: it registers itself once, on the first launch
+/// of a real app bundle. macOS tells the user with a notification, and the
+/// user can still turn it off in System Settings → General → Login Items,
+/// which F4 then respects (it never registers again).
+enum LoginItem {
+    private static let didRegisterKey = "didRegisterLoginItem"
 
-    init() {
-        refresh()
-    }
-
-    func refresh() {
-        let status = SMAppService.mainApp.status
-        isEnabled = status == .enabled
-        message = status == .requiresApproval
-            ? String(localized: "Allow F4 in System Settings → General → Login Items.")
-            : nil
-    }
-
-    func setEnabled(_ enabled: Bool) {
+    @MainActor
+    static func enableOnFirstLaunch(defaults: UserDefaults = .standard) {
+        guard Bundle.main.bundleURL.pathExtension == "app",
+              !defaults.bool(forKey: didRegisterKey) else { return }
+        defaults.set(true, forKey: didRegisterKey)
+        guard SMAppService.mainApp.status != .enabled else { return }
         do {
-            if enabled {
-                try SMAppService.mainApp.register()
-            } else {
-                try SMAppService.mainApp.unregister()
-            }
-            refresh()
+            try SMAppService.mainApp.register()
         } catch {
-            refresh()
-            message = error.localizedDescription
+            NSLog("F4: could not add F4 to the login items: %@", error.localizedDescription)
         }
     }
 }

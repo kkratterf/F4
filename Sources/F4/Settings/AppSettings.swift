@@ -8,9 +8,6 @@ final class AppSettings: ObservableObject {
 
     private enum Key {
         static let memeFolder = "memeFolderPath"
-        static let shortcutKeyCode = "toggleShortcutKeyCode"
-        static let shortcutModifiers = "toggleShortcutModifiers"
-        static let pasteAfterCopy = "pasteAfterCopy"
         static let showStarterPack = "showStarterPack"
         static let didSeedLibrary = "didSeedLibrary"
     }
@@ -24,18 +21,10 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(memeFolder.path(percentEncoded: false), forKey: Key.memeFolder) }
     }
 
-    /// The global shortcut that shows and hides the panel.
-    @Published var toggleShortcut: HotKeyCombo {
-        didSet {
-            defaults.set(Int(toggleShortcut.keyCode), forKey: Key.shortcutKeyCode)
-            defaults.set(Int(toggleShortcut.modifiers), forKey: Key.shortcutModifiers)
-        }
-    }
-
-    /// Send ⌘V to the frontmost app after copying. Needs Accessibility; off by default.
-    @Published var pasteAfterCopy: Bool {
-        didSet { defaults.set(pasteAfterCopy, forKey: Key.pasteAfterCopy) }
-    }
+    /// The global shortcut that shows and hides the panel: always the F4
+    /// key (fn F4 on a Mac keyboard), the maintainer's call. A shortcut
+    /// saved by an older version is ignored.
+    let toggleShortcut = HotKeyCombo.toggleDefault
 
     /// Whether the starter pack was already copied into F4's own library. It
     /// is copied once: memes the user deletes stay deleted.
@@ -53,20 +42,11 @@ final class AppSettings: ObservableObject {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         showStarterPack = defaults.object(forKey: Key.showStarterPack) as? Bool ?? true
-        pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
         let initial = LibraryFolders.initialFolder(
             savedPath: defaults.string(forKey: Key.memeFolder),
             legacyHasMemes: Self.hasMemes(LibraryFolders.legacyFolder())
         )
         memeFolder = initial.url
-        if defaults.object(forKey: Key.shortcutKeyCode) != nil {
-            toggleShortcut = HotKeyCombo(
-                keyCode: defaults.integer(forKey: Key.shortcutKeyCode),
-                modifiers: UInt32(defaults.integer(forKey: Key.shortcutModifiers))
-            )
-        } else {
-            toggleShortcut = .toggleDefault
-        }
         if initial.persist {
             // Keep reading ~/Pictures/Memes even if it is emptied later.
             defaults.set(initial.url.path(percentEncoded: false), forKey: Key.memeFolder)
@@ -78,9 +58,5 @@ final class AppSettings: ObservableObject {
     private static func hasMemes(_ folder: URL) -> Bool {
         let entries = (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) ?? []
         return entries.contains { !$0.hasPrefix(".") }
-    }
-
-    var isUsingDefaultFolder: Bool {
-        memeFolder.standardizedFileURL == MemeScanner.defaultFolder.standardizedFileURL
     }
 }
