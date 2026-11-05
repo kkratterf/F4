@@ -32,6 +32,12 @@ jobs:
         # screenshots, so the converter's output can be looked at.
         run: F4_STICKER_PREVIEW="$PWD/dist/ui" swift test
 
+      - name: Time search in the release build
+        # LargeLibraryTests hold arranging and searching 5,000 stickers to a
+        # budget only when optimized, as in the app: a debug build is many
+        # times slower and says little about what users get.
+        run: swift test -c release -Xswiftc -enable-testing --filter LargeLibraryTests
+
       - name: Build the app bundle
         run: scripts/build-app.sh release
 

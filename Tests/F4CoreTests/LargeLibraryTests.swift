@@ -4,7 +4,17 @@ import XCTest
 /// The work the panel does on the main thread, with a library of 5,000
 /// stickers: arranging the grid when it opens and searching as the user
 /// types. Each must fit well inside the 100 ms the panel has to open in.
+/// The times are printed in every build and held to the budget in an
+/// optimized one, as the app is built (CI runs `swift test -c release`).
 final class LargeLibraryTests: XCTestCase {
+    #if DEBUG
+    private static let isOptimized = false
+    #else
+    private static let isOptimized = true
+    #endif
+
+    private static let budget = 50.0
+
     private static let words = [
         "gatto", "triste", "risata", "boh", "ti prego", "shock", "ok", "dai dai dai",
         "this is fine", "basito", "perché", "facepalm", "applausi", "nope", "sì",
@@ -48,7 +58,7 @@ final class LargeLibraryTests: XCTestCase {
             _ = MemeOrdering.arrange(memes, favourites: favourites, recents: recents)
         }
         print("Arranging 5,000 stickers: \(String(format: "%.1f", elapsed)) ms")
-        XCTAssertLessThan(elapsed, 50)
+        if Self.isOptimized { XCTAssertLessThan(elapsed, Self.budget) }
     }
 
     func testSearchingFiveThousandStickersIsQuick() {
@@ -57,7 +67,7 @@ final class LargeLibraryTests: XCTestCase {
         for query in ["g", "ga", "gat", "gatto t", "gatto tri", "reazioni", "zzz"] {
             let elapsed = milliseconds { _ = FuzzySearch.filter(memes, query: query) }
             print("Searching 5,000 stickers for \"\(query)\": \(String(format: "%.1f", elapsed)) ms")
-            XCTAssertLessThan(elapsed, 50, query)
+            if Self.isOptimized { XCTAssertLessThan(elapsed, Self.budget, query) }
         }
     }
 }
