@@ -11,7 +11,6 @@ Key facts:
 - Copying writes the file URL (`public.file-url`) and the raw file bytes under the file's UTI, never a decoded `NSImage`, so GIFs stay animated when pasted into Slack, Discord or Telegram.
 - Two optional features need the Accessibility permission: auto-paste (a simulated Command-V into the frontmost app) and the F4 key alone without fn on a Mac keyboard (an event tap that only acts on that key); everything else works without any permission, because the global shortcut uses Carbon `RegisterEventHotKey`.
 - The empty state draws the "F4, basito" face from the Italian series Boris in code; a `.basito.png`, `.gif` or `.jpg` in the meme folder replaces it. The app ships with no images of its own. Typing some Boris or The Office lines, or the Konami code, in the search field triggers easter eggs.
-- A Raycast extension in the same repository searches the same folder.
 - Scripts, Shortcuts and AI agents drive it with URLs: `f4://open`, `f4://search?q=…` (panel with the search typed in), `f4://copy?name=…` (copies the best match without showing the panel, e.g. `open "f4://copy?name=this%20is%20fine"`), `f4://reload`, `f4://settings`.
 - A starter pack is built in, so the panel is never empty: animated emoji GIFs (Google Noto Emoji, CC BY 4.0) and F4's own stickers, listed after the user's memes, never copied into the folder. Show Starter Pack in the menu bar menu hides it.
 - Add memes from the panel: ⌘V adds a copied image, sticker, file or image link (WhatsApp/Telegram: right-click a sticker → Copy, then ⌘V in F4), files can be dropped on the panel, and Add opens a file picker (starting in Downloads). They are copied into `GIFs/` or `Stickers/` in the meme folder.
@@ -37,4 +36,3 @@ Key facts:
 ## Optional
 
 - [AGENTS.md](https://github.com/kkratterf/f4/blob/main/AGENTS.md): for agents that change F4. The code map, build and test, CI, the rules a change must respect, commit and PR format, how a release is cut. Written for AI agents and humans alike.
-- [Raycast extension](https://github.com/kkratterf/f4/tree/main/raycast)

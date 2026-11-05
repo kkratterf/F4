@@ -195,9 +195,16 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the short version and [AGENTS.md](AGENTS.md) for the full rules (they are written for AI agents and humans alike). Found a bug or have an idea? [Open an issue](https://github.com/kkratterf/f4/issues/new/choose).
 
+## Credits
+
+- The animated emoji in the starter pack are [Noto Emoji](https://googlefonts.github.io/noto-emoji-animation/) by Google, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), downscaled for F4.
+- The GIFs on the website are powered by [GIPHY](https://giphy.com) and come from the official channels of [The Office](https://giphy.com/theoffice), [Parks and Recreation](https://giphy.com/parksandrec), [NBC](https://giphy.com/nbc), [Brooklyn Nine-Nine](https://giphy.com/brooklynninenine) and [SpongeBob SquarePants](https://giphy.com/spongebob). They belong to their owners and are not part of F4.
+- The logo is Stanis from [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)), "F4, basito".
+- Headings on the website use [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (SIL Open Font License 1.1).
+
 ## License
 
-[MIT](LICENSE). The animated emoji in the starter pack are [Noto Emoji](https://googlefonts.github.io/noto-emoji-animation/) by Google, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/), downscaled for F4.
+[MIT](LICENSE).
 
 ---
 

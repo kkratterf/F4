@@ -66,6 +66,13 @@ p { margin: 0; }
   box-shadow: inset 0 1px 0 rgb(255 255 255 / 5%), 0 12px 32px -12px rgb(0 0 0 / 60%);
   -webkit-backdrop-filter: saturate(170%) blur(20px); backdrop-filter: saturate(170%) blur(20px);
 }
+/* The same warm hairline as the footer panel, on the bottom edge. */
+.top-in { position: relative; }
+.top-in::after {
+  content: ""; position: absolute; inset: auto 14% -1px; height: 1px; pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgb(255 214 130 / 75%), transparent);
+  box-shadow: 0 1px 10px rgb(255 196 61 / 35%);
+}
 .brand { display: flex; align-items: center; gap: 10px; font: 800 20px/1 var(--display); font-variation-settings: "opsz" 96; letter-spacing: -.03em; }
 .brand img { width: 24px; height: 24px; border-radius: 6px; }
 .top-right { display: flex; align-items: center; gap: 6px; }
@@ -96,11 +103,13 @@ p { margin: 0; }
 .hero { position: relative; isolation: isolate; margin-top: -66px; padding: 176px 0 40px; text-align: center; }
 .grainient {
   position: absolute; inset: 0 0 auto; height: min(1100px, 100%); z-index: -1; overflow: hidden; pointer-events: none;
-  background: radial-gradient(60% 50% at 50% 70%, rgb(255 196 61 / 35%), transparent 70%), radial-gradient(40% 40% at 70% 40%, rgb(138 90 10 / 45%), transparent 70%), var(--bg);
+  /* A tiny blurred still of the rendered gradient, inlined so the first paint
+     already looks like the WebGL canvas that fades in over it. */
+  background: url("data:image/webp;base64,UklGRsAEAABXRUJQVlA4ILQEAAAQQwCdASrgAW8BPxF+uFksLqYjodB5qdAiCWlu33PvBU43R/qf8N7wSOhVyvKx7mfIARw5EXCkzovuRFx95MK33huPYL/zdxa56dPeKHsL/M1uGCzeM1LnPdcvnB+2eGKp2BnH0MJ+WWwyI/JfSRljZIya+681XUZ8t2WftwUYe8ibeQ2oqfBkHuuXxLIjSnfnuBtbDJr68R5L6bhQbTPdxoyDbqhAmqfBljqnwS9fcCPC10Prrz4aA96XXVzphgSx87fxD+dgXrwmlmAvYf1/6aWueil55fKv0WyIKjcuJSI5zr+ph9dZJpa6NyLFs8r6ZNdu0x4eZRuEJW/TfIlbLfkRTDBRro7JxmwZpHHbDSXUj8x2xn1R+/qQnSdUj8zphhY4uu62uKvyQmqLJwk57s5jIiKRKmfh61303FYAhN8gMm8EYYMsbJGc/ojvt+7YRlq5JQd4+XrpVX7i1tGLjqQMWXMCNuSCo2fd2KWryrjwopBNHbHwLkj8zdvZdL12/dlvbdTgoHaqUZ2g3/UZ3EZ+YsgtLkzyWezI47DLYL3Y0iQ1FUe7Ucrvt4C/09jmXtS9DQch9bz8eMrstlGUMVL0TH0qa2BW62NfvGqr+Iy1jRhKmA7SQ09l1C7Y4vI0NGI4n9E6qYAu3mOumNfL/BwAnv3v4gbTaLBFKbkziociUwZWyGoqk2z4zTRKnVnjhqe1aHXMrdlU90lMxfw84AD+4kz//Yv9Cv9Cs5/8Xfmz9S8QFhJStMllanKV8GZeB1tW4DBVaVWIm8tmDzhEo+bEmLUvaBIM3OuG7c98boAGlwG9DUtG37rjZTDG0KdXXqH4NGl8njgyLxSEZcBqN2P2IX213d6NlK5u+N+EO/UQaCeUYXjNJ2envVSnjHrkhOCKOQoo+DVaku+swckhf9KOKBg5t1/bGeu3ULhI9XEv9BDCWGZNG6p3ufbuS5mRp9yQckbcsv6eeidd+1HiMCBsSOO8Tb9kddJQjAFAeFwcDmN3Ty/qzA5mTip/vkhtGcqpjRJqRrO22TN6Wlaf2/ZItIhrsVhNAXvYy15tZwss5T1aJBkoMIExYxRsB55YV2GKWg0cHe09q8BcbKoRCJ63AVKnOnyJY+iVDDwLxlK07jvbsfk9GCb1CWD4PUqwyq7aGZg5dVUJt5weFKvYLqQEcqMzGI2UVTzzQmXmrZv289zBx5sdL82AzvlqlYdXQ5MW7lx3wQNJO3ypoWXQYvukn5fjqsdK0VeHHT9AuHy2czAVFeVH3Ka75rxlJFdc5DEQr4UW2wFmZhCOsUIfnWPA+u9R2m9NHhRVwA7EQF0YTYbM3YouogEkLLKP5DUFyRT2WT2Mp6B58qwSK5EjkvLC9Fc1mKV0+0GuW9h1fsNJOmI65beHGbCkI+0Kxp0mZQrUdTSlMSwkm9tZmrhsh4SkJBLrSh6aTj6J5wKjgngnN+vpV8rMVx3om8Bg8Bc+0bSMuRS9dpM1MeYDDiQq6AB7dxC/xpQSctmVvgbjugBos48cpHbggqGERM6d2E9cpIWPUXdEIPTQAACBzLyt0T+Vhn1IqhlLTUi7YPEVoD3d1V86AAD6mENekfAPXTBN3sAA") center top / 100% 100% no-repeat, var(--bg);
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 160px, #000 60%, transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 160px, #000 60%, transparent);
 }
-.grainient canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 1.2s; }
+.grainient canvas { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transition: opacity .5s; }
 .grainient.is-live canvas { opacity: 1; }
 /* A soft dark veil keeps the headline readable over the brightest part of the gradient */
 .grainient::after { content: ""; position: absolute; inset: 0; background: radial-gradient(70% 45% at 50% 22%, rgb(8 8 10 / 72%), transparent 75%); }
@@ -240,16 +249,24 @@ section[id] { scroll-margin-top: 84px; }
 .k-fn { height: calc(var(--k) * .62); font-size: 12px; }
 .k-mod { font-size: 13px; align-items: flex-start; justify-content: flex-end; padding: 0 0 9px 10px; }
 .k-mod small { font-size: 10px; color: #71717a; }
+.key.hot small { color: #ffd36e; }
 .k-wide { width: calc(var(--k) * 1.45); }
 .k-wider { width: calc(var(--k) * 1.9); }
 .k-space { width: calc(var(--k) * 5); }
+/* The right side of a MacBook keyboard: keys that stretch to close each row, Touch ID, the inverted-T arrows */
+.k-fill { flex: 1 1 auto; width: auto; min-width: var(--k); }
+.k-touch i { width: 22px; height: 22px; border-radius: 50%; background: radial-gradient(circle, #2c2c31 40%, #1f1f23 42%); border: 1px solid rgb(255 255 255 / 6%); }
+.k-arrow { font-size: 9px; height: calc(var(--k) / 2); align-self: flex-end; }
+.k-arrows { display: grid; gap: 2px; align-self: flex-end; }
+.k-arrows .key { height: calc(var(--k) / 2 - 1px); }
 .key svg { width: 14px; height: 14px; }
 .key.hot {
-  color: #fff; background: linear-gradient(180deg, #3a2a0e, #2a1d08); border-color: rgb(255 196 61 / 55%);
-  box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%), 0 3px 0 #1a1204, 0 0 0 1px rgb(255 196 61 / 25%), 0 0 36px rgb(255 196 61 / 45%);
+  color: #fff3d1; background: linear-gradient(180deg, #5a400c, #3a2906); border-color: rgb(255 196 61 / 80%);
+  box-shadow: inset 0 1px 0 rgb(255 230 160 / 18%), 0 3px 0 #1a1204, 0 0 0 1px rgb(255 196 61 / 30%), 0 0 40px rgb(255 196 61 / 55%);
   animation: press 3.2s ease-in-out infinite;
 }
-.kb-row:nth-child(3) .key.hot { animation-delay: .12s; }
+
+.kb-row:first-child .key.hot { animation-delay: .12s; }
 @keyframes press { 0%, 70%, 100% { transform: none; } 78%, 88% { transform: translateY(3px); box-shadow: inset 0 1px 0 rgb(255 255 255 / 10%), 0 0 0 #1a1204, 0 0 0 1px rgb(255 196 61 / 40%), 0 0 48px rgb(255 196 61 / 70%); } }
 @media (prefers-reduced-motion: reduce) { .key.hot { animation: none; } .caret { animation: none; } }
 @media (max-width: 760px) { .kb-wrap { justify-content: flex-start; -webkit-mask-image: linear-gradient(to right, #000 92%, transparent); mask-image: linear-gradient(to right, #000 92%, transparent); } .kb { --k: 36px; --g: 5px; padding: 10px; } .k-wider { width: calc(var(--k) * 1.2); } .key { font-size: 13px; border-radius: 9px; } .k-mod small { display: none; } }
@@ -329,10 +346,19 @@ kbd {
 .mini-row.on { background: var(--accent-soft); color: var(--ink); }
 .mini-row .kc { font-family: var(--font); font-size: 11px; }
 kbd.hot { color: #1a1204; background: linear-gradient(180deg, #ffd56b, #ffc43d); border-color: #ffc43d; box-shadow: inset 0 -3px 0 rgb(120 70 0 / 45%), 0 0 32px rgb(255 196 61 / 35%); }
-.perms { display: grid; gap: 6px; width: min(100%, 300px); }
-.perms span { display: flex; justify-content: space-between; gap: 12px; padding: 9px 12px; border-radius: 10px; background: rgb(0 0 0 / 30%); border: 1px solid var(--line); font-size: 13px; font-weight: 600; color: var(--muted); }
-.perms em { font-style: normal; font-weight: 500; color: var(--dim); }
-.perms em.ok { color: #86efac; }
+kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-size: 12px; box-shadow: inset 0 -2px 0 rgb(0 0 0 / 50%); vertical-align: middle; }
+.arrow { color: var(--dim); font-size: 20px; }
+/* A chat bubble with a GIF in it, still moving */
+.bubble { display: grid; gap: 8px; justify-items: start; }
+.bubble-gif { display: block; width: 168px; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 14px 14px 14px 4px; border: 1px solid var(--line-strong); background: linear-gradient(135deg, #3a2a0e, #1a1714); box-shadow: 0 16px 40px -12px rgb(0 0 0 / 70%); }
+.bubble-gif img { width: 100%; height: 100%; object-fit: cover; color: transparent; font-size: 0; }
+.bubble-apps { font-size: 12px; font-weight: 600; color: var(--dim); }
+/* Favourites first: a starred tile leads the row */
+.fav-row { display: flex; gap: 8px; }
+.fav-tile { position: relative; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 12px; border: 2px solid transparent; background: rgb(255 255 255 / 5%); }
+.fav-tile img { width: 34px; height: 34px; color: transparent; font-size: 0; }
+.fav-tile.on { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(255 196 61 / 18%); }
+.fav-star { position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-style: normal; font-size: 11px; color: #1a1204; background: var(--accent); }
 
 /* Closing call to action */
 .outro { position: relative; text-align: center; padding: 140px 0; overflow: hidden; }
@@ -406,8 +432,6 @@ kbd.hot { color: #1a1204; background: linear-gradient(180deg, #ffd56b, #ffc43d);
 .foot-credits a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--line-strong); }
 .foot-credits a:hover { color: var(--ink); text-decoration-color: currentColor; }
 
-/* The key that F4 catches without fn, lit softer than F4 itself */
-.key.hint { color: var(--ink); border-color: rgb(255 196 61 / 30%); }
 .avatar.a3 { overflow: hidden; background: none; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .screen .over { opacity: 1; padding-top: 6%; }
