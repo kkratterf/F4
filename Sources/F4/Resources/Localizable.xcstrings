@@ -512,6 +512,16 @@
         }
       }
     },
+    "Paste a sticker here with ⌘V, or select one in another tab and press ⌘M to move it in.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incolla qui uno sticker con ⌘V, oppure selezionane uno in un'altra scheda e premi ⌘M per spostarlo qui."
+          }
+        }
+      }
+    },
     "Paste a sticker or a link with ⌘V, drop files here, or click Add. They are saved in %@.": {
       "localizations": {
         "it": {
@@ -728,6 +738,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gli sticker inclusi in F4, dopo i tuoi."
+          }
+        }
+      }
+    },
+    "This folder is empty": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa cartella è vuota"
           }
         }
       }

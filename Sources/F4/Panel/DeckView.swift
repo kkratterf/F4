@@ -208,7 +208,13 @@ struct DeckView: View {
                 systemImage: "star",
                 description: Text("Click the star on a sticker, or select it and press ⌘D, to keep it here. Do it again to remove it.")
             )
-        case .all:
+        case .folder where model.query.trimmingCharacters(in: .whitespaces).isEmpty:
+            ContentUnavailableView(
+                "This folder is empty",
+                systemImage: "folder",
+                description: Text("Paste a sticker here with ⌘V, or select one in another tab and press ⌘M to move it in.")
+            )
+        case .all, .folder:
             ContentUnavailableView.search(text: model.query)
         }
     }
