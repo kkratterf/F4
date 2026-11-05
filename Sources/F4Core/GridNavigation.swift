@@ -16,7 +16,7 @@ public enum GridNavigation {
     }
 
     /// The index after moving `direction` from `index` in a grid split into
-    /// sections of `sections` items each (Favourites, the rest, GIPHY): every
+    /// sections of `sections` items each (Favourites, then the rest): every
     /// section starts on a new row. Indices run through all sections in order.
     ///
     /// Inside a section it moves like `move(_:from:count:columns:)`. Up from

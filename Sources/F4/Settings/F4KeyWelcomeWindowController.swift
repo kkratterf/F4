@@ -49,7 +49,7 @@ private struct F4KeyWelcomeView: View {
                 .font(.title2.bold())
             if !settings.pressF4WithoutFn {
                 Text("On this Mac the F4 key opens Spotlight or Launchpad, so for now F4 opens with fn F4.")
-                Text("F4 can catch the F4 key before macOS does, so the key alone opens your memes. It needs Accessibility access for that: F4 only acts on the F4 key and lets every other key through.")
+                Text("F4 can catch the F4 key before macOS does, so the key alone opens your stickers. It needs Accessibility access for that: F4 only acts on the F4 key and lets every other key through.")
                     .foregroundStyle(.secondary)
                 HStack {
                     Button("Use the F4 key alone") {
@@ -67,7 +67,7 @@ private struct F4KeyWelcomeView: View {
                 .buttonStyle(.link)
                 .font(.caption)
             } else if tap.isRunning {
-                Text("All set: press F4 to open your memes. fn F4 works too.")
+                Text("All set: press F4 to open your stickers. fn F4 works too.")
                 Button("Start", action: close)
                     .keyboardShortcut(.defaultAction)
             } else {

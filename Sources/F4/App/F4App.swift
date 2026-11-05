@@ -241,7 +241,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return false
     }
 
-    /// "Choose Meme Folder…" in the menu: any folder on the Mac.
+    /// "Choose Sticker Folder…" in the menu: any folder on the Mac.
     private func chooseFolder() {
         let picker = NSOpenPanel()
         picker.canChooseDirectories = true
@@ -250,7 +250,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         picker.allowsMultipleSelection = false
         picker.directoryURL = settings.memeFolder
         picker.prompt = String(localized: "Use Folder")
-        picker.message = String(localized: "Choose the folder with your memes")
+        picker.message = String(localized: "Choose the folder with your stickers")
         // An accessory app must activate itself, or the picker opens behind the front app.
         NSApp.activate(ignoringOtherApps: true)
         if picker.runModal() == .OK, let url = picker.url {

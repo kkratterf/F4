@@ -12,8 +12,6 @@ final class AppSettings: ObservableObject {
         static let shortcutModifiers = "toggleShortcutModifiers"
         static let pasteAfterCopy = "pasteAfterCopy"
         static let showStarterPack = "showStarterPack"
-        static let searchGiphy = "searchGiphy"
-        static let giphyAPIKey = "giphyAPIKey"
         static let pressF4WithoutFn = "pressF4WithoutFn"
         static let didOfferF4WithoutFn = "didOfferF4WithoutFn"
         static let didSeedLibrary = "didSeedLibrary"
@@ -62,30 +60,15 @@ final class AppSettings: ObservableObject {
         set { defaults.set(newValue, forKey: Key.didSeedLibrary) }
     }
 
-    /// Show the GIFs and stickers built into F4 after the memes of a folder
+    /// Show the stickers built into F4 after the stickers of a folder
     /// other than F4's own library (which holds a copy of them). On by default.
     @Published var showStarterPack: Bool {
         didSet { defaults.set(showStarterPack, forKey: Key.showStarterPack) }
     }
 
-    /// Show the GIPHY row in the GIFs and Stickers tabs. On by default; it
-    /// only appears when the build (or the user) has a GIPHY API key.
-    @Published var searchGiphy: Bool {
-        didSet { defaults.set(searchGiphy, forKey: Key.searchGiphy) }
-    }
-
-    /// The user's own GIPHY API key, used instead of the built-in one. Empty
-    /// for none. There is no control for it: set it with
-    /// `defaults write com.kkratterf.f4 giphyAPIKey <key>`.
-    @Published var giphyAPIKey: String {
-        didSet { defaults.set(giphyAPIKey, forKey: Key.giphyAPIKey) }
-    }
-
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         showStarterPack = defaults.object(forKey: Key.showStarterPack) as? Bool ?? true
-        searchGiphy = defaults.object(forKey: Key.searchGiphy) as? Bool ?? true
-        giphyAPIKey = defaults.string(forKey: Key.giphyAPIKey) ?? ""
         pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
         pressF4WithoutFn = defaults.bool(forKey: Key.pressF4WithoutFn)
         let initial = LibraryFolders.initialFolder(

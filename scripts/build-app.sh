@@ -2,8 +2,6 @@
 # Builds F4.app (and a zip of it) from the Swift package.
 # Usage: scripts/build-app.sh [debug|release]   (default: release)
 # Environment: SIGN_IDENTITY  codesign identity (default "-", ad-hoc)
-#              GIPHY_API_KEY  GIPHY key for the panel's GIPHY row (optional;
-#                             set by release.yml from the repo secret)
 set -euo pipefail
 
 CONFIG="${1:-release}"
@@ -55,14 +53,6 @@ cp "$ROOT/Resources/Info.plist" "$APP/Contents/Info.plist"
 # marketing version (0.2.0 > 0.1.9) instead of a hand-maintained counter.
 SHORT_VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$APP/Contents/Info.plist")"
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $SHORT_VERSION" "$APP/Contents/Info.plist"
-# GIPHY search: the key is a client key (it ships in the app, as in every
-# GIPHY client) but it is never committed.
-if [ -n "${GIPHY_API_KEY:-}" ]; then
-  /usr/libexec/PlistBuddy -c "Add :F4GiphyAPIKey string $GIPHY_API_KEY" "$APP/Contents/Info.plist"
-  echo "GIPHY: key embedded"
-else
-  echo "GIPHY: no GIPHY_API_KEY, the app ships without the GIPHY row"
-fi
 
 # Localizations: English is the source language, Italian comes from the String
 # Catalog. SwiftPM compiles it into the target's resource bundle; the .lproj
@@ -98,21 +88,22 @@ else
   echo "warning: Resources/AppIcon.icns missing, building without an icon" >&2
 fi
 
-# Starter pack (issue #92): what a new user sees before adding their own.
+# Starter pack (issue #92): what a new user sees before adding their own:
+# Emoji/ (animated emoji stickers) and F4/ (stickers drawn in code).
 # The GIFs are Google's Noto Animated Emoji (CC BY 4.0, credited in the app
 # and the README); the stickers are drawn in code. MemeLibrary copies them
 # once into F4's own library (~/Library/Application Support/F4/Memes).
 STARTER="$RES/Starter"
 rm -rf "$STARTER"
-mkdir -p "$STARTER/GIFs"
-ditto "$ROOT/Resources/Starter/GIFs" "$STARTER/GIFs"
-if ! swift "$ROOT/scripts/make-stickers.swift" "$STARTER/Stickers"; then
+mkdir -p "$STARTER/Emoji"
+ditto "$ROOT/Resources/Starter/GIFs" "$STARTER/Emoji"
+if ! swift "$ROOT/scripts/make-stickers.swift" "$STARTER/F4"; then
   echo "warning: could not draw the starter stickers, building without them" >&2
 fi
-echo "Starter pack: $(find "$STARTER/GIFs" -name '*.gif' | wc -l | tr -d ' ') GIFs, $(find "$STARTER" -path '*/Stickers/*.png' | wc -l | tr -d ' ') stickers"
+echo "Starter pack: $(find "$STARTER/Emoji" -name '*.gif' | wc -l | tr -d ' ') animated emoji, $(find "$STARTER/F4" -name '*.png' | wc -l | tr -d ' ') drawn stickers"
 
-# Content packs: GIPHY links only, never files. PackDownloader fetches them
-# into the meme folder when the user picks a pack in the menu bar's Packs.
+# Sticker packs: links only, never files. PackDownloader fetches them into
+# the library when the user switches a pack on in the menu bar's Packs.
 cp "$ROOT/Resources/Packs/packs.json" "$RES/Packs.json"
 
 # Ad-hoc by default: enough to run locally, not notarized.

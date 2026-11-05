@@ -24,9 +24,7 @@ final class DeckModel: ObservableObject {
     /// "Favourites" heading: with an empty search, outside the Favourites tab.
     /// 0 when the grid has no sections.
     @Published private(set) var favouriteCount = 0
-    /// The GIPHY row after the local results, in the GIFs and Stickers tabs.
-    @Published private(set) var webResults: [Giphy.Result] = []
-    /// Index into `results` followed by `webResults`. Reset to the best
+    /// Index into `results`. Reset to the best
     /// match whenever the results change.
     @Published var selection = 0
     /// Bumped every time the panel opens, so the view focuses the search field.
@@ -46,18 +44,13 @@ final class DeckModel: ObservableObject {
 
     let library: MemeLibrary
     let usage: UsageStore
-    let giphy: GiphyClient
-    /// Tab and query of the last GIPHY request, so only a change asks again.
-    private var webRequest: String?
-    private var webTask: Task<Void, Never>?
     private let defaults: UserDefaults
     private static let tabKey = "panelTab"
     private var cancellables: Set<AnyCancellable> = []
 
-    init(library: MemeLibrary, usage: UsageStore, giphy: GiphyClient, defaults: UserDefaults = .standard) {
+    init(library: MemeLibrary, usage: UsageStore, defaults: UserDefaults = .standard) {
         self.library = library
         self.usage = usage
-        self.giphy = giphy
         self.defaults = defaults
         tab = defaults.string(forKey: Self.tabKey).flatMap(MemeTab.init(rawValue:)) ?? .all
         // The publishers fire before the new value is stored; refresh on the next turn.
@@ -65,27 +58,16 @@ final class DeckModel: ObservableObject {
             .merge(with: usage.$favourites.dropFirst().map { _ in () })
             .sink { [weak self] _ in Task { @MainActor in self?.refresh(keepSelection: true) } }
             .store(in: &cancellables)
-        // Turning GIPHY on or off, or a new key, takes effect at once.
-        AppSettings.shared.$searchGiphy.dropFirst().map { _ in () }
-            .merge(with: AppSettings.shared.$giphyAPIKey.dropFirst().map { _ in () })
-            .sink { [weak self] _ in Task { @MainActor in self?.refreshWeb(force: true) } }
-            .store(in: &cancellables)
         refresh()
     }
 
-    /// Local results and GIPHY results together: what the grid shows.
-    var itemCount: Int { results.count + webResults.count }
+    /// What the grid shows.
+    var itemCount: Int { results.count }
 
     /// The sizes of the grid's sections, in order: favourites and the rest
-    /// (or all results), then GIPHY. Each section starts on a new row.
+    /// (or all results). Each section starts on a new row.
     var sections: [Int] {
-        (favouriteCount > 0 ? [favouriteCount, results.count - favouriteCount] : [results.count]) + [webResults.count]
-    }
-
-    /// The GIPHY result under the selection, when it is past the local results.
-    var selectedWebResult: Giphy.Result? {
-        let index = selection - results.count
-        return webResults.indices.contains(index) ? webResults[index] : nil
+        favouriteCount > 0 ? [favouriteCount, results.count - favouriteCount] : [results.count]
     }
 
     var selectedMeme: Meme? {
@@ -145,7 +127,6 @@ final class DeckModel: ObservableObject {
     /// Recomputes the results from the memes of the current tab: favourites
     /// and recents first while the query is empty, best fuzzy matches otherwise.
     private func refresh(keepSelection: Bool = false) {
-        defer { refreshWeb() }
         let selected = selectedMeme
         let egg = query.isEmpty && konamiActive ? EasterEggs.konami : EasterEggs.match(query)
         if easterEgg != egg { easterEgg = egg }
@@ -189,27 +170,6 @@ final class DeckModel: ObservableObject {
             selection = Int.random(in: results.indices)
         } else {
             selection = 0
-        }
-    }
-
-    /// Asks GIPHY again when the tab or the query changed: trending for an
-    /// empty query, a search otherwise, debounced while typing. Nothing in
-    /// the All tab, during an easter egg, or without a key.
-    private func refreshWeb(force: Bool = false) {
-        let query = query.trimmingCharacters(in: .whitespaces)
-        let catalogue = easterEgg == nil && giphy.isEnabled ? Giphy.catalogue(for: tab) : nil
-        let request = catalogue.map { "\($0.rawValue)|\(query)" }
-        guard force || request != webRequest else { return }
-        webRequest = request
-        webTask?.cancel()
-        if !webResults.isEmpty { webResults = [] }
-        guard let catalogue else { return }
-        webTask = Task { [weak self] in
-            if !query.isEmpty { try? await Task.sleep(for: .milliseconds(350)) }
-            guard !Task.isCancelled, let self else { return }
-            let found = (try? await self.giphy.search(catalogue, query: query)) ?? []
-            guard !Task.isCancelled else { return }
-            self.webResults = found
         }
     }
 }
