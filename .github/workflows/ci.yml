@@ -131,6 +131,48 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+      - name: Open the panel with 5,000 stickers
+        # The panel must open instantly (AGENTS.md), however big the library.
+        # Fills F4's library with 5,000 small PNGs, opens the panel twice and
+        # reads the times F4 logs (PanelTiming). The second open, like every
+        # open after the first one, must be on screen in under 100 ms.
+        run: |
+          app="$PWD/dist/F4.app"
+          bench="$HOME/Library/Application Support/F4/Memes/Bench"
+          mkdir -p "$bench"
+          sips -z 128 128 Resources/Starter/maramao/boh.png --out "$RUNNER_TEMP/seed.png" >/dev/null
+          python3 -c 'import shutil, sys; [shutil.copyfile(sys.argv[1], f"{sys.argv[2]}/sticker {i}.png") for i in range(5000)]' "$RUNNER_TEMP/seed.png" "$bench"
+          open "$app"
+          sleep 10
+          open "f4://open"
+          sleep 3
+          # Copying hides the panel.
+          open "f4://copy?name=clown"
+          sleep 3
+          open "f4://open"
+          sleep 3
+          pkill -x F4 || true
+          log show --last 5m --style compact \
+            --predicate 'subsystem == "com.kkratterf.f4" AND category == "panel"' > "$RUNNER_TEMP/panel.log" || true
+          grep -oE 'Panel shown in .*|First thumbnail in .*' "$RUNNER_TEMP/panel.log" || true
+          last=$(grep -o 'Panel shown in [0-9.]* ms with [0-9]* stickers' "$RUNNER_TEMP/panel.log" | tail -1)
+          if [ -z "$last" ]; then
+            echo "::error::F4 logged no panel open"
+            exit 1
+          fi
+          ms=$(echo "$last" | awk '{print $4}')
+          count=$(echo "$last" | awk '{print $7}')
+          echo "::notice::Panel open with $count stickers: $ms ms"
+          if [ "$count" -lt 5000 ]; then
+            echo "::error::The panel opened with $count stickers, not the 5,000 of the test"
+            exit 1
+          fi
+          if ! awk -v ms="$ms" 'BEGIN { exit !(ms < 100) }'; then
+            echo "::error::The panel took $ms ms to open with $count stickers (budget 100 ms)"
+            exit 1
+          fi
+          rm -rf "$bench"
+
       - name: Upload F4.app
         uses: actions/upload-artifact@v4
         with:

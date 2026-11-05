@@ -186,11 +186,13 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     func show() {
+        PanelTiming.opening()
         show(keepingQuery: false)
     }
 
     /// Opens the panel with `query` already typed in (`f4://search`).
     func show(query: String) {
+        PanelTiming.opening()
         model.prepareForShow()
         model.query = query
         show(keepingQuery: true)
@@ -201,6 +203,11 @@ final class PanelController: NSObject, NSWindowDelegate {
         position(on: screenWithMouse())
         startArrowKeys()
         panel.makeKeyAndOrderFront(nil)
+        // Lay out and draw now, as the next display pass would, so the time
+        // logged is the time to a panel on screen.
+        panel.contentView?.layoutSubtreeIfNeeded()
+        panel.displayIfNeeded()
+        PanelTiming.shown(stickers: library.memes.count)
         // The shadow follows the content's rounded shape once it is drawn.
         DispatchQueue.main.async { [panel] in panel.invalidateShadow() }
     }

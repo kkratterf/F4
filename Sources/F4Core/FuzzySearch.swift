@@ -10,21 +10,26 @@ public enum FuzzySearch {
     /// `items` whose name matches `query`, best match first. Ties keep the
     /// original order. An empty query returns `items` unchanged.
     public static func filter<Item>(_ items: [Item], query: String, name: (Item) -> String) -> [Item] {
+        filter(items, query: query, key: { normalized(name($0)) })
+    }
+
+    /// Memes whose name, subfolder or tags match `query`, best match first.
+    /// Uses the key each meme worked out when it was scanned.
+    public static func filter(_ memes: [Meme], query: String) -> [Meme] {
+        filter(memes, query: query, key: \.searchKey)
+    }
+
+    private static func filter<Item>(_ items: [Item], query: String, key: (Item) -> [Character]) -> [Item] {
         let tokens = words(query)
         guard !tokens.isEmpty else { return items }
         var scored: [(index: Int, score: Int, item: Item)] = []
         for (index, item) in items.enumerated() {
-            if let score = score(tokens: tokens, in: name(item)) {
+            if let score = score(tokens: tokens, in: key(item)) {
                 scored.append((index, score, item))
             }
         }
         scored.sort { $0.score != $1.score ? $0.score > $1.score : $0.index < $1.index }
         return scored.map(\.item)
-    }
-
-    /// Memes whose name or subfolder matches `query`, best match first.
-    public static func filter(_ memes: [Meme], query: String) -> [Meme] {
-        filter(memes, query: query, name: \.searchText)
     }
 
     /// Score of `query` against `candidate`, or nil when it does not match.
@@ -42,13 +47,27 @@ public enum FuzzySearch {
     private static let gapPenalty = 1
 
     private static func score(tokens: [[Character]], in candidate: String) -> Int? {
-        let text = normalized(candidate)
+        score(tokens: tokens, in: normalized(candidate))
+    }
+
+    private static func score(tokens: [[Character]], in text: [Character]) -> Int? {
+        // Most memes do not match: turn them down with a plain scan before
+        // the scoring allocates anything.
+        guard tokens.allSatisfy({ isSubsequence($0, of: text) }) else { return nil }
         var total = 0
         for token in tokens {
             guard let score = score(token: token, in: text) else { return nil }
             total += score
         }
         return total
+    }
+
+    private static func isSubsequence(_ token: [Character], of text: [Character]) -> Bool {
+        var next = token.startIndex
+        for character in text where next < token.endIndex && character == token[next] {
+            next += 1
+        }
+        return next == token.endIndex
     }
 
     /// Best alignment of `token` as a subsequence of `text`, by dynamic
@@ -90,7 +109,9 @@ public enum FuzzySearch {
         String(normalized(query)).split(separator: " ").map(Array.init)
     }
 
-    private static func normalized(_ string: String) -> [Character] {
+    /// `string` as search compares it: case, accents and width folded,
+    /// separators and whitespace turned into spaces.
+    static func normalized(_ string: String) -> [Character] {
         let folded = string.folding(options: [.caseInsensitive, .diacriticInsensitive, .widthInsensitive], locale: nil)
         return folded.map { character in
             switch character {
