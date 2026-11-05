@@ -27,7 +27,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 
 ## How it works
 
-1. Put your memes, GIFs and stickers in a folder. `~/Pictures/Memes` by default, or any folder you pick in Settings. Subfolders become categories.
+1. Put your memes, GIFs and stickers in a folder. `~/Pictures/Memes` by default, or any folder you pick from the menu bar (Choose Meme Folder…). Subfolders become categories.
 2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or let F4 catch the key: on the first launch, and in Settings, F4 offers **Open F4 with the F4 key alone, without fn** (needs Accessibility; without it fn F4 keeps working). On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The meme is copied; paste it with ⌘V, or let F4 paste it for you.
 
@@ -41,14 +41,14 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the hovered or selected GIF animates. |
 | 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (click the star on a meme, or ⌘D) get their own section on top, then the ones you used last. |
 | 🗂️ **GIFs and stickers** | Tabs split the panel into All, Favourites, GIFs and Stickers (Tab or ⌘1–⌘4). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
-| 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), listed after your memes. Turn them off in Settings. |
+| 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), listed after your memes. Turn them off in the menu bar (Show Starter Pack). |
 | 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one and saves it in your folder, so next time it is local, instant and offline; **⌘D** saves it as a favourite. |
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied GIF, sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. GIFs go into `GIFs/`, stickers into `Stickers/` in your folder. No Finder needed. |
 | 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. Off by default; it needs the Accessibility permission. |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. Only two optional features ask for Accessibility: auto-paste, and the F4 key alone without fn on a Mac keyboard. |
-| 🖥️ **Menu bar** | No Dock icon. The menu bar icon opens the panel, copies one of your last 5 memes in a click, and leads to the meme folder, the settings and the update check. You can hide it in Settings. |
-| 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Settings → Updates). |
+| 🖥️ **Menu bar** | No Dock icon and no Settings window. The menu bar icon opens the panel, copies one of your last 5 memes in a click, leads to the meme folder, and holds every option as a checkmark. |
+| 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Check for Updates… in the menu bar). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
 | 🧩 **Raycast** | A [Raycast extension](raycast) searches the same folder, if that is where your hands already are. |
 
@@ -66,13 +66,20 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 | `f4://search?q=this%20is%20fine` | Shows the panel with the search typed in |
 | `f4://copy?name=this%20is%20fine` | Copies the best match without showing the panel (beeps if nothing matches) |
 | `f4://reload` | Rescans the meme folder |
-| `f4://settings` | Opens Settings |
+| `f4://settings` | Opens the menu bar menu under the pointer, where the options are |
 
 `f4://copy` picks the meme the panel would put first for that search (favourites and recents win a tie) and never auto-pastes. If F4 is not running, the URL starts it.
 
-### Settings
+### Options
 
-From the menu bar icon: the shortcut, the F4 key alone without fn (Mac keyboards), open at login, show in the menu bar, the meme folder, auto-paste, and automatic update checks.
+F4 has no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
+
+- **Open Meme Folder** and **Choose Meme Folder…**
+- **Paste After Copying**: F4 presses ⌘V in the front app for you (needs Accessibility).
+- **F4 Key Without fn**: on a Mac keyboard, the F4 key alone opens F4 instead of Spotlight or Launchpad (needs Accessibility; fn F4 always works).
+- **Show Starter Pack**, **Search GIPHY** and **Open at Login**.
+- **Shortcut ▸**: fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
+- **Check for Updates…** and **About F4** (credits).
 
 ---
 
@@ -131,11 +138,11 @@ The install script does this for you. You only need to do it once per version.
 
 ### 5. Where is it?
 
-F4 has no Dock icon. Press **F4** (**fn F4** on a Mac keyboard), or look for the F4 key in the **menu bar**, top right. To start it at login, turn on **Open F4 at login** in Settings.
+F4 has no Dock icon. Press **F4** (**fn F4** on a Mac keyboard), or look for the F4 key in the **menu bar**, top right. To start it at login, turn on **Open at Login** in its menu.
 
 ### 6. Updating
 
-F4 updates itself: it checks the release feed and offers the new version. You can also turn the check off in Settings and install new versions by hand (drag the new DMG's app over the old one, or run the one-liner again). Your settings and your memes are kept.
+F4 updates itself: it checks the release feed and offers the new version. You can also decline automatic checks when Sparkle first asks and install new versions by hand (drag the new DMG's app over the old one, or run the one-liner again). Your settings and your memes are kept.
 
 With Homebrew: the cask is marked `auto_updates`, so a plain `brew upgrade` leaves F4 alone and lets the app update itself.
 
@@ -168,7 +175,7 @@ open dist/F4.app
 
 ## Privacy
 
-F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); GIPHY, only while you are in the GIFs or Stickers tab of the open panel; and downloading an image link you paste or drop into the panel yourself. Both the update check and GIPHY can be turned off in Settings.
+F4 has no analytics, no account and no server. It reads the files in your meme folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); GIPHY, only while you are in the GIFs or Stickers tab of the open panel; and downloading an image link you paste or drop into the panel yourself. GIPHY can be turned off in the menu (Search GIPHY), and the update check when Sparkle first asks.
 
 ## FAQ
 
@@ -176,7 +183,7 @@ F4 has no analytics, no account and no server. It reads the files in your meme f
 
 **Where do the memes come from?** From you. F4 ships with no images at all: no stills, no GIF packs, nothing copyrighted.
 
-**Can I change the shortcut?** Yes, in Settings. F4 is only the default: any function key works on its own, any other key with ⌘, ⌥ or ⌃.
+**Can I change the shortcut?** Yes, in the menu bar: Shortcut ▸ fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
 
 **F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or turn on **Open F4 with the F4 key alone, without fn** in Settings: F4 catches the key before Spotlight or Launchpad, which needs the Accessibility permission (without it, fn F4 still works). On most other keyboards F4 just works. Or record another shortcut in Settings.
 

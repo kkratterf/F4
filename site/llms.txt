@@ -5,7 +5,7 @@
 Key facts:
 
 - The default shortcut is the F4 key alone, from any app; it can be changed in Settings (a function key works alone, any other key needs Command, Option or Control). On a Mac keyboard F4 is a media key (Spotlight or Launchpad) unless the user holds fn (fn-F4) or turns on "Use F1, F2, etc. keys as standard function keys" in System Settings > Keyboard > Keyboard Shortcuts > Function Keys; or the optional setting "Open F4 with the F4 key alone, without fn" (offered on the first launch, needs Accessibility, falls back to fn-F4 without it) catches the key before Spotlight or Launchpad. The panel floats above everything, including full-screen apps, and has no Dock icon (the app lives in the menu bar).
-- It reads one folder, `~/Pictures/Memes` by default or any folder picked in Settings, and watches it with FSEvents so new files appear without a restart. Subfolders become categories you can search.
+- It reads one folder, `~/Pictures/Memes` by default or any folder picked from the menu bar (Choose Meme Folder…), and watches it with FSEvents so new files appear without a restart. Subfolders become categories you can search.
 - Supported files today: GIF, PNG, JPEG, WebP (WhatsApp and Telegram stickers). HEIC and short videos are planned.
 - Type to search (fuzzy, on file names), arrow keys to move in the grid, Tab or ⌘1–⌘4 to switch between the All, Favourites, GIFs and Stickers tabs, Enter to copy, Escape to close. Favourites (the star on a meme, or ⌘D) have their own section on top, then recently used memes.
 - Copying writes the file URL (`public.file-url`) and the raw file bytes under the file's UTI, never a decoded `NSImage`, so GIFs stay animated when pasted into Slack, Discord or Telegram.
@@ -13,7 +13,7 @@ Key facts:
 - The empty state draws the "F4, basito" face from the Italian series Boris in code; a `.basito.png`, `.gif` or `.jpg` in the meme folder replaces it. The app ships with no images of its own. Typing some Boris or The Office lines, or the Konami code, in the search field triggers easter eggs.
 - A Raycast extension in the same repository searches the same folder.
 - Scripts, Shortcuts and AI agents drive it with URLs: `f4://open`, `f4://search?q=…` (panel with the search typed in), `f4://copy?name=…` (copies the best match without showing the panel, e.g. `open "f4://copy?name=this%20is%20fine"`), `f4://reload`, `f4://settings`.
-- A starter pack is built in, so the panel is never empty: animated emoji GIFs (Google Noto Emoji, CC BY 4.0) and F4's own stickers, listed after the user's memes, never copied into the folder. Settings → Starter pack hides it.
+- A starter pack is built in, so the panel is never empty: animated emoji GIFs (Google Noto Emoji, CC BY 4.0) and F4's own stickers, listed after the user's memes, never copied into the folder. Show Starter Pack in the menu bar menu hides it.
 - Add memes from the panel: ⌘V adds a copied image, sticker, file or image link (WhatsApp/Telegram: right-click a sticker → Copy, then ⌘V in F4), files can be dropped on the panel, and Add opens a file picker (starting in Downloads). They are copied into `GIFs/` or `Stickers/` in the meme folder.
 - In the GIFs and Stickers tabs, GIPHY results follow the local ones (trending when the search is empty). Enter copies one and saves it in the meme folder, so it stays available offline; ⌘D saves it as a favourite.
 - F4 updates itself with Sparkle, checking the appcast on this site. Besides that it only talks to GIPHY while the user is in the GIFs or Stickers tab, and downloads image links the user pastes or drops: no analytics, no account, no server.
@@ -30,7 +30,7 @@ Key facts:
 
 - [Full reference](https://f4.kkratter.com/llms-full.txt): every setting, key, default, file location, install option and troubleshooting step, in one plain-text file
 - [FAQ](https://f4.kkratter.com/faq/): installing, the F4 key and fn, privacy, updates
-- [README](https://github.com/kkratterf/f4/blob/main/README.md): every feature, settings, shortcuts, install, privacy, FAQ, build from source
+- [README](https://github.com/kkratterf/f4/blob/main/README.md): every feature, options, shortcuts, install, privacy, FAQ, build from source
 - [Releases](https://github.com/kkratterf/f4/releases): downloads and release notes
 - [Issues](https://github.com/kkratterf/f4/issues): bugs, ideas and the roadmap (labels mark area, priority and version)
 

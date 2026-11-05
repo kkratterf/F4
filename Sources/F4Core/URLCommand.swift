@@ -10,7 +10,7 @@ import Foundation
 /// | `f4://search?q=…` | show the panel with the query typed in |
 /// | `f4://copy?name=…` | copy the best match, without showing the panel |
 /// | `f4://reload` | rescan the meme folder |
-/// | `f4://settings` | open Settings |
+/// | `f4://settings` | open the menu bar menu, where the options are |
 ///
 /// Commands are case-insensitive; `f4:open` and a trailing slash work too.
 public enum URLCommand: Equatable, Sendable {

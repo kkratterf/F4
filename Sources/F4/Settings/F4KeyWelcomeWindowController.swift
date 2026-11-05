@@ -3,7 +3,7 @@ import SwiftUI
 
 /// The window shown on the first launch of a Mac whose F4 key is Spotlight or
 /// Launchpad: it offers to catch the key, so F4 alone opens the panel, and
-/// otherwise explains fn F4. Shown once; the same choice stays in Settings.
+/// otherwise explains fn F4. Shown once; the same choice stays in the menu bar menu.
 @MainActor
 final class F4KeyWelcomeWindowController: NSObject, NSWindowDelegate {
     private var window: NSWindow?
@@ -72,7 +72,7 @@ private struct F4KeyWelcomeView: View {
                     .keyboardShortcut(.defaultAction)
             } else {
                 Text("Turn on F4 in System Settings › Privacy & Security › Accessibility. This window updates as soon as you do.")
-                Text("Until then, or if you prefer not to, fn F4 opens F4. You can change this later in F4's Settings.")
+                Text("Until then, or if you prefer not to, fn F4 opens F4. You can change this later in F4's menu (F4 Key Without fn).")
                     .foregroundStyle(.secondary)
                 HStack {
                     Button("Open Settings") { AutoPaster.openAccessibilitySettings() }

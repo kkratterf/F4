@@ -14,7 +14,6 @@ final class AppSettings: ObservableObject {
         static let showStarterPack = "showStarterPack"
         static let searchGiphy = "searchGiphy"
         static let giphyAPIKey = "giphyAPIKey"
-        static let showInMenuBar = "showInMenuBar"
         static let pressF4WithoutFn = "pressF4WithoutFn"
         static let didOfferF4WithoutFn = "didOfferF4WithoutFn"
     }
@@ -64,15 +63,11 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(searchGiphy, forKey: Key.searchGiphy) }
     }
 
-    /// The user's own GIPHY API key, used instead of the built-in one. Empty for none.
+    /// The user's own GIPHY API key, used instead of the built-in one. Empty
+    /// for none. There is no control for it: set it with
+    /// `defaults write com.kkratterf.f4 giphyAPIKey <key>`.
     @Published var giphyAPIKey: String {
         didSet { defaults.set(giphyAPIKey, forKey: Key.giphyAPIKey) }
-    }
-
-    /// The menu bar icon. On by default; with it off, opening F4 again
-    /// (Finder, Spotlight) shows Settings, so the user can always get back.
-    @Published var showInMenuBar: Bool {
-        didSet { defaults.set(showInMenuBar, forKey: Key.showInMenuBar) }
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -82,7 +77,6 @@ final class AppSettings: ObservableObject {
         giphyAPIKey = defaults.string(forKey: Key.giphyAPIKey) ?? ""
         pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
         pressF4WithoutFn = defaults.bool(forKey: Key.pressF4WithoutFn)
-        showInMenuBar = defaults.object(forKey: Key.showInMenuBar) as? Bool ?? true
         if let path = defaults.string(forKey: Key.memeFolder), !path.isEmpty {
             memeFolder = URL(fileURLWithPath: path, isDirectory: true)
         } else {
