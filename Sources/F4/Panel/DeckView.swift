@@ -271,6 +271,7 @@ struct DeckView: View {
             .onChange(of: model.selectedMeme?.id) {
                 if let meme = model.selectedMeme {
                     proxy.scrollTo(meme.id)
+                    announce(meme)
                 }
             }
         }
@@ -278,6 +279,20 @@ struct DeckView: View {
 }
 
 extension DeckView {
+    /// The arrow keys move the selection while the search field keeps the
+    /// focus, so VoiceOver would not follow it: it reads the sticker out.
+    fileprivate func announce(_ meme: Meme) {
+        guard NSWorkspace.shared.isVoiceOverEnabled, let window = NSApp.keyWindow else { return }
+        NSAccessibility.post(
+            element: window,
+            notification: .announcementRequested,
+            userInfo: [
+                .announcement: meme.name,
+                .priority: NSAccessibilityPriorityLevel.high.rawValue,
+            ]
+        )
+    }
+
     /// The cells of `model.results` in `range`.
     fileprivate func memeCells(_ range: Range<Int>) -> some View {
         ForEach(Array(model.results[range].enumerated()), id: \.element.id) { offset, meme in
@@ -297,6 +312,7 @@ extension DeckView {
             if case .active = phase { model.pointerMoved(to: NSEvent.mouseLocation, over: index) }
         }
         .onTapGesture { onPick(meme) }
+        .accessibilityAction { onPick(meme) }
         // Drag a sticker out into a chat, a document or Finder: the file
         // itself, so a GIF arrives animated. The panel stays open.
         .onDrag {
