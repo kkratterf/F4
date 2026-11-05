@@ -1,7 +1,7 @@
 {
   "name": "F4",
   "short_name": "F4",
-  "description": "A Spotlight for your memes on the Mac: press F4, type a few letters, and the GIF is on your clipboard.",
+  "description": "Your stickers in every chat on the Mac: press fn F4, type a few letters, and the sticker is on your clipboard.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#08080a",

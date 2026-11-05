@@ -441,3 +441,25 @@ kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-si
 /* A GIF that fails to load leaves its coloured tile, not its alt text */
 .f4p-cell img, .pasted img, .clip img { color: transparent; font-size: 0; }
 @media (max-width: 640px) { .mac-screen, .screen { aspect-ratio: 4 / 3.4; } .over { padding-top: 5%; } .screen .f4p { width: 90%; } }
+
+/* Stickers: the starter text stickers, drawn in CSS like make-stickers.swift
+   draws them in the app (fill, dark outline, thick white border, a tilt) */
+.f4p-cell:has(.tsk), .pasted.sticker { display: grid; place-items: center; container-type: inline-size; }
+.tsk {
+  display: inline-block; transform: rotate(var(--t, 0deg));
+  font: 900 1em/.86 "Helvetica Neue", "Arial Narrow", Impact, sans-serif; font-stretch: condensed;
+  letter-spacing: -.01em; text-align: center; text-transform: uppercase; white-space: nowrap;
+  color: var(--f); -webkit-text-stroke: .07em var(--o); paint-order: stroke fill;
+  text-shadow:
+    .09em 0 #fff, -.09em 0 #fff, 0 .09em #fff, 0 -.09em #fff,
+    .065em .065em #fff, -.065em .065em #fff, .065em -.065em #fff, -.065em -.065em #fff,
+    0 .14em .2em rgb(0 0 0 / 45%);
+}
+.f4p-cell .tsk { font-size: 17cqi; }
+.pasted.sticker { width: min(9em, 60%); aspect-ratio: 1; border-radius: 0; background: none; overflow: visible; }
+.pasted.sticker img { object-fit: contain; }
+.pasted.sticker .tsk { font-size: 22cqi; }
+.outro .clip.sticker { border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
+.outro .clip.sticker img { object-fit: contain; filter: drop-shadow(0 18px 40px rgb(255 196 61 / 35%)); }
+.bubble-gif.sticker, .bubble-gif:has(img[src*="notoemoji"]) { aspect-ratio: 1; width: 120px; border: 0; background: none; box-shadow: none; }
+.bubble-gif:has(img[src*="notoemoji"]) img { object-fit: contain; }

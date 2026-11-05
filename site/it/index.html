@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>F4: il launcher di meme per Mac, lo Spotlight delle tue GIF</title>
-  <meta name="description" content="F4 è un'app gratuita e open source per macOS: premi fn F4, scrivi qualche lettera, premi Invio e il meme o la GIF è negli appunti, ancora animata, pronta da incollare in Slack, Discord o Telegram.">
+  <title>F4: sticker per ogni chat sul tuo Mac</title>
+  <meta name="description" content="F4 è un&#x27;app gratuita e open source per macOS per gli sticker, come su WhatsApp ma per tutto il Mac: premi fn F4, scrivi qualche lettera, premi Invio e lo sticker è negli appunti, animazione compresa, pronto da incollare in qualsiasi chat.">
   <meta name="theme-color" content="#08080a">
   <meta name="color-scheme" content="dark">
   <link rel="canonical" href="https://f4.kkratter.com/it/">
@@ -18,16 +18,16 @@
   <!-- For AI assistants: the facts about F4 in plain text. -->
   <link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
   <link rel="alternate" type="text/plain" href="/llms-full.txt" title="llms-full.txt">
-  <link rel="preconnect" href="https://media.giphy.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
     "name": "F4",
-    "alternateName": "F4 meme launcher",
-    "description": "F4 è un'app gratuita e open source per macOS: premi fn F4, scrivi qualche lettera, premi Invio e il meme o la GIF è negli appunti, ancora animata, pronta da incollare in Slack, Discord o Telegram.",
+    "alternateName": "F4 stickers",
+    "description": "F4 è un'app gratuita e open source per macOS per gli sticker, come su WhatsApp ma per tutto il Mac: premi fn F4, scrivi qualche lettera, premi Invio e lo sticker è negli appunti, animazione compresa, pronto da incollare in qualsiasi chat.",
     "applicationCategory": "UtilitiesApplication",
-    "applicationSubCategory": "Meme and GIF search",
+    "applicationSubCategory": "Sticker search",
     "operatingSystem": "macOS 14 or later",
     "inLanguage": [
       "it",
@@ -63,13 +63,13 @@
   <meta property="og:locale" content="it_IT">
   <meta property="og:locale:alternate" content="en_US">
   <meta property="og:site_name" content="F4">
-  <meta property="og:title" content="F4: la tua scorciatoia per ogni meme">
-  <meta property="og:description" content="Cerca meme e GIF sul Mac, gratis. Premi fn F4, scrivi qualche lettera, premi Invio: la GIF è negli appunti, ancora animata.">
+  <meta property="og:title" content="F4: i tuoi sticker in ogni chat">
+  <meta property="og:description" content="Gli sticker come su WhatsApp, per tutto il Mac. Premi fn F4, scrivi qualche lettera, premi Invio: lo sticker è negli appunti.">
   <meta property="og:url" content="https://f4.kkratter.com/it/">
   <meta property="og:image" content="https://f4.kkratter.com/og-it.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Il logo di F4, Stanis di Boris basito, accanto alla scritta: La tua scorciatoia per ogni meme.">
+  <meta property="og:image:alt" content="Il logo di F4, Stanis di Boris basito, accanto alla scritta: I tuoi sticker in ogni chat.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://f4.kkratter.com/og-it.jpg">
   <script src="/analytics.js" async></script>
@@ -91,19 +91,19 @@
   </header>
 
   <main id="main">
-    <!-- The GIFs on this page are not in the repo: they load from GIPHY, from the
-         official channels of the shows they come from (AGENTS.md). -->
+    <!-- The stickers on this page are the Noto animated emoji F4 ships with (Google, CC BY 4.0),
+         loaded from Google Fonts, and F4's own text stickers, drawn in CSS. -->
     <section class="hero" aria-labelledby="title">
       <div class="grainient" data-grainient data-colors="#0a0908,#1f1404,#7a4a06,#ffab1a,#ffc43d" data-angle="20" data-speed="0.8" data-flow="0.9" data-silk="0.3" data-grain-amount="0.03" data-grain-size="0.5" data-dpr="2" aria-hidden="true"><canvas></canvas></div>
       <div class="wrap">
-        <h1 id="title">La scorciatoia<br><span>per ogni meme</span></h1>
-        <p class="lead">Premi fn F4, scrivi, premi Invio. La GIF è negli appunti, ancora animata.</p>
+        <h1 id="title">I tuoi sticker<br><span>in ogni chat</span></h1>
+        <p class="lead">Premi fn F4, scrivi, premi Invio. Lo sticker è negli appunti, animazione compresa, per WhatsApp, Slack, Telegram o qualsiasi altra chat.</p>
         <div class="ctas">
           <a class="btn btn-primary btn-lg" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg" data-download><svg class="i-apple" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg> Scarica per Mac</a>
         </div>
         <p class="meta"><span>Versione <span data-version>0.3.3</span></span><span>macOS 14+</span><span>Gratis e open source</span></p>
 
-        <figure class="mac" data-demo data-state="panel" aria-label="F4 sopra una chat: trova una GIF e la incolla, ancora animata" data-copied="Copiata, ancora animata" data-copy="Copia">
+        <figure class="mac" data-demo data-state="panel" aria-label="F4 sopra una chat: trova uno sticker e lo incolla" data-copied="Copiato" data-copy="Copia">
           <div class="mac-screen">
             <div class="menubar" aria-hidden="true"><svg class="i-apple" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Chat</span><i class="opt">File</i><i class="opt">Modifica</i><i class="opt">Vista</i><i class="opt">Finestra</i><span class="sp"></span><b class="mb-f4">F4</b><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 18.5a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2ZM12 13c2 0 3.8.8 5.1 2.1l-1.5 1.5A5.1 5.1 0 0 0 12 15.1c-1.4 0-2.7.6-3.6 1.5l-1.5-1.5A7.2 7.2 0 0 1 12 13Zm0-5c3.4 0 6.4 1.4 8.6 3.6L19.1 13A10 10 0 0 0 12 10a10 10 0 0 0-7.1 3L3.4 11.6A12.1 12.1 0 0 1 12 8Z"/></svg><i>ven 17:58</i></div>
             <div class="desk">
@@ -112,12 +112,12 @@
                 <div class="chat">
                   <div class="msg"><span class="avatar">G</span><div><p class="who">Giulia <time>17:58</time></p><p>deploy in produzione di venerdì, cosa potrà mai andare storto</p></div></div>
                   <div class="msg"><span class="avatar a2">M</span><div><p class="who">Marco <time>17:58</time></p><p>chi l'ha approvato 👀</p></div></div>
-                  <div class="mine"><div class="msg"><span class="avatar a3"><img src="../favicon.svg" alt="" width="40" height="40"></span><div><p class="who">Tu <time>17:59</time></p><span class="pasted"><img data-demo-pasted src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="" width="200" height="150"></span></div></div></div>
+                  <div class="mine"><div class="msg"><span class="avatar a3"><img src="../favicon.svg" alt="" width="40" height="40"></span><div><p class="who">Tu <time>17:59</time></p><span class="pasted sticker" data-demo-pasted><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.webp" alt="" width="200" height="200"></span></div></div></div>
                   <div class="compose">Scrivi in #team</div>
                 </div>
               </div>
             </div>
-            <div class="over" aria-hidden="true"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…" data-demo-query>no</span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Tutti</span><span>Preferiti</span><span>GIF</span><span>Sticker</span></div><div class="f4p-grid" data-demo-grid><div class="f4p-cell on" data-name="michael-scott-no.gif" data-still="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w_s.gif" data-anim="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="Michael Scott che dice no, The Office" width="200" height="150"></div><div class="f4p-cell" data-name="cool-cool-cool.gif" data-still="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" data-anim="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w_s.gif" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150"></div><div class="f4p-cell" data-name="this-is-the-worst.gif" data-still="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" data-anim="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w_s.gif" alt="This is the worst, Parks and Recreation" width="200" height="150"></div><div class="f4p-cell" data-name="mocking-spongebob.gif" data-still="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" data-anim="https://media.giphy.com/media/fB938PbR1ulsA/200w.webp"><img src="https://media.giphy.com/media/fB938PbR1ulsA/200w_s.gif" alt="SpongeBob che fa il verso" width="200" height="150"></div><div class="f4p-cell" data-name="awkward.gif" data-still="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" data-anim="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w_s.gif" alt="Un momento imbarazzante, The Office" width="200" height="150"></div><div class="f4p-cell" data-name="happy-dance.gif" data-still="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" data-anim="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w_s.gif" alt="Balletto di gioia, Parks and Recreation" width="200" height="150"></div><div class="f4p-cell" data-name="fake-typing.gif" data-still="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" data-anim="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w_s.gif" alt="Michael Scott che finge di scrivere, The Office" width="200" height="150"></div><div class="f4p-cell" data-name="idk.gif" data-still="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" data-anim="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w_s.gif" alt="Gina: boh, Brooklyn Nine-Nine" width="200" height="150"></div></div><div class="f4p-foot"><b data-demo-picked>michael-scott-no.gif</b><span><small data-demo-hint>Copia</small><span class="kc">↩</span></span></div></div></div>
+            <div class="over" aria-hidden="true"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…" data-demo-query>no</span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Sticker</span><span>Preferiti</span></div><div class="f4p-grid" data-demo-grid><div class="f4p-cell st on" data-name="tears of joy.gif" data-still="https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/emoji.svg" data-anim="https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.webp"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.webp" alt="lacrime di gioia" width="200" height="150"></div><div class="f4p-cell st" data-name="dai dai dai.png" role="img" aria-label="dai dai dai"><span class="tsk" style="--f:#FF6B6B;--o:#5A0F12;--t:-5deg">DAI<br>DAI<br>DAI!</span></div><div class="f4p-cell st" data-name="skull dead.gif" data-still="https://fonts.gstatic.com/s/e/notoemoji/latest/1f480/emoji.svg" data-anim="https://fonts.gstatic.com/s/e/notoemoji/latest/1f480/512.webp"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f480/emoji.svg" alt="teschio" width="200" height="150"></div><div class="f4p-cell st" data-name="basito.png" role="img" aria-label="basito"><span class="tsk" style="--f:#FFD43B;--o:#1D1D1F;--t:6deg">BASITO</span></div><div class="f4p-cell st" data-name="party.gif" data-still="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/emoji.svg" data-anim="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.webp"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/emoji.svg" alt="festa" width="200" height="150"></div><div class="f4p-cell st" data-name="nope.png" role="img" aria-label="nope"><span class="tsk" style="--f:#FF8787;--o:#5A0F12;--t:7deg">NOPE</span></div><div class="f4p-cell st" data-name="fire.gif" data-still="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/emoji.svg" data-anim="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/emoji.svg" alt="fuoco" width="200" height="150"></div><div class="f4p-cell st" data-name="ship it.png" role="img" aria-label="ship it"><span class="tsk" style="--f:#4DABF7;--o:#0B3A66;--t:-7deg">SHIP<br>IT</span></div></div><div class="f4p-foot"><b data-demo-picked>tears of joy.gif</b><span><small data-demo-hint>Copia</small><span class="kc">↩</span></span></div></div></div>
           </div>
         </figure>
       </div>
@@ -127,7 +127,7 @@
       <div class="wrap">
         <div class="section-head">
           <h2 id="h-keys">Non si tratta di risparmiare tempo</h2>
-          <p>Si tratta di rispondere con la GIF giusta finché la chat ne sta ancora parlando. Premi <b>fn&nbsp;F4</b> in qualsiasi app.</p>
+          <p>Si tratta di rispondere con lo sticker giusto finché la chat ne sta ancora parlando. Premi <b>fn&nbsp;F4</b> in qualsiasi app.</p>
         </div>
         <div class="kb-wrap" aria-hidden="true">
           <div class="kb">
@@ -137,25 +137,25 @@
       </div>
     </section>
 
-    <section id="meme" class="section" aria-labelledby="h-memes">
+    <section id="stickers" class="section" aria-labelledby="h-stickers">
       <div class="wrap">
         <div class="section-head">
-          <h2 id="h-memes">C'è un meme per questo</h2>
-          <p>F4 arriva con un pack pronto all'uso. Aggiungi i tuoi e ognuno resta a una ricerca di distanza.</p>
+          <h2 id="h-stickers">C'è uno sticker per questo</h2>
+          <p>F4 arriva con degli sticker pronti all'uso. Aggiungi i tuoi e ognuno è a una ricerca di distanza.</p>
         </div>
         <div class="modes" data-tabs>
-          <div class="mode-list" role="tablist" aria-label="Da dove arrivano i meme">
+          <div class="mode-list" role="tablist" aria-label="Da dove arrivano gli sticker">
             <button class="mode-tab" type="button" role="tab" id="tab-folder" aria-controls="panel-folder" aria-selected="true">
-              <h3><span aria-hidden="true">📁</span> I tuoi meme</h3>
-              <p>Incolla, trascina o aggiungi i tuoi meme. Col tasto destro li sposti in una cartella: le cartelle diventano sezioni.</p>
+              <h3><span aria-hidden="true">📁</span> I tuoi sticker</h3>
+              <p>Incollane uno da WhatsApp o Telegram, trascina dei file o clicca Aggiungi. Col tasto destro lo sposti in una cartella.</p>
             </button>
-            <button class="mode-tab" type="button" role="tab" id="tab-giphy" aria-controls="panel-giphy" aria-selected="false" tabindex="-1">
-              <h3><span aria-hidden="true">🔎</span> GIPHY</h3>
-              <p>Le schede GIF e Sticker cercano su GIPHY mentre scrivi.</p>
+            <button class="mode-tab" type="button" role="tab" id="tab-packs" aria-controls="panel-packs" aria-selected="false" tabindex="-1">
+              <h3><span aria-hidden="true">📦</span> Pacchetti di WhatsApp</h3>
+              <p>Trascina un pacchetto .wastickers sul pannello o incollalo con ⌘V: F4 lo apre in una cartella tutta sua.</p>
             </button>
             <button class="mode-tab" type="button" role="tab" id="tab-starter" aria-controls="panel-starter" aria-selected="false" tabindex="-1">
-              <h3><span aria-hidden="true">✨</span> Starter pack</h3>
-              <p>Emoji animate e sticker, così il pannello non è mai vuoto.</p>
+              <h3><span aria-hidden="true">✨</span> Pacchetto iniziale</h3>
+              <p>Emoji animate e gli sticker di F4 sono già dentro, così il pannello non è mai vuoto.</p>
             </button>
           </div>
           <div class="mode-stage">
@@ -163,29 +163,29 @@
               <figure class="screen">
                 <div class="menubar" aria-hidden="true"><svg class="i-apple" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Chat</span><span class="sp"></span><b class="mb-f4">F4</b><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 18.5a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2ZM12 13c2 0 3.8.8 5.1 2.1l-1.5 1.5A5.1 5.1 0 0 0 12 15.1c-1.4 0-2.7.6-3.6 1.5l-1.5-1.5A7.2 7.2 0 0 1 12 13Zm0-5c3.4 0 6.4 1.4 8.6 3.6L19.1 13A10 10 0 0 0 12 10a10 10 0 0 0-7.1 3L3.4 11.6A12.1 12.1 0 0 1 12 8Z"/></svg><i>ven 17:58</i></div>
                 <div class="desk"></div>
-                <div class="over"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…"></span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Tutti</span><span>Preferiti</span><span>GIF</span><span>Sticker</span></div><div class="f4p-sec">Reazioni</div><div class="f4p-grid"><div class="f4p-cell on"><img src="https://media.giphy.com/media/HBeTEfNfTUpcF5GwVC/200w.webp" alt="Scioccato, The Office" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/fB938PbR1ulsA/200w.webp" alt="SpongeBob che fa il verso" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: boh, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp" alt="Un momento imbarazzante, The Office" width="200" height="150" loading="lazy"></div></div><div class="f4p-sec">Lavoro</div><div class="f4p-grid"><div class="f4p-cell"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott che finge di scrivere, The Office" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/J0BUyA0CPnDTP6iALR/200w.webp" alt="Michael Scott: faccio da solo, The Office" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="Michael Scott che dice no, The Office" width="200" height="150" loading="lazy"></div></div><div class="f4p-foot"><b>shocked.gif</b><span><small>Copia</small><span class="kc">↩</span></span></div></div></div>
+                <div class="over"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…"></span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Sticker</span><span>Preferiti</span></div><div class="f4p-sec">F4</div><div class="f4p-grid"><div class="f4p-cell st on" role="img" aria-label="basito"><span class="tsk" style="--f:#FFD43B;--o:#1D1D1F;--t:6deg">BASITO</span></div><div class="f4p-cell st" role="img" aria-label="dai dai dai"><span class="tsk" style="--f:#FF6B6B;--o:#5A0F12;--t:-5deg">DAI<br>DAI<br>DAI!</span></div><div class="f4p-cell st" role="img" aria-label="smarmella"><span class="tsk" style="--f:#FFA94D;--o:#5C2B00;--t:4deg">SMAR-<br>MELLA</span></div><div class="f4p-cell st" role="img" aria-label="apri tutto"><span class="tsk" style="--f:#FFE066;--o:#4D3B00;--t:-6deg">APRI<br>TUTTO!</span></div></div><div class="f4p-sec">Lavoro</div><div class="f4p-grid"><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f44d/512.webp" alt="pollice in su" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1fae1/512.webp" alt="saluto" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4af/512.webp" alt="100" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f44f/512.webp" alt="applausi" width="200" height="150" loading="lazy"></div></div><div class="f4p-foot"><b>basito.png</b><span><small>Copia</small><span class="kc">↩</span></span></div></div></div>
               </figure>
-              <p class="mode-caption">Incolla, trascina o aggiungi i tuoi meme. Col tasto destro li sposti in una cartella: le cartelle diventano sezioni.</p>
+              <p class="mode-caption">Incollane uno da WhatsApp o Telegram, trascina dei file o clicca Aggiungi. Col tasto destro lo sposti in una cartella.</p>
             </div>
-            <div class="mode-panel" role="tabpanel" id="panel-giphy" aria-labelledby="tab-giphy" hidden>
+            <div class="mode-panel" role="tabpanel" id="panel-packs" aria-labelledby="tab-packs" hidden>
               <figure class="screen">
                 <div class="menubar" aria-hidden="true"><svg class="i-apple" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Chat</span><span class="sp"></span><b class="mb-f4">F4</b><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 18.5a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2ZM12 13c2 0 3.8.8 5.1 2.1l-1.5 1.5A5.1 5.1 0 0 0 12 15.1c-1.4 0-2.7.6-3.6 1.5l-1.5-1.5A7.2 7.2 0 0 1 12 13Zm0-5c3.4 0 6.4 1.4 8.6 3.6L19.1 13A10 10 0 0 0 12 10a10 10 0 0 0-7.1 3L3.4 11.6A12.1 12.1 0 0 1 12 8Z"/></svg><i>ven 17:58</i></div>
                 <div class="desk"></div>
-                <div class="over"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…">festa</span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span>Tutti</span><span>Preferiti</span><span class="on">GIF</span><span>Sticker</span></div><div class="f4p-grid"><div class="f4p-cell on"><img src="https://media.giphy.com/media/3o7WIIvYXQNlNXq0XS/200w.webp" alt="Balletto di gioia, Parks and Recreation" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w.webp" alt="Entusiasta, The Office" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/3ohzAu2U1tOafteBa0/200w.webp" alt="SpongeBob entusiasta" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/l41lNp8dHpfaJE25O/200w.webp" alt="Jake Peralta: cool cool cool, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/gSzVFkOj0Te7gojAhM/200w.webp" alt="Michael Scott che finge di scrivere, The Office" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/E2EhD5Z7d4fLhjeW6O/200w.webp" alt="This is the worst, Parks and Recreation" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/NdIdKr94h0FyPCYnEQ/200w.webp" alt="Un momento imbarazzante, The Office" width="200" height="150" loading="lazy"></div><div class="f4p-cell"><img src="https://media.giphy.com/media/9D5gyxpkQj5hZDOkwt/200w.webp" alt="Gina: boh, Brooklyn Nine-Nine" width="200" height="150" loading="lazy"></div></div><div class="f4p-foot"><b>Powered by GIPHY</b><span><small>Copia</small><span class="kc">↩</span></span></div></div></div>
+                <div class="over"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…"></span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Sticker</span><span>Preferiti</span></div><div class="f4p-sec">Gatti</div><div class="f4p-grid"><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f63a/512.webp" alt="grinning cat" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f639/512.webp" alt="cat with tears of joy" width="200" height="150" loading="lazy"></div><div class="f4p-cell st on"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f63b/512.webp" alt="heart eyes cat" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f63c/512.webp" alt="wry cat" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f640/512.webp" alt="weary cat" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f63f/512.webp" alt="crying cat" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f63e/512.webp" alt="pouting cat" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f63d/512.webp" alt="kissing cat" width="200" height="150" loading="lazy"></div></div><div class="f4p-foot"><b>heart eyes cat.webp</b><span><small>Copia</small><span class="kc">↩</span></span></div></div></div>
               </figure>
-              <p class="mode-caption">Le schede GIF e Sticker cercano su GIPHY mentre scrivi.</p>
+              <p class="mode-caption">Trascina un pacchetto .wastickers sul pannello o incollalo con ⌘V: F4 lo apre in una cartella tutta sua.</p>
             </div>
             <div class="mode-panel" role="tabpanel" id="panel-starter" aria-labelledby="tab-starter" hidden>
               <figure class="screen">
                 <div class="menubar" aria-hidden="true"><svg class="i-apple" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Chat</span><span class="sp"></span><b class="mb-f4">F4</b><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 18.5a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2ZM12 13c2 0 3.8.8 5.1 2.1l-1.5 1.5A5.1 5.1 0 0 0 12 15.1c-1.4 0-2.7.6-3.6 1.5l-1.5-1.5A7.2 7.2 0 0 1 12 13Zm0-5c3.4 0 6.4 1.4 8.6 3.6L19.1 13A10 10 0 0 0 12 10a10 10 0 0 0-7.1 3L3.4 11.6A12.1 12.1 0 0 1 12 8Z"/></svg><i>ven 17:58</i></div>
                 <div class="desk"></div>
-                <div class="over"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…"></span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Tutti</span><span>Preferiti</span><span>GIF</span><span>Sticker</span></div><div class="f4p-sec">Starter pack</div><div class="f4p-grid"><div class="f4p-cell st on"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.webp" alt="lacrime di gioia" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f923/512.webp" alt="rotolarsi dal ridere" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f480/512.webp" alt="teschio" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f440/512.webp" alt="occhi" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" alt="fuoco" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.webp" alt="festa" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f62d/512.webp" alt="pianto" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1fae0/512.webp" alt="si scioglie" width="200" height="150" loading="lazy"></div></div><div class="f4p-foot"><b>tears of joy.gif</b><span><small>Copia</small><span class="kc">↩</span></span></div></div></div>
+                <div class="over"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Cerca…"></span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Sticker</span><span>Preferiti</span></div><div class="f4p-sec">Emoji</div><div class="f4p-grid"><div class="f4p-cell st on"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.webp" alt="lacrime di gioia" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f923/512.webp" alt="rotolarsi dal ridere" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f480/512.webp" alt="teschio" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f440/512.webp" alt="occhi" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" alt="fuoco" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.webp" alt="festa" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f62d/512.webp" alt="pianto" width="200" height="150" loading="lazy"></div><div class="f4p-cell st"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1fae0/512.webp" alt="si scioglie" width="200" height="150" loading="lazy"></div></div><div class="f4p-foot"><b>tears of joy.gif</b><span><small>Copia</small><span class="kc">↩</span></span></div></div></div>
               </figure>
-              <p class="mode-caption">Emoji animate e sticker, così il pannello non è mai vuoto.</p>
+              <p class="mode-caption">Emoji animate e gli sticker di F4 sono già dentro, così il pannello non è mai vuoto.</p>
             </div>
           </div>
         </div>
-        <p class="modes-note">Aggiungi i tuoi con <b>⌘V</b>, trascinandoli o col pulsante <b>Aggiungi</b>. <b>⌘D</b> ne mette uno nei Preferiti.</p>
+        <p class="modes-note">Uno sticker da WhatsApp o Telegram: tasto destro, <b>Copia</b>, poi <b>⌘V</b> in F4. <b>⌘D</b> ne mette uno nei Preferiti.</p>
       </div>
     </section>
 
@@ -197,7 +197,7 @@
         </div>
         <div class="bento">
           <div class="cell wide">
-            <div class="vis" aria-hidden="true"><div class="mini-search"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>tif</span><div class="mini-row on"><span><b>t</b>h<b>i</b>s-is-<b>f</b>ine.gif</span><span class="kc">↩</span></div><div class="mini-row"><span><b>t</b>h<b>i</b>s-is-the-worst-<b>f</b>riday.gif</span></div><div class="mini-row"><span>no-<b>t</b>h<b>i</b>s-is-<b>f</b>or-me.png</span></div></div></div>
+            <div class="vis" aria-hidden="true"><div class="mini-search"><span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>tif</span><div class="mini-row on"><span><b>t</b>h<b>i</b>s-is-<b>f</b>ine.webp</span><span class="kc">↩</span></div><div class="mini-row"><span><b>t</b>h<b>i</b>s-is-the-worst-<b>f</b>riday.png</span></div><div class="mini-row"><span>no-<b>t</b>h<b>i</b>s-is-<b>f</b>or-me.png</span></div></div></div>
             <h3>Ricerca fuzzy</h3><p>“tif” trova “this is fine”. Preferiti e recenti vengono prima.</p>
           </div>
           <div class="cell">
@@ -205,16 +205,16 @@
             <h3>Sopra ogni app</h3><p><b>fn&nbsp;F4</b> lo apre sopra qualsiasi cosa stai usando, anche a tutto schermo.</p>
           </div>
           <div class="cell">
-            <div class="vis" aria-hidden="true"><div class="bubble"><span class="bubble-gif"><img src="https://media.giphy.com/media/h2Ro4j4LBwhyw8G92g/200w.webp" alt="" width="200" height="150" loading="lazy"></span><span class="bubble-apps">Slack · Discord · Telegram</span></div></div>
-            <h3>Sempre animate</h3><p>La GIF che incolli si muove, in ogni chat.</p>
+            <div class="vis" aria-hidden="true"><div class="bubble"><span class="bubble-gif"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.webp" alt="" width="200" height="150" loading="lazy"></span><span class="bubble-apps">WhatsApp · Slack · Telegram</span></div></div>
+            <h3>Sempre animati</h3><p>Gli sticker animati si muovono in ogni chat, come sul telefono.</p>
           </div>
           <div class="cell">
             <div class="vis vis-col" aria-hidden="true"><div class="fav-row"><span class="fav-tile on"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f602/512.webp" alt="" width="48" height="48" loading="lazy"><i class="fav-star">★</i></span><span class="fav-tile"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f480/512.webp" alt="" width="48" height="48" loading="lazy"></span><span class="fav-tile"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f440/512.webp" alt="" width="48" height="48" loading="lazy"></span><span class="fav-tile"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f525/512.webp" alt="" width="48" height="48" loading="lazy"></span></div><span class="wait"><kbd class="sm">⌘D</kbd> Preferito</span></div>
-            <h3>Le solite prima</h3><p>Preferiti e recenti aprono la griglia: quella che mandi sempre è a un Invio di distanza.</p>
+            <h3>Le solite prima</h3><p>Preferiti e recenti aprono la griglia: quello che mandi sempre è a un Invio di distanza.</p>
           </div>
           <div class="cell">
             <div class="vis" aria-hidden="true"><kbd class="hot">↩</kbd><span class="arrow">→</span><kbd>⌘</kbd><kbd>V</kbd></div>
-            <h3>Incolla per te</h3><p>Attiva l'incolla automatico e Invio mette la GIF dritta nella chat.</p>
+            <h3>Incolla per te</h3><p>Attiva l'incolla automatico e Invio mette lo sticker dritto nella chat.</p>
           </div>
         </div>
       </div>
@@ -222,7 +222,7 @@
 
     <section class="outro" aria-labelledby="h-outro">
       <div class="wrap">
-        <div class="clip"><img src="https://media.giphy.com/media/xoV4JZ3cBaSGngdxxl/200w.webp" alt="Entusiasta, The Office" width="200" height="200" loading="lazy"></div>
+        <div class="clip sticker"><img src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f973/512.webp" alt="" width="200" height="200" loading="lazy"></div>
         <h2 id="h-outro">Prendi la scorciatoia</h2>
         <p>Gratis per macOS 14 e successivi.</p>
         <a class="btn btn-primary btn-lg" href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg" data-download><svg class="i-apple" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg> Scarica per Mac</a>
@@ -235,7 +235,7 @@
       <div class="foot-grid">
         <div>
           <p class="brand"><img src="../favicon.svg" alt="" width="24" height="24"> F4</p>
-          <p>Spotlight per i tuoi meme su macOS.</p>
+          <p>I tuoi sticker, sul Mac.</p>
         </div>
         <div>
           <h2>Prodotto</h2>
@@ -243,7 +243,7 @@
             <li><a href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg" data-download>Scarica</a></li>
             <li><a href="https://github.com/kkratterf/f4/releases">Release</a></li>
             <li><a href="faq/">FAQ</a></li>
-                      </ul>
+          </ul>
         </div>
         <div>
           <h2>Progetto</h2>
