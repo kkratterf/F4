@@ -3,8 +3,8 @@ import F4Core
 
 /// Talks to GIPHY for the panel's GIPHY row: search, previews, downloads.
 ///
-/// It only runs while the user is in the GIFs or Stickers tab of the open
-/// panel: never in the background and never at launch. Responses are kept
+/// It only searches stickers, and only while the open panel is on its
+/// Stickers tab: never in the background and never at launch. Responses are kept
 /// for ten minutes, so opening the panel again does not ask GIPHY again.
 /// The API key is the user's own (`giphyAPIKey` default), else the one the release
 /// build was given (`F4GiphyAPIKey` in Info.plist, from the `GIPHY_API_KEY`

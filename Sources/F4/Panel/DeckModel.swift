@@ -24,7 +24,7 @@ final class DeckModel: ObservableObject {
     /// "Favourites" heading: with an empty search, outside the Favourites tab.
     /// 0 when the grid has no sections.
     @Published private(set) var favouriteCount = 0
-    /// The GIPHY row after the local results, in the GIFs and Stickers tabs.
+    /// The GIPHY stickers row after the local results, in the Stickers tab.
     @Published private(set) var webResults: [Giphy.Result] = []
     /// Index into `results` followed by `webResults`. Reset to the best
     /// match whenever the results change.
@@ -193,8 +193,9 @@ final class DeckModel: ObservableObject {
     }
 
     /// Asks GIPHY again when the tab or the query changed: trending for an
-    /// empty query, a search otherwise, debounced while typing. Nothing in
-    /// the All tab, during an easter egg, or without a key.
+    /// empty query, a search otherwise, debounced while typing: GIPHY
+    /// stickers in the Stickers tab. Nothing in Favourites, during an
+    /// easter egg, or without a key.
     private func refreshWeb(force: Bool = false) {
         let query = query.trimmingCharacters(in: .whitespaces)
         let catalogue = easterEgg == nil && giphy.isEnabled ? Giphy.catalogue(for: tab) : nil

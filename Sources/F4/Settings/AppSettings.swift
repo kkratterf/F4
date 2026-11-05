@@ -68,7 +68,7 @@ final class AppSettings: ObservableObject {
         didSet { defaults.set(showStarterPack, forKey: Key.showStarterPack) }
     }
 
-    /// Show the GIPHY row in the GIFs and Stickers tabs. On by default; it
+    /// Show the GIPHY stickers row in the Stickers tab. On by default; it
     /// only appears when the build (or the user) has a GIPHY API key.
     @Published var searchGiphy: Bool {
         didSet { defaults.set(searchGiphy, forKey: Key.searchGiphy) }

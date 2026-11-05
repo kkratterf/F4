@@ -1,6 +1,6 @@
 # F4: the full reference
 
-> F4 is a free, open-source meme launcher for macOS: a Spotlight-like floating panel that searches a local folder of memes, GIFs and stickers and copies one to the clipboard in a keystroke, GIF animation included. This file is everything an AI assistant or agent needs to install F4, explain it, or help someone use it. The short version is https://f4.kkratter.com/llms.txt. To change F4's code, read https://github.com/kkratterf/f4/blob/main/AGENTS.md instead.
+> F4 is a free, open-source sticker app for macOS, like WhatsApp stickers but for the whole Mac: a Spotlight-like floating panel that searches a local library of stickers (PNG, WebP, GIF, JPEG, animated ones included) and copies one to the clipboard in a keystroke, ready to paste anywhere. This file is everything an AI assistant or agent needs to install F4, explain it, or help someone use it. The short version is https://f4.kkratter.com/llms.txt. To change F4's code, read https://github.com/kkratterf/f4/blob/main/AGENTS.md instead.
 
 ## At a glance
 
@@ -9,7 +9,7 @@
 - Website: https://f4.kkratter.com/ (English) and https://f4.kkratter.com/it/ (Italian); FAQ: https://f4.kkratter.com/faq/
 - Bundle identifier: `com.kkratterf.f4`. The app is `F4.app`; it has no Dock icon and lives in the menu bar.
 - Languages: English, and Italian when macOS runs in Italian.
-- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (can be turned off), for GIPHY while the user is in the GIFs or Stickers tab of the open panel (can be turned off), to download an image link the user pastes or drops into the panel, and to download a pack the user picks in the menu bar's Packs.
+- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (can be turned off), for GIPHY stickers while the panel is open on its Stickers tab (can be turned off), to download an image link the user pastes or drops into the panel, and to download a pack the user switches on in the menu bar's Packs.
 - Permissions: none needed. Only two optional features ask for Accessibility: auto-paste, and the F4 key alone without fn on a Mac keyboard.
 - The name comes from "F4, basito", the stunned face of Stanis in the Italian TV series Boris.
 
@@ -56,9 +56,9 @@ F4 has no Dock icon and no window at launch. Press F4 (fn-F4 on a Mac keyboard, 
 
 ## Use
 
-1. Put memes in the library: paste (Command-V), drop or Add them in the panel. The library is `~/Library/Application Support/F4/Memes` by default (F4's own folder, which gets a copy of the starter pack on the first launch; users upgrading with memes in `~/Pictures/Memes` keep that folder), or any folder chosen with Choose Meme Folder… in the menu bar menu. Supported files: GIF, PNG, JPEG, WebP (`.gif`, `.png`, `.jpg`, `.jpeg`, `.webp`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
+1. Put stickers in the library: paste (Command-V), drop or Add them in the panel, or switch on a pack in the menu bar's Packs. The library is `~/Library/Application Support/F4/Memes` by default (F4's own folder, which gets a copy of the starter pack on the first launch; users upgrading with files in `~/Pictures/Memes` keep that folder), or any folder chosen with Choose Sticker Folder… in the menu bar menu. Supported files: GIF, PNG, JPEG, WebP (`.gif`, `.png`, `.jpg`, `.jpeg`, `.webp`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
 2. Press F4 (fn-F4 on a Mac keyboard) in any app. The panel appears centred on the screen with the mouse, above every window, including full-screen apps.
-3. Type to search, then press Enter. The meme is on the clipboard; paste it with Command-V wherever you want it.
+3. Type to search, then press Enter. The sticker is on the clipboard; paste it with Command-V wherever you want it.
 
 In the panel:
 
@@ -66,25 +66,25 @@ In the panel:
 | --- | --- |
 | Typing | Fuzzy search on file names and category (subfolder) names: each word of the query must appear with its letters in order, not necessarily together ("tif" finds "this is fine"); case, accents, `-`, `_` and `.` are ignored |
 | Arrow keys | Move the selection in the grid |
-| Tab / Shift-Tab, ⌘1 ⌘2 ⌘3 ⌘4 | Switch between the All, Favourites, GIFs and Stickers tabs (remembered between launches). Favourites shows only the favourites; memes added while it is open become favourites. Stickers are PNG and WebP files and anything inside a top-level `Stickers` folder; GIFs are the other GIFs; JPEGs show only in All. Search filters inside the current tab |
-| Enter, or a click | Copy the selected meme and close the panel |
+| Tab / Shift-Tab, ⌘1 ⌘2 | Switch between the Stickers and Favourites tabs (remembered between launches). Stickers shows every file of the library; Favourites shows only the favourites, and stickers added while it is open become favourites. Search filters inside the current tab |
+| Enter, or a click | Copy the selected sticker and close the panel |
 | Escape, or a click outside | Close the panel |
-| ⌘V with an empty search field | Add what the clipboard holds: an image (for example a WhatsApp or Telegram sticker copied with right-click → Copy), image files copied in Finder, or a link to a GIF or image (a GIPHY page link becomes its GIF). It is saved in the meme folder, GIFs in `GIFs/`, PNG/WebP and anything added in the Stickers tab in `Stickers/`, JPEG at the top level, never overwriting a file, and selected. Any other text pastes in the search field |
+| ⌘V with an empty search field | Add what the clipboard holds: an image (for example a WhatsApp or Telegram sticker copied with right-click → Copy), image files copied in Finder, or a link to an image (a GIPHY page link becomes its file). It is saved at the top of the library, never overwriting a file, and selected. Any other text pastes in the search field |
 | Drop on the panel | The same, for files, stickers dragged out of an app, images and links. Press the shortcut while dragging to open the panel under the pointer |
-| Add (top right) | A file picker for GIF, PNG, JPEG and WebP files, starting in Downloads. The picked files are copied into the meme folder (`GIFs/` or `Stickers/`); the originals stay where they are |
-| Command-D | Add the selected meme to Favourites, or remove it |
-| GIPHY row (GIFs and Stickers tabs) | After the local results: GIPHY trending with an empty search, GIPHY search otherwise (GIFs or stickers, rated PG-13, "Powered by GIPHY"). Arrow keys reach them like any meme. Enter saves the result into `GIFs/` or `Stickers/` in the meme folder and copies it as an animated GIF file, so it shows up in the recents and works offline from then on (the same result is saved only once); Command-D or right-click → Pin to F4 does the same and marks it as a favourite. Needs a GIPHY API key: released builds include one when the maintainer's key is set; `defaults write com.kkratterf.f4 giphyAPIKey <key>` sets your own, and Search GIPHY in the menu bar menu turns the row off |
-| Right-click a meme | Copy, Add to Favourites / Remove from Favourites, Move To ▸ (Top Level, each folder of the library, New Folder…), Rename…, Show in Finder, Move to Trash. A move or rename never overwrites a file ("name 2"), and favourites and recents follow the file. Starter memes listed from the app bundle only have Copy and Favourites |
+| Add (top right) | A file picker for GIF, PNG, JPEG and WebP files, starting in Downloads. The picked files are copied into the top of the library; the originals stay where they are |
+| Command-D | Add the selected sticker to Favourites, or remove it |
+| GIPHY row (Stickers tab) | After the local results: GIPHY sticker trending with an empty search, GIPHY sticker search otherwise (rated PG-13, "Powered by GIPHY"). Arrow keys reach them like any sticker. Enter saves the result into `GIPHY/` in the library and copies it as an animated GIF file, so it shows up in the recents and works offline from then on (the same result is saved only once); Command-D or right-click → Pin to F4 does the same and marks it as a favourite. Needs a GIPHY API key: released builds include one when the maintainer's key is set; `defaults write com.kkratterf.f4 giphyAPIKey <key>` sets your own, and Search GIPHY in the menu bar menu turns the row off |
+| Right-click a sticker | Copy, Add to Favourites / Remove from Favourites, Move To ▸ (Top Level, each folder of the library, New Folder…), Rename…, Show in Finder, Move to Trash. A move or rename never overwrites a file ("name 2"), and favourites and recents follow the file. Starter stickers listed from the app bundle only have Copy and Favourites |
 | The global shortcut again | Hide the panel |
 | Drag the search bar or the bottom bar | Move the panel. It snaps to the screen's centre lines and to its default height, with a guide line, and reopens where it was left (on the screen with the mouse, at the same relative place). Drag it back to the default spot to reset |
 
-Starter pack: F4 ships with 26 animated emoji GIFs (Google's Noto Animated Emoji, CC BY 4.0, downscaled) and 13 stickers drawn in code ("basito", "dai dai dai", "smarmella", "lol", "ship it", the F4 keycap...). They live inside F4.app. On the first launch with F4's own library, F4 copies them into it once (`GIFs/`, `Stickers/`), so they are ordinary files to move, rename or delete, and deleted ones do not come back. With a folder of the user's own they are listed read-only after the user's memes instead (GIFs in the GIFs tab, stickers in the Stickers tab), and "Show Starter Pack" in the menu bar menu hides them.
+Starter pack: F4 ships with 26 animated emoji (Google's Noto Animated Emoji, CC BY 4.0, downscaled) and 13 stickers drawn in code ("basito", "dai dai dai", "smarmella", "lol", "ship it", the F4 keycap...). They live inside F4.app. On the first launch with F4's own library, F4 copies them into it once (`Emoji/`, `F4/`; libraries seeded before 0.4 have them in `GIFs/` and `Stickers/`), so they are ordinary files to move, rename or delete, and deleted ones do not come back. With a folder of the user's own they are listed read-only after the user's stickers instead, and "Show Starter Pack" in the menu bar menu hides them.
 
-Order of results: with an empty search, favourites first under a "Favourites" heading (click the star in a meme's corner, or Command-D, to add or remove one), then, under "Everything else", recently copied memes (the last 30, most recent first), then the rest in folder order. While typing, the best matches come first (consecutive letters and word starts score higher), and equal matches keep that order. Only the selected or hovered GIF animates; the others show their first frame.
+Order of results: with an empty search, favourites first under a "Favourites" heading (click the star in a sticker's corner, or Command-D, to add or remove one), then, under "Everything else", recently copied stickers (the last 30, most recent first), then the rest in folder order. While typing, the best matches come first (consecutive letters and word starts score higher), and equal matches keep that order. Only the selected or hovered sticker animates; the others show their first frame.
 
 New, renamed or deleted files in the folder appear without a restart: F4 watches the folder with FSEvents.
 
-### How copying works, and why GIFs stay animated
+### How copying works, and why animated stickers stay animated
 
 F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and its raw bytes under the file's type (`com.compuserve.gif`, `public.png`, `public.jpeg`, `org.webmproject.webp`). It never puts a decoded image there, which would flatten a GIF to one frame. So Slack, Discord, Telegram, WhatsApp Desktop, Messages, Mail and most chat apps paste the animated GIF. An app that accepts only plain images may paste the first frame; that is the app's limit.
 
@@ -92,7 +92,7 @@ F4 puts the file itself on the clipboard: its file URL (`public.file-url`) and i
 
 F4 has no Settings window: like Maramao's, its menu bar menu holds the options. In order:
 
-Open F4 · Shortcut: (the current shortcut, as a reminder, or why macOS refused it) · Recent Memes (the last 5 copied, with a thumbnail; a click copies one again without opening the panel) · Open Meme Folder · Folders ▸ (New Folder…, then each folder of the library ▸ Rename…, Move to Trash, with a confirmation that counts its memes) · Packs ▸ (shown when F4 lists a pack: each pack is a switch: turning it on downloads the pack's GIFs and stickers from GIPHY's media host into `GIFs/<pack>` and `Stickers/<pack>` of the meme folder, never overwriting a file; turning it off moves those folders to the Trash after a confirmation) · Choose Meme Folder… · Options (below) · Check for Updates… (or "Update to Version x…" once Sparkle found one) · About F4 (credits) · Quit F4 (Command-Q). The icon is always shown; opening F4 again from Finder or Spotlight shows the panel, and `f4://settings` opens this menu under the pointer.
+Open F4 · Shortcut: (the current shortcut, as a reminder, or why macOS refused it) · Recent Stickers (the last 5 copied, with a thumbnail; a click copies one again without opening the panel) · Open Sticker Folder · Folders ▸ (New Folder…, then each folder of the library ▸ Rename…, Move to Trash, with a confirmation that counts its stickers) · Packs ▸ (shown when F4 lists a pack: each pack is a switch: turning it on downloads the pack's stickers from GIPHY's media host into a folder of the library named after the pack, never overwriting a file; turning it off moves that folder to the Trash after a confirmation) · Choose Sticker Folder… · Options (below) · Check for Updates… (or "Update to Version x…" once Sparkle found one) · About F4 (credits) · Quit F4 (Command-Q). The icon is always shown; opening F4 again from Finder or Spotlight shows the panel, and `f4://settings` opens this menu under the pointer.
 
 ### Options
 
@@ -100,8 +100,8 @@ Open F4 · Shortcut: (the current shortcut, as a reminder, or why macOS refused 
 | --- | --- | --- |
 | Paste After Copying | F4 presses Command-V in the front app for you | Off |
 | F4 Key Without fn | Shown when the shortcut is F4 and the Mac's top row sends media keys. F4 catches the Spotlight or Launchpad key with an event tap, which needs Accessibility; without it fn-F4 keeps working. Offered once in a window on the first launch | Off |
-| Show Starter Pack | The GIFs and stickers built into F4, after the user's memes; shown only with a folder other than F4's own library, which holds a copy of them | On |
-| Search GIPHY | The GIPHY row in the GIFs and Stickers tabs; shown only when the build has a GIPHY key | On |
+| Show Starter Pack | The stickers built into F4, after the user's own; shown only with a folder other than F4's own library, which holds a copy of them | On |
+| Search GIPHY | The GIPHY stickers row in the Stickers tab; shown only when the build has a GIPHY key | On |
 | Open at Login | A macOS login item | Off |
 | Shortcut ▸ | The global shortcut: F4 (fn F4 on a Mac keyboard), Option-Space, Control-Option-Space, Shift-Command-M or F5. A shortcut set in an older version stays listed | F4 |
 
@@ -111,7 +111,7 @@ Preferences are stored in the `com.kkratterf.f4` defaults domain (`~/Library/Pre
 
 ### Easter eggs
 
-The empty state draws the basito face in code. A file named `.basito.png`, `.basito.gif` or `.basito.jpg` in the meme folder replaces it with the user's own. Typing some lines from Boris, The Office and old internet memes in the search field, or the Konami code (up up down down left right left right B A) in the panel, shows a banner and sometimes does something to the grid. The list is in the source (`Sources/F4Core/EasterEggs.swift`); part of the fun is finding them, so do not recite them all unless asked.
+The empty state draws the basito face in code. A file named `.basito.png`, `.basito.gif` or `.basito.jpg` in the sticker folder replaces it with the user's own. Typing some lines from Boris, The Office and old internet memes in the search field, or the Konami code (up up down down left right left right B A) in the panel, shows a banner and sometimes does something to the grid. The list is in the source (`Sources/F4Core/EasterEggs.swift`); part of the fun is finding them, so do not recite them all unless asked.
 
 ### Raycast
 
@@ -126,10 +126,10 @@ Anything that can open a URL can drive F4: Shortcuts ("Open URLs"), Raycast or A
 | `f4://open` | Shows the panel |
 | `f4://search?q=this%20is%20fine` | Shows the panel with the search typed in |
 | `f4://copy?name=this%20is%20fine` | Copies the best match without showing the panel (beeps if nothing matches) |
-| `f4://reload` | Rescans the meme folder |
+| `f4://reload` | Rescans the sticker folder |
 | `f4://settings` | Opens the menu bar menu under the pointer, where the options are |
 
-- `f4://copy` copies the meme the panel would show first for that search: the best fuzzy match, with favourites and then recently copied memes winning a tie. It counts as a copy (it moves to the top of the recents) but never auto-pastes, even with auto-paste on. Nothing matches: F4 beeps and the clipboard is left alone.
+- `f4://copy` copies the sticker the panel would show first for that search: the best fuzzy match, with favourites and then recently copied stickers winning a tie. It counts as a copy (it moves to the top of the recents) but never auto-pastes, even with auto-paste on. Nothing matches: F4 beeps and the clipboard is left alone.
 - Commands are case-insensitive. `f4:open` and a trailing slash work too; `q` and `query` are accepted for search, `name`, `q` and `query` for copy.
 - If F4 is not running, the URL starts it and then does what it asks (a copy waits for the first folder scan, and shows nothing).
 - Unknown commands are ignored.
@@ -152,7 +152,7 @@ It quits F4, deletes `F4.app` and its settings (`defaults delete com.kkratterf.f
 
 - "Nothing happens when I press F4", or F4 opens Spotlight or Launchpad: on a Mac keyboard the top row sends media keys unless fn is held. Press fn-F4, or turn on "Use F1, F2, etc. keys as standard function keys" in System Settings > Keyboard > Keyboard Shortcuts > Function Keys, or turn on "Open F4 with the F4 key alone, without fn" in Settings > General (needs Accessibility), or record another shortcut in Settings > General (F4 reads that setting: when fn is needed, Settings shows this hint under the shortcut and the menu shows the shortcut as "fn F4"). Also check F4 is running (the F4 key icon in the menu bar); another app may already own the shortcut.
 - Upgrading from 0.2 or earlier: the old default was Command-Shift-M. A shortcut the user recorded themselves is kept; otherwise the new default, F4, applies.
-- "The panel says No memes yet": the folder is empty, missing, or holds only unsupported files. Open it from the menu (Open Meme Folder) or pick another with Choose Meme Folder….
+- "The panel says No stickers yet": the folder is empty, missing, or holds only unsupported files. Open it from the menu (Open Sticker Folder) or pick another with Choose Sticker Folder….
 - "The GIF pastes as a still image": the receiving app takes only images. Most chat apps paste the animation; try pasting into a message field rather than an image editor.
 - "Auto-paste does not paste": grant Accessibility to F4 in System Settings > Privacy & Security > Accessibility, then try again. After an update macOS may need the permission toggled off and on.
 - "macOS says F4 is damaged or cannot be verified": see First launch and Gatekeeper above.
@@ -177,9 +177,10 @@ open dist/F4.app
 ## What F4 does not do (yet)
 
 - No HEIC, PNG sequences or video files; those are planned. Animated WebP stickers show their first frame in the grid and still paste animated.
-- No cloud sync, no meme search on the internet, no bundled meme packs: F4 shows only the user's own files.
-- One meme folder at a time (with subfolders).
+- No cloud sync. Search on the internet is GIPHY stickers only, and packs are downloaded from links, never bundled: F4 shows only files in the user's library.
+- No import from WhatsApp yet: copy a sticker in WhatsApp (right-click → Copy) and press Command-V in the panel.
+- One sticker folder at a time (with subfolders).
 - No tags beyond folder names, no OCR of the text inside images.
-- No Shortcuts actions, command line tool or MCP server yet; they are planned. Until then scripts and AI agents use the `f4://` URLs above, the meme folder directly (it is a plain folder of files) or the Raycast extension.
+- No Shortcuts actions, command line tool or MCP server yet; they are planned. Until then scripts and AI agents use the `f4://` URLs above, the sticker folder directly (it is a plain folder of files) or the Raycast extension.
 
 The roadmap is the issue list, labelled by version: https://github.com/kkratterf/f4/issues

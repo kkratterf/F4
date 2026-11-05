@@ -3,20 +3,24 @@ import Foundation
 /// GIPHY search, as F4 uses it: requests and the parts of the response the
 /// panel needs. No networking here; the app sends the requests.
 public enum Giphy {
-    /// GIPHY's two catalogues, matching the panel's GIFs and Stickers tabs.
+    /// GIPHY's catalogues. F4 is a stickers app, so it searches stickers;
+    /// `gifs` stays for the request and response format.
     public enum Catalogue: String, Sendable {
         case gifs
         case stickers
     }
 
-    /// The catalogue a tab searches, or nil for a tab with no GIPHY row.
+    /// The catalogue a tab searches, or nil for a tab with no GIPHY row:
+    /// stickers under the user's own in the Stickers tab, nothing in Favourites.
     public static func catalogue(for tab: MemeTab) -> Catalogue? {
         switch tab {
-        case .all, .favourites: return nil
-        case .gifs: return .gifs
-        case .stickers: return .stickers
+        case .all: return .stickers
+        case .favourites: return nil
         }
     }
+
+    /// The folder of the library GIPHY stickers are saved in once copied or pinned.
+    public static let folder = "GIPHY"
 
     /// How many results the panel asks for: four rows of the grid.
     public static let pageSize = 20
@@ -82,9 +86,6 @@ public enum Giphy {
         /// Names the result once saved in the meme folder ("gifs-abc123"),
         /// so copying or pinning it again reuses the same file.
         public var saveKey: String { "\(catalogue.rawValue)-\(id)" }
-
-        /// The tab whose folder the result is saved in: GIFs or Stickers.
-        public var tab: MemeTab { catalogue == .stickers ? .stickers : .gifs }
 
         /// A file name for a pinned result: the title without GIPHY's
         /// " GIF by …" / " Sticker by …" tail ("happy dance").

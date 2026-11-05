@@ -143,16 +143,16 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         let recents = recentMemes().prefix(Self.recentCount)
         if !recents.isEmpty {
             items.append(.separator())
-            items.append(NSMenuItem.sectionHeader(title: String(localized: "Recent Memes")))
+            items.append(NSMenuItem.sectionHeader(title: String(localized: "Recent Stickers")))
             items.append(contentsOf: recents.map { recentItem($0) })
         }
         items.append(.separator())
-        items.append(item(String(localized: "Open Meme Folder")) { [weak self] in self?.onOpenFolder() })
+        items.append(item(String(localized: "Open Sticker Folder")) { [weak self] in self?.onOpenFolder() })
         items.append(foldersItem())
         if !packs.packs.isEmpty {
             items.append(packsItem())
         }
-        items.append(item(String(localized: "Choose Meme Folder…")) { [weak self] in self?.onChooseFolder() })
+        items.append(item(String(localized: "Choose Sticker Folder…")) { [weak self] in self?.onChooseFolder() })
         items.append(.separator())
         items.append(contentsOf: optionItems())
         items.append(.separator())
@@ -216,7 +216,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
                 self?.settings.showStarterPack.toggle()
             }
             starter.state = settings.showStarterPack ? .on : .off
-            starter.toolTip = String(localized: "The GIFs and stickers built into F4, listed after your memes.")
+            starter.toolTip = String(localized: "The stickers built into F4, listed after yours.")
             items.append(starter)
         }
 
@@ -225,7 +225,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
                 self?.settings.searchGiphy.toggle()
             }
             giphy.state = settings.searchGiphy ? .on : .off
-            giphy.toolTip = String(localized: "Searches GIPHY only while you are in the GIFs or Stickers tab of the open panel.")
+            giphy.toolTip = String(localized: "Searches GIPHY stickers only while the panel is open on the Stickers tab.")
             items.append(giphy)
         }
 
@@ -266,8 +266,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         return parent
     }
 
-    /// "Packs ▸ each pack", a switch: turning a pack on downloads its GIFs
-    /// and stickers into the meme folder (only then, never on its own);
+    /// "Packs ▸ each pack", a switch: turning a pack on downloads its
+    /// stickers into a folder of the library (only then, never on its own);
     /// turning it off moves them to the Trash, after a confirmation.
     private func packsItem() -> NSMenuItem {
         let submenu = NSMenu()
@@ -279,7 +279,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
             let entry = item(title) { [weak self] in
                 guard let self else { return }
                 if isOn {
-                    if organizer.trashFolders(pack.categories, named: pack.name) { packs.forget(pack) }
+                    if organizer.trashFolders([pack.category], named: pack.name) { packs.forget(pack) }
                 } else {
                     download(pack)
                 }
@@ -297,8 +297,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         packs.download(pack) { added, failed in
             let alert = NSAlert()
             alert.messageText = added == 1
-                ? String(localized: "Added 1 meme from \(pack.name)")
-                : String(localized: "Added \(String(added)) memes from \(pack.name)")
+                ? String(localized: "Added 1 sticker from \(pack.name)")
+                : String(localized: "Added \(String(added)) stickers from \(pack.name)")
             if failed > 0 {
                 alert.informativeText = String(localized: "\(String(failed)) could not be downloaded.")
             }
@@ -348,7 +348,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     /// The standard About panel, with the starter pack's credit (CC BY 4.0
     /// asks for it) and F4's promise about the network.
     private static func showAbout() {
-        let credits = String(localized: "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). GIF search powered by GIPHY. F4 goes online only for updates, GIPHY while you search it, and links you paste or drop.")
+        let credits = String(localized: "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). Sticker search powered by GIPHY. F4 goes online only for updates, GIPHY while you search it, links you paste or drop, and packs you turn on.")
         let options: [NSApplication.AboutPanelOptionKey: Any] = [
             .credits: NSAttributedString(
                 string: credits,

@@ -98,18 +98,19 @@ else
   echo "warning: Resources/AppIcon.icns missing, building without an icon" >&2
 fi
 
-# Starter pack (issue #92): what a new user sees before adding their own.
+# Starter pack (issue #92): what a new user sees before adding their own:
+# Emoji/ (animated emoji stickers) and F4/ (stickers drawn in code).
 # The GIFs are Google's Noto Animated Emoji (CC BY 4.0, credited in the app
 # and the README); the stickers are drawn in code. MemeLibrary copies them
 # once into F4's own library (~/Library/Application Support/F4/Memes).
 STARTER="$RES/Starter"
 rm -rf "$STARTER"
-mkdir -p "$STARTER/GIFs"
-ditto "$ROOT/Resources/Starter/GIFs" "$STARTER/GIFs"
-if ! swift "$ROOT/scripts/make-stickers.swift" "$STARTER/Stickers"; then
+mkdir -p "$STARTER/Emoji"
+ditto "$ROOT/Resources/Starter/GIFs" "$STARTER/Emoji"
+if ! swift "$ROOT/scripts/make-stickers.swift" "$STARTER/F4"; then
   echo "warning: could not draw the starter stickers, building without them" >&2
 fi
-echo "Starter pack: $(find "$STARTER/GIFs" -name '*.gif' | wc -l | tr -d ' ') GIFs, $(find "$STARTER" -path '*/Stickers/*.png' | wc -l | tr -d ' ') stickers"
+echo "Starter pack: $(find "$STARTER/Emoji" -name '*.gif' | wc -l | tr -d ' ') animated emoji, $(find "$STARTER/F4" -name '*.png' | wc -l | tr -d ' ') drawn stickers"
 
 # Content packs: GIPHY links only, never files. PackDownloader fetches them
 # into the meme folder when the user picks a pack in the menu bar's Packs.

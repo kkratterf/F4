@@ -18,31 +18,6 @@ final class MemeImportTests: XCTestCase {
         XCTAssertNil(MemeImport.kind(typeIdentifier: "public.tiff"))
     }
 
-    func testFolderFollowsTheTabThenTheKind() {
-        XCTAssertEqual(MemeImport.folder(for: .gif, tab: .all), "GIFs")
-        XCTAssertEqual(MemeImport.folder(for: .gif, tab: .gifs), "GIFs")
-        XCTAssertEqual(MemeImport.folder(for: .gif, tab: .stickers), "Stickers")
-        XCTAssertEqual(MemeImport.folder(for: .webp, tab: .gifs), "Stickers")
-        XCTAssertEqual(MemeImport.folder(for: .png, tab: .all), "Stickers")
-        XCTAssertNil(MemeImport.folder(for: .jpeg, tab: .all))
-        XCTAssertEqual(MemeImport.folder(for: .jpeg, tab: .stickers), "Stickers")
-    }
-
-    func testImportedMemesLandInTheTabTheyWereAddedFrom() {
-        for tab in MemeTab.allCases {
-            for kind in MemeKind.allCases {
-                let folder = MemeImport.folder(for: kind, tab: tab)
-                let url = URL(fileURLWithPath: "/m/\(folder.map { "\($0)/" } ?? "")x.\(kind.fileExtension)")
-                let meme = Meme(url: url, kind: kind, modificationDate: .distantPast, category: folder)
-                // Adding in Favourites also marks the meme as a favourite.
-                let favourites: Set<URL> = tab == .favourites ? [url] : []
-                if tab != .gifs || kind == .gif {
-                    XCTAssertTrue(tab.contains(meme, favourites: favourites), "\(kind) added in \(tab)")
-                }
-            }
-        }
-    }
-
     func testBaseNameIsASafeFileName() {
         XCTAssertEqual(MemeImport.baseName("this is fine"), "this is fine")
         XCTAssertEqual(MemeImport.baseName("a/b:c\\d"), "a b c d")

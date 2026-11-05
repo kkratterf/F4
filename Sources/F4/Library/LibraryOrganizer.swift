@@ -56,7 +56,7 @@ final class LibraryOrganizer {
     func newFolder() throws -> String? {
         guard let typed = prompt(
             title: String(localized: "New Folder"),
-            message: String(localized: "Folders work as categories: search finds a meme by its folder too."),
+            message: String(localized: "Folders work as categories: search finds a sticker by its folder too."),
             value: "",
             confirm: String(localized: "Create")
         ), let name = LibraryFolders.folderName(typed) else { return nil }
@@ -105,8 +105,8 @@ final class LibraryOrganizer {
         let alert = NSAlert()
         alert.messageText = String(localized: "Move “\(name)” to the Trash?")
         alert.informativeText = count == 1
-            ? String(localized: "The meme in it goes too. You can put it back from the Trash.")
-            : String(localized: "The \(String(count)) memes in it go too. You can put them back from the Trash.")
+            ? String(localized: "The sticker in it goes too. You can put it back from the Trash.")
+            : String(localized: "The \(String(count)) stickers in it go too. You can put them back from the Trash.")
         alert.addButton(withTitle: String(localized: "Move to Trash"))
         alert.addButton(withTitle: String(localized: "Cancel"))
         guard run(alert) == .alertFirstButtonReturn else { return false }
@@ -136,8 +136,8 @@ final class LibraryOrganizer {
 
     private func rename(_ meme: Meme) throws -> String? {
         guard let typed = prompt(
-            title: String(localized: "Rename Meme"),
-            message: String(localized: "Search finds a meme by its name, so name it the way you will look for it."),
+            title: String(localized: "Rename Sticker"),
+            message: String(localized: "Search finds a sticker by its name, so name it the way you will look for it."),
             value: meme.name,
             confirm: String(localized: "Rename")
         ) else { return nil }

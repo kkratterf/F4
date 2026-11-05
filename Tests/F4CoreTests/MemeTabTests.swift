@@ -12,29 +12,6 @@ final class MemeTabTests: XCTestCase {
         XCTAssertEqual(MemeTab.all.filter(memes), memes)
     }
 
-    func testGIFsAreGIFsOutsideTheStickersFolder() {
-        XCTAssertTrue(MemeTab.gifs.contains(meme("a.gif")))
-        XCTAssertTrue(MemeTab.gifs.contains(meme("a.gif", in: "reactions")))
-        XCTAssertFalse(MemeTab.gifs.contains(meme("a.gif", in: "Stickers")))
-        XCTAssertFalse(MemeTab.gifs.contains(meme("b.png")))
-        XCTAssertFalse(MemeTab.gifs.contains(meme("c.jpg")))
-    }
-
-    func testStickersArePNGWebPAndTheStickersFolder() {
-        XCTAssertTrue(MemeTab.stickers.contains(meme("b.png")))
-        XCTAssertTrue(MemeTab.stickers.contains(meme("d.webp", in: "whatsapp")))
-        XCTAssertTrue(MemeTab.stickers.contains(meme("a.gif", in: "Stickers")))
-        XCTAssertTrue(MemeTab.stickers.contains(meme("a.gif", in: "stickers/cats")))
-        XCTAssertTrue(MemeTab.stickers.contains(meme("c.jpg", in: "Stickers")))
-        XCTAssertFalse(MemeTab.stickers.contains(meme("a.gif", in: "old stickers")))
-        XCTAssertFalse(MemeTab.stickers.contains(meme("c.jpg")))
-    }
-
-    func testFilterKeepsOrder() {
-        let memes = [meme("z.png"), meme("a.gif"), meme("m.webp")]
-        XCTAssertEqual(MemeTab.stickers.filter(memes).map(\.name), ["z", "m"])
-    }
-
     func testFavouritesShowsOnlyFavourites() {
         let memes = [meme("a.gif"), meme("b.png"), meme("c.jpg", in: "old")]
         let favourites: Set<URL> = [memes[0].url, memes[2].url]
@@ -45,9 +22,8 @@ final class MemeTabTests: XCTestCase {
 
     func testNextWrapsAround() {
         XCTAssertEqual(MemeTab.all.next(), .favourites)
-        XCTAssertEqual(MemeTab.favourites.next(), .gifs)
-        XCTAssertEqual(MemeTab.stickers.next(), .all)
-        XCTAssertEqual(MemeTab.all.next(backwards: true), .stickers)
+        XCTAssertEqual(MemeTab.favourites.next(), .all)
+        XCTAssertEqual(MemeTab.all.next(backwards: true), .favourites)
         XCTAssertEqual(MemeTab.favourites.next(backwards: true), .all)
     }
 }

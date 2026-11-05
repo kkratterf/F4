@@ -2,7 +2,7 @@ import AppKit
 import F4Core
 import UniformTypeIdentifiers
 
-/// Adds memes to the meme folder from the panel: ⌘V, a drop, or the + button.
+/// Adds stickers to the library from the panel: ⌘V, a drop, or the + button.
 ///
 /// One reader serves the clipboard and drag and drop, since both hand over
 /// an `NSPasteboard`: files (Finder), promised files (apps that drag out a
@@ -48,13 +48,13 @@ enum MemeImporter {
         return false
     }
 
-    /// Saves what the pasteboard holds into the meme folder, in the subfolder
-    /// of `tab`, and returns the new files. Throws when there is nothing F4 can add.
-    static func importItems(from pasteboard: NSPasteboard, into folder: URL, tab: MemeTab) async throws -> [URL] {
+    /// Saves what the pasteboard holds into `folder` (the top of the
+    /// library) and returns the new files. Throws when there is nothing F4 can add.
+    static func importItems(from pasteboard: NSPasteboard, into folder: URL) async throws -> [URL] {
         // 1. Files, from Finder or any app that drags real files.
         let files = (pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL]) ?? []
         if !files.isEmpty {
-            let saved = try await copy(files.filter { MemeKind(url: $0) != nil }, into: folder, tab: tab)
+            let saved = try await copy(files.filter { MemeKind(url: $0) != nil }, into: folder)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -63,7 +63,7 @@ enum MemeImporter {
         if let receivers = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self]) as? [NSFilePromiseReceiver],
            !receivers.isEmpty {
             let received = try await receive(receivers)
-            let saved = try await copy(received.filter { MemeKind(url: $0) != nil }, into: folder, tab: tab)
+            let saved = try await copy(received.filter { MemeKind(url: $0) != nil }, into: folder)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -76,7 +76,7 @@ enum MemeImporter {
         if !images.isEmpty {
             var saved: [URL] = []
             for (data, kind) in images {
-                saved.append(try await write(data, kind: kind, name: defaultName(for: kind, tab: tab), into: folder, tab: tab))
+                saved.append(try await write(data, kind: kind, name: String(localized: "sticker"), into: folder))
             }
             return saved
         }
@@ -85,22 +85,22 @@ enum MemeImporter {
         let link = (pasteboard.readObjects(forClasses: [NSURL.self]) as? [URL])?.first { !$0.isFileURL }
             ?? pasteboard.string(forType: .string).flatMap(MemeImport.webURL(in:))
         if let link {
-            return [try await download(link, into: folder, tab: tab)]
+            return [try await download(link, into: folder)]
         }
         throw Failure.nothingToAdd
     }
 
     /// Copies files picked with the + button.
-    static func importFiles(_ urls: [URL], into folder: URL, tab: MemeTab) async throws -> [URL] {
-        let saved = try await copy(urls.filter { MemeKind(url: $0) != nil }, into: folder, tab: tab)
+    static func importFiles(_ urls: [URL], into folder: URL) async throws -> [URL] {
+        let saved = try await copy(urls.filter { MemeKind(url: $0) != nil }, into: folder)
         if saved.isEmpty { throw Failure.nothingToAdd }
         return saved
     }
 
-    /// Copies a downloaded GIPHY file into the meme folder under `name`.
-    static func pin(_ file: URL, name: String, into folder: URL, tab: MemeTab) async throws -> URL {
+    /// Copies a downloaded GIPHY file into `folder` under `name`.
+    static func pin(_ file: URL, name: String, into folder: URL) async throws -> URL {
         let kind = MemeKind(url: file) ?? .gif
-        let target = destination(for: kind, in: folder, tab: tab)
+        let target = folder
         return try await Task.detached(priority: .userInitiated) {
             try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
             let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
@@ -127,12 +127,6 @@ enum MemeImporter {
         return nil
     }
 
-    private static func defaultName(for kind: MemeKind, tab: MemeTab) -> String {
-        MemeImport.folder(for: kind, tab: tab) == MemeTab.stickersFolder
-            ? String(localized: "sticker")
-            : kind == .gif ? "gif" : "meme"
-    }
-
     private static func receive(_ receivers: [NSFilePromiseReceiver]) async throws -> [URL] {
         let destination = FileManager.default.temporaryDirectory
             .appendingPathComponent("F4-drop-\(UUID().uuidString)", isDirectory: true)
@@ -154,12 +148,8 @@ enum MemeImporter {
 
     // MARK: Writing
 
-    private static func destination(for kind: MemeKind, in folder: URL, tab: MemeTab) -> URL {
-        MemeImport.folder(for: kind, tab: tab).map { folder.appendingPathComponent($0, isDirectory: true) } ?? folder
-    }
-
-    private static func copy(_ files: [URL], into folder: URL, tab: MemeTab) async throws -> [URL] {
-        let jobs = files.compactMap { file in MemeKind(url: file).map { (file, $0, destination(for: $0, in: folder, tab: tab)) } }
+    private static func copy(_ files: [URL], into folder: URL) async throws -> [URL] {
+        let jobs = files.compactMap { file in MemeKind(url: file).map { (file, $0, folder) } }
         return try await Task.detached(priority: .userInitiated) {
             try jobs.map { file, kind, target in
                 try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
@@ -170,8 +160,8 @@ enum MemeImporter {
         }.value
     }
 
-    private static func write(_ data: Data, kind: MemeKind, name: String, into folder: URL, tab: MemeTab) async throws -> URL {
-        let target = destination(for: kind, in: folder, tab: tab)
+    private static func write(_ data: Data, kind: MemeKind, name: String, into folder: URL) async throws -> URL {
+        let target = folder
         return try await Task.detached(priority: .userInitiated) {
             try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
             let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
@@ -180,7 +170,7 @@ enum MemeImporter {
         }.value
     }
 
-    private static func download(_ link: URL, into folder: URL, tab: MemeTab) async throws -> URL {
+    private static func download(_ link: URL, into folder: URL) async throws -> URL {
         let giphy = MemeImport.giphyMedia(for: link)
         let source = giphy?.url ?? link
         let configuration = URLSessionConfiguration.ephemeral
@@ -204,7 +194,7 @@ enum MemeImporter {
         }
         guard let kind = MemeImport.kind(sniffing: data) else { throw Failure.nothingToAdd }
         let name = giphy?.name ?? MemeImport.suggestedName(for: source)
-        return try await write(data, kind: kind, name: name, into: folder, tab: tab)
+        return try await write(data, kind: kind, name: name, into: folder)
     }
 }
 

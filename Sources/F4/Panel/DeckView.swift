@@ -34,7 +34,7 @@ struct DeckView: View {
                     .font(.system(size: 20, weight: .medium))
                     .foregroundStyle(.secondary)
                 TextField(text: $model.query, prompt: Text("Search…")) {
-                    Text("Search memes")
+                    Text("Search stickers")
                 }
                     .textFieldStyle(.plain)
                     .font(.system(size: 24, weight: .regular))
@@ -178,7 +178,7 @@ struct DeckView: View {
     private var content: some View {
         if let error = library.error {
             ContentUnavailableView(
-                "Can't read the meme folder",
+                "Can't read the sticker folder",
                 systemImage: "exclamationmark.triangle",
                 description: Text(error)
             )
@@ -186,13 +186,13 @@ struct DeckView: View {
             ContentUnavailableView {
                 VStack(spacing: 10) {
                     BasitoFace(size: 120, custom: library.customBasito)
-                    Text("No memes yet")
+                    Text("No stickers yet")
                 }
             } description: {
                 VStack(spacing: 4) {
                     Text(verbatim: "F4. Basito.")
                         .fontWeight(.semibold)
-                    Text("Paste a GIF, a sticker or a link with ⌘V, drop files here, or click Add. They are saved in \(library.folder.path(percentEncoded: false)).")
+                    Text("Paste a sticker or a link with ⌘V, drop files here, or click Add. They are saved in \(library.folder.path(percentEncoded: false)).")
                 }
             }
         } else if model.results.isEmpty && model.webResults.isEmpty {
@@ -222,23 +222,11 @@ struct DeckView: View {
     @ViewBuilder
     private var emptyTab: some View {
         switch model.tab {
-        case .gifs:
-            ContentUnavailableView(
-                "No GIFs yet",
-                systemImage: "play.square.stack",
-                description: Text("Paste a GIF or a GIPHY link with ⌘V, drop one here, or click Add.")
-            )
-        case .stickers:
-            ContentUnavailableView(
-                "No stickers yet",
-                systemImage: "seal",
-                description: Text("In WhatsApp or Telegram, right-click a sticker and copy it, then press ⌘V here. Or drop stickers on the panel.")
-            )
         case .favourites:
             ContentUnavailableView(
                 "No favourites yet",
                 systemImage: "star",
-                description: Text("Click the star on a meme, or select it and press ⌘D, to keep it here. Do it again to remove it.")
+                description: Text("Click the star on a sticker, or select it and press ⌘D, to keep it here. Do it again to remove it.")
             )
         case .all:
             ContentUnavailableView.search(text: model.query)
@@ -396,7 +384,7 @@ private struct SectionHeader: View {
     }
 }
 
-/// All · Favourites · GIFs · Stickers, under the search field. Tab and ⌘1–4 switch too
+/// Stickers · Favourites, under the search field. Tab, ⌘1 and ⌘2 switch too
 /// (`PanelController`).
 private struct TabBar: View {
     @Binding var selection: MemeTab
@@ -428,16 +416,14 @@ private struct TabBar: View {
                     .font(.system(size: 12, weight: .semibold))
             }
             .buttonStyle(.borderless)
-            .help("Add GIFs and stickers. You can also paste them with ⌘V or drop them here.")
+            .help("Add stickers. You can also paste them with ⌘V or drop them here.")
         }
     }
 
     private static func title(_ tab: MemeTab) -> LocalizedStringKey {
         switch tab {
-        case .all: return "All"
+        case .all: return "Stickers"
         case .favourites: return "Favourites"
-        case .gifs: return "GIFs"
-        case .stickers: return "Stickers"
         }
     }
 }
