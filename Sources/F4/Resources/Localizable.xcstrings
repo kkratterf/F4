@@ -111,6 +111,16 @@
         }
       }
     },
+    "Animated": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animato"
+          }
+        }
+      }
+    },
     "Any sticker or image you can copy can live in F4. It takes three keys.": {
       "localizations": {
         "it": {
@@ -178,6 +188,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Copiato negli appunti"
+          }
+        }
+      }
+    },
+    "Copies the sticker": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia lo sticker"
           }
         }
       }
@@ -288,6 +308,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "F4 lo tiene come sticker. Una foto o un meme entra intero in un quadrato, senza tagli. ⌥⌘V lo tiene esattamente com'è."
+          }
+        }
+      }
+    },
+    "Favourite": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferito"
           }
         }
       }

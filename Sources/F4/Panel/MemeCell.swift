@@ -19,12 +19,27 @@ struct MemeCell: View {
     /// The star in the corner: adds or removes the favourite.
     var onToggleFavourite: (() -> Void)?
 
+    /// With Reduce Motion on, a selected GIF shows its first frame and
+    /// does not play. Copying it still copies the animation.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     @State private var image: CGImage?
     /// The full GIF, loaded only while the cell is selected.
     @State private var animation: NSImage?
 
     private var shouldAnimate: Bool {
-        meme.kind.isAnimated && isSelected
+        meme.kind.isAnimated && isSelected && !reduceMotion
+    }
+
+    /// What VoiceOver reads after the name: the folder, whether it is a
+    /// favourite and whether it moves ("Reazioni, Favourite, Animated").
+    private var accessibilityDetails: String {
+        var parts: [String] = []
+        if let category = meme.category { parts.append(category) }
+        if isFavourite { parts.append(String(localized: "Favourite")) }
+        if meme.kind.isAnimated { parts.append(String(localized: "Animated")) }
+        if !meme.tags.isEmpty { parts.append(MemeTags.text(meme.tags)) }
+        return parts.joined(separator: ", ")
     }
 
     var body: some View {
@@ -95,8 +110,15 @@ struct MemeCell: View {
             .contentShape(Rectangle())
             .help(meme.category.map { "\($0)/\(meme.name)" } ?? meme.name)
             .accessibilityElement()
-            .accessibilityLabel(meme.name)
+            .accessibilityLabel(Text(verbatim: meme.name))
+            .accessibilityValue(Text(verbatim: accessibilityDetails))
+            .accessibilityHint(Text("Copies the sticker"))
             .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+            .accessibilityAction(named: isFavourite
+                ? Text("Remove from Favourites")
+                : Text("Add to Favourites")) {
+                onToggleFavourite?()
+            }
             .task(id: meme) {
                 if let cached = ThumbnailCache.shared.cached(meme, maxPixelSize: Self.thumbnailPixels) {
                     image = cached
