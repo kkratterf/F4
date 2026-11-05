@@ -100,8 +100,8 @@ fi
 
 # Starter pack (issue #92): what a new user sees before adding their own.
 # The GIFs are Google's Noto Animated Emoji (CC BY 4.0, credited in the app
-# and the README); the stickers are drawn in code. They stay in
-# the bundle and are never copied into the user's meme folder.
+# and the README); the stickers are drawn in code. MemeLibrary copies them
+# once into F4's own library (~/Library/Application Support/F4/Memes).
 STARTER="$RES/Starter"
 rm -rf "$STARTER"
 mkdir -p "$STARTER/GIFs"
@@ -110,6 +110,10 @@ if ! swift "$ROOT/scripts/make-stickers.swift" "$STARTER/Stickers"; then
   echo "warning: could not draw the starter stickers, building without them" >&2
 fi
 echo "Starter pack: $(find "$STARTER/GIFs" -name '*.gif' | wc -l | tr -d ' ') GIFs, $(find "$STARTER" -path '*/Stickers/*.png' | wc -l | tr -d ' ') stickers"
+
+# Content packs: GIPHY links only, never files. PackDownloader fetches them
+# into the meme folder when the user picks a pack in the menu bar's Packs.
+cp "$ROOT/Resources/Packs/packs.json" "$RES/Packs.json"
 
 # Ad-hoc by default: enough to run locally, not notarized.
 SIGN_IDENTITY="${SIGN_IDENTITY:--}"

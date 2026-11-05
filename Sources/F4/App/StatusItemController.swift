@@ -33,6 +33,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let settings: AppSettings
     private let library: MemeLibrary
     private let organizer: LibraryOrganizer
+    private let packs: PackDownloader
     private let loginItem = LoginItem()
     private let onOpen: () -> Void
     private let onOpenFolder: () -> Void
@@ -51,6 +52,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         settings: AppSettings,
         library: MemeLibrary,
         organizer: LibraryOrganizer,
+        packs: PackDownloader,
         shortcut: String,
         recentMemes: @escaping () -> [Meme],
         onCopy: @escaping (Meme) -> Void,
@@ -61,6 +63,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         self.settings = settings
         self.library = library
         self.organizer = organizer
+        self.packs = packs
         self.recentMemes = recentMemes
         self.onCopy = onCopy
         self.onOpen = onOpen
@@ -146,6 +149,9 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         items.append(.separator())
         items.append(item(String(localized: "Open Meme Folder")) { [weak self] in self?.onOpenFolder() })
         items.append(foldersItem())
+        if !packs.packs.isEmpty {
+            items.append(packsItem())
+        }
         items.append(item(String(localized: "Choose Meme Folder…")) { [weak self] in self?.onChooseFolder() })
         items.append(.separator())
         items.append(contentsOf: optionItems())
@@ -258,6 +264,48 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         let parent = NSMenuItem(title: String(localized: "Folders"), action: nil, keyEquivalent: "")
         parent.submenu = submenu
         return parent
+    }
+
+    /// "Packs ▸ each pack", a switch: turning a pack on downloads its GIFs
+    /// and stickers into the meme folder (only then, never on its own);
+    /// turning it off moves them to the Trash, after a confirmation.
+    private func packsItem() -> NSMenuItem {
+        let submenu = NSMenu()
+        submenu.autoenablesItems = false
+        for pack in packs.packs {
+            let isDownloading = packs.downloading == pack.id
+            let title = isDownloading ? String(localized: "Downloading \(pack.name)…") : pack.name
+            let isOn = packs.downloaded.contains(pack.id)
+            let entry = item(title) { [weak self] in
+                guard let self else { return }
+                if isOn {
+                    if organizer.trashFolders(pack.categories, named: pack.name) { packs.forget(pack) }
+                } else {
+                    download(pack)
+                }
+            }
+            entry.state = isOn ? .on : .off
+            entry.isEnabled = packs.downloading == nil
+            submenu.addItem(entry)
+        }
+        let parent = NSMenuItem(title: String(localized: "Packs"), action: nil, keyEquivalent: "")
+        parent.submenu = submenu
+        return parent
+    }
+
+    private func download(_ pack: ContentPack) {
+        packs.download(pack) { added, failed in
+            let alert = NSAlert()
+            alert.messageText = added == 1
+                ? String(localized: "Added 1 meme from \(pack.name)")
+                : String(localized: "Added \(String(added)) memes from \(pack.name)")
+            if failed > 0 {
+                alert.informativeText = String(localized: "\(String(failed)) could not be downloaded.")
+            }
+            NSApp.activate(ignoringOtherApps: true)
+            alert.window.level = .modalPanel
+            alert.runModal()
+        }
     }
 
     /// "Allow Accessibility…": opens System Settings when an option needs it.

@@ -30,6 +30,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     )
     private let usage = UsageStore()
     private lazy var organizer = LibraryOrganizer(library: library, usage: usage)
+    private lazy var packs = PackDownloader(library: library)
     private lazy var f4KeyWelcome = F4KeyWelcomeWindowController(settings: settings) { [weak self] in
         self?.panel?.show()
     }
@@ -73,6 +74,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             settings: settings,
             library: library,
             organizer: organizer,
+            packs: packs,
             shortcut: settings.toggleShortcut.displayString,
             recentMemes: { [weak self] in self?.recentMemes() ?? [] },
             onCopy: { [weak self] meme in self?.panel?.pick(meme) },

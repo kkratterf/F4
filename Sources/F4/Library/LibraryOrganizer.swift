@@ -89,20 +89,33 @@ final class LibraryOrganizer {
     /// that says how many memes go with it.
     func trashFolder(_ category: String) {
         let url = LibraryFolders.url(of: category, in: library.folder)
-        let count = library.memes.filter { $0.category == category || $0.category?.hasPrefix(category + "/") == true }.count
+        trashFolders([category], named: url.lastPathComponent)
+    }
+
+    /// Moves `categories` to the Trash after one confirmation, titled with
+    /// `name`: a folder, or a pack's GIFs and Stickers folders. Returns
+    /// false when the user cancelled.
+    @discardableResult
+    func trashFolders(_ categories: [String], named name: String) -> Bool {
+        let urls = categories.map { LibraryFolders.url(of: $0, in: library.folder) }
+            .filter { FileManager.default.fileExists(atPath: $0.path) }
+        let count = library.memes.filter { meme in
+            categories.contains { meme.category == $0 || meme.category?.hasPrefix($0 + "/") == true }
+        }.count
         let alert = NSAlert()
-        alert.messageText = String(localized: "Move “\(url.lastPathComponent)” to the Trash?")
+        alert.messageText = String(localized: "Move “\(name)” to the Trash?")
         alert.informativeText = count == 1
             ? String(localized: "The meme in it goes too. You can put it back from the Trash.")
             : String(localized: "The \(String(count)) memes in it go too. You can put them back from the Trash.")
         alert.addButton(withTitle: String(localized: "Move to Trash"))
         alert.addButton(withTitle: String(localized: "Cancel"))
-        guard run(alert) == .alertFirstButtonReturn else { return }
+        guard run(alert) == .alertFirstButtonReturn else { return false }
         do {
-            try trash(url)
+            for url in urls { try trash(url) }
         } catch {
             show(error)
         }
+        return true
     }
 
     // MARK: Memes
