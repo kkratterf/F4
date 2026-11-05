@@ -15,6 +15,8 @@ struct DeckView: View {
     let onPinWeb: (Giphy.Result) -> Void
     /// The user drags the panel by its search bar or footer.
     let onDrag: (PanelDrag) -> Void
+    /// Move, rename or trash a meme from its right-click menu.
+    let onOrganize: (Meme, MemeAction) -> Void
 
     @FocusState private var searchFocused: Bool
     /// Degrees the panel content has spun for "do a barrel roll".
@@ -337,12 +339,25 @@ extension DeckView {
                 : LocalizedStringKey("Add to Favourites")) {
                 model.usage.toggleFavourite(meme)
             }
-            // Starter memes live inside the app bundle.
+            // Starter memes listed from the app bundle can't be changed.
             if !library.isStarter(meme) {
                 Divider()
+                Menu("Move To") {
+                    if meme.category != nil {
+                        Button("Top Level") { onOrganize(meme, .move(to: nil)) }
+                    }
+                    ForEach(library.folders.filter { $0 != meme.category }, id: \.self) { folder in
+                        Button(folder) { onOrganize(meme, .move(to: folder)) }
+                    }
+                    Divider()
+                    Button("New Folder…") { onOrganize(meme, .moveToNewFolder) }
+                }
+                Button("Rename…") { onOrganize(meme, .rename) }
                 Button("Show in Finder") {
                     NSWorkspace.shared.activateFileViewerSelecting([meme.url])
                 }
+                Divider()
+                Button("Move to Trash") { onOrganize(meme, .trash) }
             }
         }
     }

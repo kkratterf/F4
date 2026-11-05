@@ -121,6 +121,16 @@
         }
       }
     },
+    "Cancel": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla"
+          }
+        }
+      }
+    },
     "Check for Updates…": {
       "extractionState": "manual",
       "localizations": {
@@ -202,6 +212,16 @@
         }
       }
     },
+    "Create": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea"
+          }
+        }
+      }
+    },
     "Downloading from GIPHY…": {
       "localizations": {
         "it": {
@@ -262,6 +282,26 @@
         }
       }
     },
+    "Folders": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cartelle"
+          }
+        }
+      }
+    },
+    "Folders work as categories: search finds a meme by its folder too.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le cartelle fanno da categorie: la ricerca trova un meme anche dalla sua cartella."
+          }
+        }
+      }
+    },
     "From GIPHY": {
       "localizations": {
         "it": {
@@ -308,6 +348,86 @@
           "stringUnit": {
             "state": "translated",
             "value": "Più tardi"
+          }
+        }
+      }
+    },
+    "Move To": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sposta in"
+          }
+        }
+      }
+    },
+    "Move to Trash": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sposta nel Cestino"
+          }
+        }
+      }
+    },
+    "Move “%@” to the Trash?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spostare “%@” nel Cestino?"
+          }
+        }
+      }
+    },
+    "Moved %@ to the Trash": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ spostato nel Cestino"
+          }
+        }
+      }
+    },
+    "Moved to %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spostato in %@"
+          }
+        }
+      }
+    },
+    "Moved to the top level": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spostato fuori dalle cartelle"
+          }
+        }
+      }
+    },
+    "New Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova cartella"
+          }
+        }
+      }
+    },
+    "New Folder…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova cartella…"
           }
         }
       }
@@ -522,6 +642,66 @@
         }
       }
     },
+    "Rename": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinomina"
+          }
+        }
+      }
+    },
+    "Rename Folder": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinomina cartella"
+          }
+        }
+      }
+    },
+    "Rename Meme": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinomina meme"
+          }
+        }
+      }
+    },
+    "Renamed to %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinominato in %@"
+          }
+        }
+      }
+    },
+    "Rename…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rinomina…"
+          }
+        }
+      }
+    },
+    "Search finds a meme by its name, so name it the way you will look for it.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La ricerca trova un meme dal nome: chiamalo come lo cercherai."
+          }
+        }
+      }
+    },
     "Search GIPHY": {
       "localizations": {
         "it": {
@@ -632,6 +812,16 @@
         }
       }
     },
+    "The %@ memes in it go too. You can put them back from the Trash.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vanno anche i %@ meme che contiene. Puoi recuperarli dal Cestino."
+          }
+        }
+      }
+    },
     "The F4 key alone opens F4 instead of Spotlight or Launchpad. Needs Accessibility access; fn F4 always works.": {
       "localizations": {
         "it": {
@@ -652,12 +842,32 @@
         }
       }
     },
+    "The meme in it goes too. You can put it back from the Trash.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Va anche il meme che contiene. Puoi recuperarlo dal Cestino."
+          }
+        }
+      }
+    },
     "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). GIF search powered by GIPHY. F4 goes online only for updates, GIPHY while you search it, and links you paste or drop.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Il pacchetto iniziale usa le Noto Animated Emoji di Google (CC BY 4.0). Ricerca GIF powered by GIPHY. F4 va online solo per gli aggiornamenti, per GIPHY mentre lo cerchi e per i link che incolli o trascini."
+          }
+        }
+      }
+    },
+    "Top Level": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuori dalle cartelle"
           }
         }
       }

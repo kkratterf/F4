@@ -59,6 +59,30 @@ final class UsageStore: ObservableObject {
         defaults.set(savedWebMemes, forKey: Key.savedWebMemes)
     }
 
+    /// A meme or a folder was moved or renamed from `old` to `new`: the
+    /// favourites and recents in it follow, so organizing loses nothing.
+    func relocate(from old: URL, to new: URL) {
+        update { url in
+            guard let path = LibraryFolders.relocatedPath(url.path, from: old.path, to: new.path) else { return url }
+            return URL(fileURLWithPath: path)
+        }
+    }
+
+    /// A meme or a folder went to the Trash: drop what pointed into it.
+    func forget(_ url: URL) {
+        update { LibraryFolders.relocatedPath($0.path, from: url.path, to: "") == nil ? $0 : nil }
+    }
+
+    /// Maps every stored URL (nil drops it) and saves.
+    private func update(_ map: (URL) -> URL?) {
+        favourites = Set(favourites.compactMap(map))
+        recents = recents.compactMap(map)
+        savedWebMemes = savedWebMemes.compactMapValues { map(URL(fileURLWithPath: $0))?.path }
+        defaults.set(favourites.map(\.path).sorted(), forKey: Key.favourites)
+        defaults.set(recents.map(\.path), forKey: Key.recents)
+        defaults.set(savedWebMemes, forKey: Key.savedWebMemes)
+    }
+
     func recordCopy(_ meme: Meme) {
         recents = MemeOrdering.recording(meme.url, in: recents)
         defaults.set(recents.map(\.path), forKey: Key.recents)

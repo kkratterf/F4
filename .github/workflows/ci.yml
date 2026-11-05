@@ -69,7 +69,8 @@ jobs:
           /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$app"
           open "$app"
           sleep 6
-          # Copies a starter GIF without showing the panel, through Launch Services.
+          # Copies a starter GIF without showing the panel, through Launch
+          # Services: the copy F4 put in its own library on the first launch.
           printf 'nothing' | pbcopy
           open "f4://copy?name=clown"
           copied=""
@@ -81,8 +82,8 @@ jobs:
           pkill -x F4 || true
           echo "clipboard: $copied"
           case "$copied" in
-            */Starter/GIFs/clown.gif) ;;
-            *) echo "::error::f4://copy?name=clown did not copy the clown GIF"; exit 1 ;;
+            */Application%20Support/F4/Memes/GIFs/clown.gif) ;;
+            *) echo "::error::f4://copy?name=clown did not copy the clown GIF from F4's library"; exit 1 ;;
           esac
 
       - name: Upload F4.app

@@ -20,7 +20,7 @@
     {
       "name": "folder",
       "title": "Meme Folder",
-      "description": "The folder with your memes. Leave empty for ~/Pictures/Memes, the same folder the F4 app uses.",
+      "description": "The folder with your memes. Leave empty to use the same folder as the F4 app.",
       "type": "directory",
       "required": false
     },

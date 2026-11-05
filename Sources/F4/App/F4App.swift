@@ -23,8 +23,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var statusItem: StatusItemController?
     private let settings = AppSettings.shared
-    private lazy var library = MemeLibrary(folder: settings.memeFolder, showsStarterPack: settings.showStarterPack)
+    private lazy var library = MemeLibrary(
+        folder: settings.memeFolder,
+        showsStarterPack: settings.showStarterPack,
+        needsSeeding: !settings.didSeedLibrary
+    )
     private let usage = UsageStore()
+    private lazy var organizer = LibraryOrganizer(library: library, usage: usage)
     private lazy var f4KeyWelcome = F4KeyWelcomeWindowController(settings: settings) { [weak self] in
         self?.panel?.show()
     }
@@ -49,6 +54,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // No Dock icon and no menu bar of our own (also set via LSUIElement in the bundle).
         NSApp.setActivationPolicy(.accessory)
+        library.onSeeded = { [weak self] in self?.settings.didSeedLibrary = true }
         library.reload()
         settings.$memeFolder
             .dropFirst()
@@ -60,11 +66,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .removeDuplicates()
             .sink { [weak self] shows in self?.library.setShowsStarterPack(shows) }
             .store(in: &cancellables)
-        let panel = PanelController(library: library, usage: usage)
+        let panel = PanelController(library: library, usage: usage, organizer: organizer)
         self.panel = panel
         // Before the shortcut, so a shortcut macOS refuses shows in the menu.
         statusItem = StatusItemController(
             settings: settings,
+            library: library,
+            organizer: organizer,
             shortcut: settings.toggleShortcut.displayString,
             recentMemes: { [weak self] in self?.recentMemes() ?? [] },
             onCopy: { [weak self] meme in self?.panel?.pick(meme) },
