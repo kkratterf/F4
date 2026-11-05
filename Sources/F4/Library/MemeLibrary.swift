@@ -40,7 +40,7 @@ final class MemeLibrary: ObservableObject {
         return meme.url.standardizedFileURL.path.hasPrefix(starter.standardizedFileURL.path + "/")
     }
 
-    /// Shows or hides the starter pack (Settings).
+    /// Shows or hides the starter pack (Show Starter Pack in the menu).
     func setShowsStarterPack(_ shows: Bool) {
         guard shows != showsStarterPack else { return }
         showsStarterPack = shows

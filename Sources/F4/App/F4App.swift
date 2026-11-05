@@ -25,7 +25,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private let settings = AppSettings.shared
     private lazy var library = MemeLibrary(folder: settings.memeFolder, showsStarterPack: settings.showStarterPack)
     private let usage = UsageStore()
-    private lazy var settingsWindow = SettingsWindowController(settings: settings)
     private lazy var f4KeyWelcome = F4KeyWelcomeWindowController(settings: settings) { [weak self] in
         self?.panel?.show()
     }
@@ -63,8 +62,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .store(in: &cancellables)
         let panel = PanelController(library: library, usage: usage)
         self.panel = panel
-        registerToggleShortcut()
+        // Before the shortcut, so a shortcut macOS refuses shows in the menu.
         statusItem = StatusItemController(
+            settings: settings,
             shortcut: settings.toggleShortcut.displayString,
             recentMemes: { [weak self] in self?.recentMemes() ?? [] },
             onCopy: { [weak self] meme in self?.panel?.pick(meme) },
@@ -73,14 +73,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 guard let self else { return }
                 NSWorkspace.shared.open(self.library.folder)
             },
-            onSettings: { [weak self] in self?.settingsWindow.show() },
-            onCheckForUpdates: AppUpdater.shared.isAvailable
-                ? { AppUpdater.shared.checkForUpdates() }
-                : nil
+            onChooseFolder: { [weak self] in self?.chooseFolder() }
         )
-        settings.$showInMenuBar
-            .sink { [weak self] isOn in self?.statusItem?.isVisible = isOn }
-            .store(in: &cancellables)
+        registerToggleShortcut()
         startMediaF4Key()
         // Auto-update; a no-op until Info.plist has a real Sparkle public key.
         AppUpdater.shared.start()
@@ -162,7 +157,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         case .reload:
             library.reload()
         case .settings:
-            settingsWindow.show()
+            // F4 has no Settings window: its options are in the menu.
+            statusItem?.popUpAtPointer()
         }
     }
 
@@ -213,11 +209,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
         statusItem?.update(shortcut: combo.displayString)
         if registered {
-            settingsWindow.setShortcutError(nil)
+            statusItem?.setShortcutError(nil)
         } else {
             // Usually another app owns the combination.
             NSLog("F4: could not register %@, another app may be using it", combo.displayString)
-            settingsWindow.setShortcutError(String(localized: "\(combo.displayString) is taken by another app. Record a different shortcut."))
+            statusItem?.setShortcutError(String(localized: "\(combo.displayString) is taken by another app. Pick another shortcut."))
         }
     }
 
@@ -229,14 +225,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         return usage.recents.compactMap { byURL[$0] }
     }
 
-    /// Opening the app again while it runs shows the panel, or Settings when
-    /// the menu bar icon is hidden: otherwise there would be no way back to them.
+    /// Opening the app again while it runs (Finder, Spotlight) shows the panel.
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if settings.showInMenuBar {
-            panel?.show()
-        } else {
-            settingsWindow.show()
-        }
+        panel?.show()
         return false
+    }
+
+    /// "Choose Meme Folder…" in the menu: any folder on the Mac.
+    private func chooseFolder() {
+        let picker = NSOpenPanel()
+        picker.canChooseDirectories = true
+        picker.canChooseFiles = false
+        picker.canCreateDirectories = true
+        picker.allowsMultipleSelection = false
+        picker.directoryURL = settings.memeFolder
+        picker.prompt = String(localized: "Use Folder")
+        picker.message = String(localized: "Choose the folder with your memes")
+        // An accessory app must activate itself, or the picker opens behind the front app.
+        NSApp.activate(ignoringOtherApps: true)
+        if picker.runModal() == .OK, let url = picker.url {
+            settings.memeFolder = url
+        }
     }
 }

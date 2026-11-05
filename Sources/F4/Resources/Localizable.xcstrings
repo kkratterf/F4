@@ -1,12 +1,22 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "%@ is taken by another app. Record a different shortcut.": {
+    "%@ is taken by another app. Pick another shortcut.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ è già usata da un'altra app. Registra un'altra scorciatoia."
+            "value": "%@ è già usata da un'altra app. Scegline un'altra."
+          }
+        }
+      }
+    },
+    "About F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Informazioni su F4"
           }
         }
       }
@@ -81,6 +91,16 @@
         }
       }
     },
+    "Allow Accessibility…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consenti Accessibilità…"
+          }
+        }
+      }
+    },
     "Allow F4 in System Settings → General → Login Items.": {
       "localizations": {
         "it": {
@@ -91,33 +111,12 @@
         }
       }
     },
-    "Animated emoji from Google's Noto Emoji (CC BY 4.0) and F4's own stickers, listed after your memes. They stay inside the app and are never copied into your folder.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Emoji animate da Noto Emoji di Google (CC BY 4.0) e sticker di F4, elencati dopo i tuoi meme. Restano dentro l'app e non vengono mai copiati nella tua cartella."
-          }
-        }
-      }
-    },
     "Can't read the meme folder": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Non riesco a leggere la cartella dei meme"
-          }
-        }
-      }
-    },
-    "Check Now": {
-      "extractionState": "manual",
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Controlla ora"
           }
         }
       }
@@ -133,23 +132,22 @@
         }
       }
     },
-    "Check for updates automatically": {
-      "extractionState": "manual",
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Controlla gli aggiornamenti automaticamente"
-          }
-        }
-      }
-    },
     "Choose GIFs and stickers to add. F4 copies them into its own folder, so the originals can stay where they are.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Scegli le GIF e gli sticker da aggiungere. F4 li copia nella sua cartella, gli originali possono restare dove sono."
+          }
+        }
+      }
+    },
+    "Choose Meme Folder…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli la cartella dei meme…"
           }
         }
       }
@@ -164,32 +162,12 @@
         }
       }
     },
-    "Choose…": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli…"
-          }
-        }
-      }
-    },
     "Click the star on a meme, or select it and press ⌘D, to keep it here. Do it again to remove it.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Clicca la stella su un meme, o selezionalo e premi ⌘D, per tenerlo qui. Rifallo per toglierlo."
-          }
-        }
-      }
-    },
-    "Click to record a new shortcut": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fai clic per registrare una nuova scorciatoia"
           }
         }
       }
@@ -234,32 +212,12 @@
         }
       }
     },
-    "Esc to cancel": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Esc per annullare"
-          }
-        }
-      }
-    },
     "Everything else": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Tutto il resto"
-          }
-        }
-      }
-    },
-    "F4 Settings": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Impostazioni di F4"
           }
         }
       }
@@ -284,43 +242,12 @@
         }
       }
     },
-    "F4 needs Accessibility access to catch the F4 key before Spotlight or Launchpad. Until then, press fn F4.": {
+    "F4 Key Without fn": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "F4 ha bisogno dell'accesso ad Accessibilità per intercettare il tasto F4 prima di Spotlight o Launchpad. Fino ad allora, premi fn F4."
-          }
-        }
-      }
-    },
-    "F4 needs Accessibility access to press ⌘V for you. Until then it only copies.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "F4 ha bisogno dell'accesso Accessibilità per premere ⌘V al posto tuo. Fino ad allora copia e basta."
-          }
-        }
-      }
-    },
-    "F4 shows the GIF, PNG, JPEG and WebP files in this folder and its subfolders, and updates when you add or remove one. Subfolder names work as categories in search.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "F4 mostra i file GIF, PNG, JPEG e WebP di questa cartella e delle sue sottocartelle, e si aggiorna quando ne aggiungi o togli uno. I nomi delle sottocartelle funzionano come categorie nella ricerca."
-          }
-        }
-      }
-    },
-    "F4 updates itself: new versions are downloaded from the release feed and installed in one click. Besides this, F4 only goes online for GIPHY and to download a link you paste or drop.": {
-      "extractionState": "manual",
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "F4 si aggiorna da sola: le nuove versioni vengono scaricate dal feed delle release e installate in un clic. Oltre a questo, F4 va in rete solo per GIPHY e per scaricare un link che incolli o trascini."
+            "value": "Tasto F4 senza fn"
           }
         }
       }
@@ -331,16 +258,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preferiti"
-          }
-        }
-      }
-    },
-    "Folder": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cartella"
           }
         }
       }
@@ -361,26 +278,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "GIF"
-          }
-        }
-      }
-    },
-    "GIPHY": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "GIPHY"
-          }
-        }
-      }
-    },
-    "General": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Generali"
           }
         }
       }
@@ -411,16 +308,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Più tardi"
-          }
-        }
-      }
-    },
-    "Meme folder": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cartella dei meme"
           }
         }
       }
@@ -465,32 +352,22 @@
         }
       }
     },
-    "Off: F4 copies the meme and you paste it with ⌘V.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Disattivato: F4 copia il meme e tu lo incolli con ⌘V."
-          }
-        }
-      }
-    },
-    "On this Mac the F-keys control the system first, so hold fn with the key. To press it alone, turn on “Use F1, F2, etc. keys as standard function keys” in System Settings › Keyboard › Keyboard Shortcuts › Function Keys.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Su questo Mac i tasti F controllano prima il sistema, quindi tieni premuto fn insieme al tasto. Per premerlo da solo, attiva “Usa i tasti F1, F2 ecc. come tasti funzione standard” in Impostazioni di Sistema › Tastiera › Abbreviazioni da tastiera › Tasti funzione."
-          }
-        }
-      }
-    },
     "On this Mac the F4 key opens Spotlight or Launchpad, so for now F4 opens with fn F4.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Su questo Mac il tasto F4 apre Spotlight o Launchpad, quindi per ora F4 si apre con fn F4."
+          }
+        }
+      }
+    },
+    "Open at Login": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri al login"
           }
         }
       }
@@ -505,32 +382,12 @@
         }
       }
     },
-    "Open F4 at login": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri F4 all'avvio"
-          }
-        }
-      }
-    },
     "Open F4 with the F4 key": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Apri F4 con il tasto F4"
-          }
-        }
-      }
-    },
-    "Open F4 with the F4 key alone, without fn": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Apri F4 con il solo tasto F4, senza fn"
           }
         }
       }
@@ -565,12 +422,12 @@
         }
       }
     },
-    "Optional": {
+    "Options": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Facoltativa"
+            "value": "Opzioni"
           }
         }
       }
@@ -581,16 +438,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Oppure usa F1, F2, ecc. come tasti funzione standard in tutte le app"
-          }
-        }
-      }
-    },
-    "Paste": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Incolla"
           }
         }
       }
@@ -615,12 +462,12 @@
         }
       }
     },
-    "Paste into the front app after copying": {
+    "Paste After Copying": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Incolla nell'app in primo piano dopo la copia"
+            "value": "Incolla dopo la copia"
           }
         }
       }
@@ -635,22 +482,12 @@
         }
       }
     },
-    "Powered by GIPHY. F4 asks GIPHY only while you are in the GIFs or Stickers tab: trending when the search is empty, your search otherwise. Press ⌘D on a result to pin it to your folder as a favourite.": {
+    "Presses ⌘V in the front app after copying. Needs Accessibility access; without it F4 only copies.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Powered by GIPHY. F4 interroga GIPHY solo mentre sei nella scheda GIF o Sticker: le tendenze a ricerca vuota, la tua ricerca altrimenti. Premi ⌘D su un risultato per salvarlo nella tua cartella tra i preferiti."
-          }
-        }
-      }
-    },
-    "Press the shortcut…": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Premi la scorciatoia…"
+            "value": "Preme ⌘V nell'app in primo piano dopo la copia. Serve l'accesso Accessibilità; senza, F4 copia e basta."
           }
         }
       }
@@ -685,22 +522,12 @@
         }
       }
     },
-    "Reset": {
+    "Search GIPHY": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ripristina"
-          }
-        }
-      }
-    },
-    "Search GIPHY in the GIFs and Stickers tabs": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cerca su GIPHY nelle schede GIF e Sticker"
+            "value": "Cerca su GIPHY"
           }
         }
       }
@@ -715,6 +542,16 @@
         }
       }
     },
+    "Searches GIPHY only while you are in the GIFs or Stickers tab of the open panel.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca su GIPHY solo mentre sei nella scheda GIF o Sticker del pannello aperto."
+          }
+        }
+      }
+    },
     "Search…": {
       "localizations": {
         "it": {
@@ -725,12 +562,12 @@
         }
       }
     },
-    "Settings…": {
+    "Shortcut": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Impostazioni…"
+            "value": "Scorciatoia"
           }
         }
       }
@@ -745,26 +582,6 @@
         }
       }
     },
-    "Show F4 in the menu bar": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostra F4 nella barra dei menu"
-          }
-        }
-      }
-    },
-    "Show and hide F4": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Mostra e nascondi F4"
-          }
-        }
-      }
-    },
     "Show in Finder": {
       "localizations": {
         "it": {
@@ -775,12 +592,12 @@
         }
       }
     },
-    "Show the GIFs and stickers built into F4": {
+    "Show Starter Pack": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostra le GIF e gli sticker inclusi in F4"
+            "value": "Mostra il pacchetto iniziale"
           }
         }
       }
@@ -805,16 +622,6 @@
         }
       }
     },
-    "Starter pack": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Starter pack"
-          }
-        }
-      }
-    },
     "Stickers": {
       "localizations": {
         "it": {
@@ -825,32 +632,32 @@
         }
       }
     },
-    "The F4 key opens F4 instead of Spotlight or Launchpad. fn F4 works too.": {
+    "The F4 key alone opens F4 instead of Spotlight or Launchpad. Needs Accessibility access; fn F4 always works.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Il tasto F4 apre F4 invece di Spotlight o Launchpad. Funziona anche fn F4."
+            "value": "Il solo tasto F4 apre F4 invece di Spotlight o Launchpad. Serve l'accesso Accessibilità; fn F4 funziona sempre."
           }
         }
       }
     },
-    "This build has no GIPHY key. Create a free one at developers.giphy.com and paste it here to search GIPHY.": {
+    "The GIFs and stickers built into F4, listed after your memes.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Questa build non ha una chiave GIPHY. Creane una gratis su developers.giphy.com e incollala qui per cercare su GIPHY."
+            "value": "Le GIF e gli sticker inclusi in F4, dopo i tuoi meme."
           }
         }
       }
     },
-    "To get back here, open F4 again from Finder or Spotlight.": {
+    "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). GIF search powered by GIPHY. F4 goes online only for updates, GIPHY while you search it, and links you paste or drop.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Per tornare qui, riapri F4 dal Finder o da Spotlight."
+            "value": "Il pacchetto iniziale usa le Noto Animated Emoji di Google (CC BY 4.0). Ricerca GIF powered by GIPHY. F4 va online solo per gli aggiornamenti, per GIPHY mentre lo cerchi e per i link che incolli o trascini."
           }
         }
       }
@@ -865,23 +672,22 @@
         }
       }
     },
-    "Until then, or if you prefer not to, fn F4 opens F4. You can change this later in F4's Settings.": {
+    "Until then, or if you prefer not to, fn F4 opens F4. You can change this later in F4's menu (F4 Key Without fn).": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fino ad allora, o se preferisci non farlo, F4 si apre con fn F4. Puoi cambiare idea più tardi nelle Impostazioni di F4."
+            "value": "Fino ad allora, o se preferisci di no, F4 si apre con fn F4. Puoi cambiarlo dopo dal menu di F4 (Tasto F4 senza fn)."
           }
         }
       }
     },
-    "Updates": {
-      "extractionState": "manual",
+    "Update to Version %@…": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aggiornamenti"
+            "value": "Aggiorna alla versione %@…"
           }
         }
       }
@@ -906,32 +712,12 @@
         }
       }
     },
-    "Use ~/Pictures/Memes": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Usa ~/Immagini/Memes"
-          }
-        }
-      }
-    },
     "Welcome to F4": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Benvenuto in F4"
-          }
-        }
-      }
-    },
-    "Your API key": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "La tua chiave API"
           }
         }
       }
