@@ -100,10 +100,12 @@ struct MemeCell: View {
             .task(id: meme) {
                 if let cached = ThumbnailCache.shared.cached(meme, maxPixelSize: Self.thumbnailPixels) {
                     image = cached
+                    await MainActor.run { PanelTiming.thumbnailShown() }
                     return
                 }
                 image = nil
                 image = await ThumbnailCache.shared.thumbnail(for: meme, maxPixelSize: Self.thumbnailPixels)
+                if image != nil { await MainActor.run { PanelTiming.thumbnailShown() } }
             }
             .task(id: shouldAnimate) {
                 guard shouldAnimate else {
