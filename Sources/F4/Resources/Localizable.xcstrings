@@ -21,6 +21,16 @@
         }
       }
     },
+    "Actions": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Azioni"
+          }
+        }
+      }
+    },
     "Add": {
       "localizations": {
         "it": {
@@ -222,6 +232,16 @@
         }
       }
     },
+    "Each folder is a tab. ⌘K shows what you can do with a sticker, ⌘M moves it into a folder.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ogni cartella è una scheda. ⌘K mostra cosa puoi fare con uno sticker, ⌘M lo sposta in una cartella."
+          }
+        }
+      }
+    },
     "Everything else": {
       "localizations": {
         "it": {
@@ -238,6 +258,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "F4 può aggiungere solo immagini GIF, PNG, JPEG e WebP, e pacchetti di sticker di WhatsApp (.wastickers)."
+          }
+        }
+      }
+    },
+    "F4 comes with a few stickers to start. The rest is up to you: paste your own, import your WhatsApp packs, or switch on packs from Packs in the menu bar.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 arriva con qualche sticker per iniziare. Il resto lo porti tu: incolla i tuoi, importa i tuoi pack di WhatsApp o attiva dei pacchetti da Pacchetti nella barra dei menu."
           }
         }
       }
@@ -322,12 +352,32 @@
         }
       }
     },
+    "Move %@ to": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sposta %@ in"
+          }
+        }
+      }
+    },
     "Move To": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Sposta in"
+          }
+        }
+      }
+    },
+    "Move to Folder…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sposta in una cartella…"
           }
         }
       }
@@ -408,6 +458,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ancora nessun preferito"
+          }
+        }
+      }
+    },
+    "No matches": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nessun risultato"
           }
         }
       }
@@ -552,12 +612,12 @@
         }
       }
     },
-    "Right-click a sticker to move it into a folder. Folders become sections, and you can search them by name.": {
+    "Search actions": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Clic destro su uno sticker per spostarlo in una cartella. Le cartelle diventano sezioni e le puoi cercare per nome."
+            "value": "Cerca azioni"
           }
         }
       }

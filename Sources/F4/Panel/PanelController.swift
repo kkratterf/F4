@@ -27,6 +27,8 @@ final class PanelController: NSObject, NSWindowDelegate {
     private let usage: UsageStore
     /// The ⓘ button: shows how to add stickers.
     var onHelp: (() -> Void)?
+    /// ⌘K and ⌘M: the actions over the panel.
+    private let palette = ActionPalette()
     private let organizer: LibraryOrganizer
 
     init(library: MemeLibrary, usage: UsageStore, organizer: LibraryOrganizer) {
@@ -39,12 +41,14 @@ final class PanelController: NSObject, NSWindowDelegate {
         let deck = DeckView(
             model: model,
             library: library,
+            palette: palette,
             onPick: { [weak self] meme in self?.pick(meme) },
             onAdd: { [weak self] in self?.chooseFiles() },
             onHelp: { [weak self] in
                 self?.hide()
                 self?.onHelp?()
             },
+            onActions: { [weak self] in self?.openActions() },
             onDrag: { [weak self] drag in self?.drag(drag) },
             onOrganize: { [weak self] meme, action in self?.organize(meme, action) }
         )
@@ -80,10 +84,17 @@ final class PanelController: NSObject, NSWindowDelegate {
     /// Polls the mouse after the panel lost focus with a button down.
     private var mouseUpTimer: Timer?
 
+    /// Where new stickers go: the folder of the tab on screen, else the top
+    /// of the library.
+    private var targetFolder: URL {
+        guard let name = model.tab.folder else { return library.folder }
+        return library.folder.appendingPathComponent(name, isDirectory: true)
+    }
+
     /// Adds what the pasteboard holds (⌘V or a drop) to the meme folder,
     /// turning a still image into a sticker unless `convert` is false (⌥⌘V).
     private func add(from pasteboard: NSPasteboard, convert: Bool = true) {
-        let folder = library.folder
+        let folder = targetFolder
         isImporting = true
         Task {
             defer { isImporting = false }
@@ -125,7 +136,7 @@ final class PanelController: NSObject, NSWindowDelegate {
             self.panel.makeKeyAndOrderFront(nil)
             guard response == .OK else { return }
             let urls = picker.urls
-            let folder = self.library.folder
+            let folder = self.targetFolder
             Task {
                 do {
                     self.added(try await MemeImporter.importFiles(urls, into: folder))
@@ -195,6 +206,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     func hide() {
+        palette.close()
         mouseUpTimer?.invalidate()
         mouseUpTimer = nil
         stopArrowKeys()
@@ -212,15 +224,17 @@ final class PanelController: NSObject, NSWindowDelegate {
         guard keyMonitor == nil else { return }
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, event.window === self.panel else { return event }
+            if self.palette.isOpen { return self.paletteKey(event) ? nil : event }
             self.model.feedKonami(Self.konamiKey(for: event))
             if self.switchTab(for: event) { return nil }
+            if self.command(for: event) { return nil }
             if self.pasteMeme(for: event) { return nil }
             guard let direction = Self.direction(for: event) else { return event }
             return self.model.move(direction) ? nil : event
         }
     }
 
-    /// Tab / ⇧Tab switch between Stickers and Favourites; ⌘1 and ⌘2 jump to one. Returns true when
+    /// Tab / ⇧Tab cycle through Stickers, Favourites and the folder tabs; ⌘1…⌘9 jump to one. Returns true when
     /// the key was taken. The search field has no use for Tab here.
     private func switchTab(for event: NSEvent) -> Bool {
         let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
@@ -229,10 +243,103 @@ final class PanelController: NSObject, NSWindowDelegate {
             return true
         }
         guard modifiers == .command else { return false }
-        let tabs: [Int: MemeTab] = [kVK_ANSI_1: .all, kVK_ANSI_2: .favourites]
-        guard let tab = tabs[Int(event.keyCode)] else { return false }
-        model.tab = tab
+        let digits = [kVK_ANSI_1, kVK_ANSI_2, kVK_ANSI_3, kVK_ANSI_4, kVK_ANSI_5, kVK_ANSI_6, kVK_ANSI_7, kVK_ANSI_8, kVK_ANSI_9]
+        guard let index = digits.firstIndex(of: Int(event.keyCode)) else { return false }
+        model.selectTab(at: index)
         return true
+    }
+
+    // MARK: Actions
+
+    /// ⌘K actions, ⌘M move to a folder, ⌘D favourite, ⌘R rename and, with
+    /// an empty search field, ⌘⌫ to the Trash, on the selected sticker.
+    /// Returns true when the key was taken.
+    private func command(for event: NSEvent) -> Bool {
+        let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
+        guard modifiers == .command, let meme = model.selectedMeme else { return false }
+        let editable = !library.isStarter(meme)
+        switch Int(event.keyCode) {
+        case kVK_ANSI_K:
+            openActions()
+        case kVK_ANSI_D:
+            usage.toggleFavourite(meme)
+        case kVK_ANSI_M where editable:
+            openMoveTo(meme)
+        case kVK_ANSI_R where editable:
+            organize(meme, .rename)
+        case kVK_Delete where editable && model.query.isEmpty:
+            organize(meme, .trash)
+        default:
+            return false
+        }
+        return true
+    }
+
+    /// The keys while the palette is open: arrows move, Enter runs, Escape
+    /// and ⌘K close it; everything else types in its filter field.
+    private func paletteKey(_ event: NSEvent) -> Bool {
+        let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
+        switch Int(event.keyCode) {
+        case kVK_UpArrow: palette.move(by: -1)
+        case kVK_DownArrow: palette.move(by: 1)
+        case kVK_Return, kVK_ANSI_KeypadEnter: palette.runSelected()
+        case kVK_Escape: palette.close()
+        case kVK_ANSI_K where modifiers == .command: palette.close()
+        default: return false
+        }
+        return true
+    }
+
+    /// ⌘K: what can be done with the selected sticker.
+    private func openActions() {
+        guard let meme = model.selectedMeme else { return }
+        let favourite = usage.isFavourite(meme)
+        var items: [ActionPalette.Item] = [
+            .init(title: String(localized: "Copy"), systemImage: "doc.on.doc", shortcut: "↵") { [weak self] in
+                self?.pick(meme)
+            },
+            .init(
+                title: favourite ? String(localized: "Remove from Favourites") : String(localized: "Add to Favourites"),
+                systemImage: favourite ? "star.slash" : "star",
+                shortcut: "⌘D"
+            ) { [weak self] in self?.usage.toggleFavourite(meme) },
+        ]
+        if !library.isStarter(meme) {
+            items += [
+                .init(title: String(localized: "Move to Folder…"), systemImage: "folder", shortcut: "⌘M") { [weak self] in
+                    self?.openMoveTo(meme)
+                },
+                .init(title: String(localized: "Rename…"), systemImage: "pencil", shortcut: "⌘R") { [weak self] in
+                    self?.organize(meme, .rename)
+                },
+                .init(title: String(localized: "Show in Finder"), systemImage: "magnifyingglass") {
+                    NSWorkspace.shared.activateFileViewerSelecting([meme.url])
+                },
+                .init(title: String(localized: "Move to Trash"), systemImage: "trash", shortcut: "⌘⌫", isDestructive: true) { [weak self] in
+                    self?.organize(meme, .trash)
+                },
+            ]
+        }
+        palette.open(title: meme.name, items: items)
+    }
+
+    /// ⌘M: the folders the selected sticker can move to, filtered by typing.
+    private func openMoveTo(_ meme: Meme) {
+        var items: [ActionPalette.Item] = []
+        if meme.category != nil {
+            items.append(.init(title: String(localized: "Top Level"), systemImage: "tray") { [weak self] in
+                self?.organize(meme, .move(to: nil))
+            })
+        }
+        for folder in library.folders where folder != meme.category {
+            items.append(.init(title: folder, systemImage: "folder") { [weak self] in
+                self?.organize(meme, .move(to: folder))
+            })
+        }
+        items.append(.init(title: String(localized: "New Folder…"), systemImage: "folder.badge.plus") { [weak self] in
+            self?.organize(meme, .moveToNewFolder)
+        })
+        palette.open(title: String(localized: "Move \(meme.name) to"), items: items)
     }
 
     /// ⌘V with an empty search field and an image, an image file or a link

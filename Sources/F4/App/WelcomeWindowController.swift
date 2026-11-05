@@ -56,7 +56,8 @@ private struct WelcomeView: View {
             }
             Divider()
             VStack(alignment: .leading, spacing: 10) {
-                Label("Right-click a sticker to move it into a folder. Folders become sections, and you can search them by name.", systemImage: "folder")
+                Label("F4 comes with a few stickers to start. The rest is up to you: paste your own, import your WhatsApp packs, or switch on packs from Packs in the menu bar.", systemImage: "square.stack")
+                Label("Each folder is a tab. ⌘K shows what you can do with a sticker, ⌘M moves it into a folder.", systemImage: "folder")
                 Label("To send one: fn F4, type, Enter. It is copied: paste it with ⌘V wherever you want.", systemImage: "paperplane")
             }
             .foregroundStyle(.secondary)

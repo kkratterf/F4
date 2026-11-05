@@ -53,6 +53,15 @@ final class DeckModel: ObservableObject {
         self.usage = usage
         self.defaults = defaults
         tab = defaults.string(forKey: Self.tabKey).flatMap(MemeTab.init(rawValue:)) ?? .all
+        // A folder tab whose folder is gone (renamed, trashed) goes back to All.
+        library.$folders.dropFirst()
+            .sink { [weak self] folders in
+                Task { @MainActor in
+                    guard let self, !MemeTab.tabs(folders: folders).contains(self.tab) else { return }
+                    self.tab = .all
+                }
+            }
+            .store(in: &cancellables)
         // The publishers fire before the new value is stored; refresh on the next turn.
         library.$memes.dropFirst().map { _ in () }
             .merge(with: usage.$favourites.dropFirst().map { _ in () })
@@ -102,9 +111,18 @@ final class DeckModel: ObservableObject {
         refresh()
     }
 
+    /// The tabs: Stickers, Favourites, then one per top-level folder.
+    var tabs: [MemeTab] { MemeTab.tabs(folders: library.folders) }
+
     /// Tab and ⇧Tab: the next or previous tab.
     func cycleTab(backwards: Bool) {
-        tab = tab.next(backwards: backwards)
+        tab = tab.next(in: tabs, backwards: backwards)
+    }
+
+    /// ⌘1…⌘9: the tab at `index` (0 is Stickers), when there is one.
+    func selectTab(at index: Int) {
+        let tabs = tabs
+        if tabs.indices.contains(index) { tab = tabs[index] }
     }
 
     /// Feeds every key press in the panel to the Konami code detector.

@@ -21,9 +21,34 @@ final class MemeTabTests: XCTestCase {
     }
 
     func testNextWrapsAround() {
-        XCTAssertEqual(MemeTab.all.next(), .favourites)
-        XCTAssertEqual(MemeTab.favourites.next(), .all)
-        XCTAssertEqual(MemeTab.all.next(backwards: true), .favourites)
-        XCTAssertEqual(MemeTab.favourites.next(backwards: true), .all)
+        let tabs = MemeTab.tabs(folders: ["Boris"])
+        XCTAssertEqual(MemeTab.all.next(in: tabs), .favourites)
+        XCTAssertEqual(MemeTab.favourites.next(in: tabs), .folder("Boris"))
+        XCTAssertEqual(MemeTab.folder("Boris").next(in: tabs), .all)
+        XCTAssertEqual(MemeTab.all.next(in: tabs, backwards: true), .folder("Boris"))
+        XCTAssertEqual(MemeTab.folder("Gone").next(in: tabs), .all)
+    }
+
+    func testOneTabPerTopLevelFolder() {
+        XCTAssertEqual(
+            MemeTab.tabs(folders: ["Boris", "Boris/René", "Emoji", "Reactions/dogs"]),
+            [.all, .favourites, .folder("Boris"), .folder("Emoji"), .folder("Reactions")]
+        )
+        XCTAssertEqual(MemeTab.tabs(folders: []), [.all, .favourites])
+    }
+
+    func testAFolderTabShowsItsStickersAndSubfolders() {
+        let memes = [meme("a.png"), meme("b.png", in: "Boris"), meme("c.png", in: "Boris/René"), meme("d.png", in: "Borisone")]
+        XCTAssertEqual(MemeTab.folder("Boris").filter(memes).map(\.name), ["b", "c"])
+        XCTAssertEqual(MemeTab.folder("Boris").folder, "Boris")
+        XCTAssertNil(MemeTab.all.folder)
+    }
+
+    func testRawValueRoundTrips() {
+        for tab in [MemeTab.all, .favourites, .folder("Reazioni")] {
+            XCTAssertEqual(MemeTab(rawValue: tab.rawValue), tab)
+        }
+        XCTAssertNil(MemeTab(rawValue: "folder:"))
+        XCTAssertNil(MemeTab(rawValue: "gifs"))
     }
 }
