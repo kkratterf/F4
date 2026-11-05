@@ -52,12 +52,14 @@ enum MemeImporter {
     }
 
     /// Saves what the pasteboard holds into `folder` (the top of the
-    /// library) and returns the new files. Throws when there is nothing F4 can add.
-    static func importItems(from pasteboard: NSPasteboard, into folder: URL) async throws -> [URL] {
+    /// library) and returns the new files. Throws when there is nothing F4
+    /// can add. With `convert`, a still PNG or JPEG becomes a sticker
+    /// (`StickerConverter`): ⌥⌘V passes false to keep the image as it is.
+    static func importItems(from pasteboard: NSPasteboard, into folder: URL, convert: Bool = true) async throws -> [URL] {
         // 1. Files, from Finder or any app that drags real files.
         let files = (pasteboard.readObjects(forClasses: [NSURL.self], options: [.urlReadingFileURLsOnly: true]) as? [URL]) ?? []
         if !files.isEmpty {
-            let saved = try await copy(files.filter(isImportable), into: folder)
+            let saved = try await copy(files.filter(isImportable), into: folder, convert: convert)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -66,7 +68,7 @@ enum MemeImporter {
         if let receivers = pasteboard.readObjects(forClasses: [NSFilePromiseReceiver.self]) as? [NSFilePromiseReceiver],
            !receivers.isEmpty {
             let received = try await receive(receivers)
-            let saved = try await copy(received.filter(isImportable), into: folder)
+            let saved = try await copy(received.filter(isImportable), into: folder, convert: convert)
             if saved.isEmpty { throw Failure.nothingToAdd }
             return saved
         }
@@ -79,7 +81,7 @@ enum MemeImporter {
         if !images.isEmpty {
             var saved: [URL] = []
             for (data, kind) in images {
-                saved.append(try await write(data, kind: kind, name: String(localized: "sticker"), into: folder))
+                saved.append(try await write(data, kind: kind, name: String(localized: "sticker"), into: folder, convert: convert))
             }
             return saved
         }
@@ -88,14 +90,14 @@ enum MemeImporter {
         let link = (pasteboard.readObjects(forClasses: [NSURL.self]) as? [URL])?.first { !$0.isFileURL }
             ?? pasteboard.string(forType: .string).flatMap(MemeImport.webURL(in:))
         if let link {
-            return try await download(link, into: folder)
+            return try await download(link, into: folder, convert: convert)
         }
         throw Failure.nothingToAdd
     }
 
     /// Copies files picked with the + button.
     static func importFiles(_ urls: [URL], into folder: URL) async throws -> [URL] {
-        let saved = try await copy(urls.filter(isImportable), into: folder)
+        let saved = try await copy(urls.filter(isImportable), into: folder, convert: true)
         if saved.isEmpty { throw Failure.nothingToAdd }
         return saved
     }
@@ -144,13 +146,20 @@ enum MemeImporter {
 
     // MARK: Writing
 
-    private static func copy(_ files: [URL], into folder: URL) async throws -> [URL] {
+    private static func copy(_ files: [URL], into folder: URL, convert: Bool) async throws -> [URL] {
         let jobs = files.compactMap { file in MemeKind(url: file).map { (file, $0, folder) } }
         let archives = files.filter(StickerArchive.isArchive)
         return try await Task.detached(priority: .userInitiated) {
             let copied = try jobs.map { file, kind, target in
                 try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
-                let url = MemeImport.uniqueURL(name: file.deletingPathExtension().lastPathComponent, kind: kind, in: target)
+                let name = file.deletingPathExtension().lastPathComponent
+                if convert, Self.isConvertible(kind), let data = try? Data(contentsOf: file),
+                   let sticker = StickerConverter.sticker(from: data) {
+                    let url = MemeImport.uniqueURL(name: name, kind: .png, in: target)
+                    try sticker.write(to: url, options: .withoutOverwriting)
+                    return url
+                }
+                let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
                 try FileManager.default.copyItem(at: file, to: url)
                 return url
             }
@@ -158,14 +167,24 @@ enum MemeImporter {
         }.value
     }
 
-    private static func write(_ data: Data, kind: MemeKind, name: String, into folder: URL) async throws -> URL {
+    private static func write(_ data: Data, kind: MemeKind, name: String, into folder: URL, convert: Bool) async throws -> URL {
         let target = folder
         return try await Task.detached(priority: .userInitiated) {
+            var (data, kind) = (data, kind)
+            if convert, Self.isConvertible(kind), let sticker = StickerConverter.sticker(from: data) {
+                (data, kind) = (sticker, .png)
+            }
             try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
             let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
             try data.write(to: url, options: .withoutOverwriting)
             return url
         }.value
+    }
+
+    /// Still images the converter turns into stickers. GIFs and WebP
+    /// (WhatsApp's own sticker format, often animated) stay as they are.
+    nonisolated private static func isConvertible(_ kind: MemeKind) -> Bool {
+        kind == .png || kind == .jpeg
     }
 
     /// Unpacks a sticker pack file into a folder of the library named after
@@ -203,7 +222,7 @@ enum MemeImporter {
         }
     }
 
-    private static func download(_ link: URL, into folder: URL) async throws -> [URL] {
+    private static func download(_ link: URL, into folder: URL, convert: Bool) async throws -> [URL] {
         // A getstickerpack pack (its page or its "Add to WhatsApp" link):
         // the whole pack. A link to one of its files is just that sticker.
         if MemeKind(url: link) == nil, let slug = StickerPackLink.slug(from: link) {
@@ -241,7 +260,7 @@ enum MemeImporter {
         }
         guard let kind = MemeImport.kind(sniffing: data) else { throw Failure.nothingToAdd }
         let name = giphy?.name ?? MemeImport.suggestedName(for: source)
-        return [try await write(data, kind: kind, name: name, into: folder)]
+        return [try await write(data, kind: kind, name: name, into: folder, convert: convert)]
     }
 }
 

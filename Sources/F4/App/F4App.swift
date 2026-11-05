@@ -22,6 +22,7 @@ struct F4App: App {
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var statusItem: StatusItemController?
+    private lazy var welcome = WelcomeWindowController { [weak self] in self?.panel?.show() }
     private let settings = AppSettings.shared
     private lazy var library = MemeLibrary(
         folder: settings.memeFolder,
@@ -65,6 +66,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] shows in self?.library.setShowsStarterPack(shows) }
             .store(in: &cancellables)
         let panel = PanelController(library: library, usage: usage, organizer: organizer)
+        panel.onHelp = { [weak self] in self?.welcome.show() }
         self.panel = panel
         // Before the shortcut, so a shortcut macOS refuses shows in the menu.
         statusItem = StatusItemController(
@@ -75,7 +77,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             shortcut: settings.toggleShortcut.displayString,
             recentMemes: { [weak self] in self?.recentMemes() ?? [] },
             onCopy: { [weak self] meme in self?.panel?.pick(meme) },
-            onOpen: { [weak self] in self?.panel?.show() }
+            onOpen: { [weak self] in self?.panel?.show() },
+            onHelp: { [weak self] in self?.welcome.show() }
         )
         registerToggleShortcut()
         // F4 always starts at login: registered once, on the first launch.
@@ -83,7 +86,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // Auto-update; a no-op until Info.plist has a real Sparkle public key.
         AppUpdater.shared.start()
         hasLaunched = true
-        if pendingURLs.isEmpty {
+        if pendingURLs.isEmpty, !settings.didShowWelcome {
+            // The first launch explains how to add stickers; its button opens the panel.
+            settings.didShowWelcome = true
+            welcome.show()
+        } else if pendingURLs.isEmpty {
             // Opening the app from Finder or Spotlight shows the panel right away.
             panel.show()
         } else {

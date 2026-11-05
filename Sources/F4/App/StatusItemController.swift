@@ -8,7 +8,7 @@ import F4Core
 ///
 /// Sections, each between separators: open F4, the recent stickers, the
 /// folders and the packs (plus one option for a folder picked in an older
-/// version), updates and quit. The shortcut is always fn F4 and F4 always
+/// version), how to add stickers, updates and quit. The shortcut is always fn F4 and F4 always
 /// starts at login, so neither is an option. The menu is rebuilt every time it opens, so the
 /// recents and the checkmarks are always current.
 @MainActor
@@ -25,6 +25,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let organizer: LibraryOrganizer
     private let packs: PackDownloader
     private let onOpen: () -> Void
+    private let onHelp: () -> Void
     private let recentMemes: () -> [Meme]
     private let onCopy: (Meme) -> Void
     private var shortcut: String
@@ -43,7 +44,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         shortcut: String,
         recentMemes: @escaping () -> [Meme],
         onCopy: @escaping (Meme) -> Void,
-        onOpen: @escaping () -> Void
+        onOpen: @escaping () -> Void,
+        onHelp: @escaping () -> Void
     ) {
         self.settings = settings
         self.library = library
@@ -52,6 +54,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         self.recentMemes = recentMemes
         self.onCopy = onCopy
         self.onOpen = onOpen
+        self.onHelp = onHelp
         self.shortcut = shortcut
         super.init()
         menu.delegate = self
@@ -138,6 +141,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
             items.append(contentsOf: options)
         }
         items.append(.separator())
+        items.append(item(String(localized: "How to Add Stickers…")) { [weak self] in self?.onHelp() })
         let updater = AppUpdater.shared
         if updater.isAvailable {
             items.append(updateItem(updater))

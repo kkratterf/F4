@@ -25,6 +25,8 @@ final class PanelController: NSObject, NSWindowDelegate {
     private var didDrag = false
 
     private let usage: UsageStore
+    /// The ⓘ button: shows how to add stickers.
+    var onHelp: (() -> Void)?
     private let organizer: LibraryOrganizer
 
     init(library: MemeLibrary, usage: UsageStore, organizer: LibraryOrganizer) {
@@ -39,6 +41,10 @@ final class PanelController: NSObject, NSWindowDelegate {
             library: library,
             onPick: { [weak self] meme in self?.pick(meme) },
             onAdd: { [weak self] in self?.chooseFiles() },
+            onHelp: { [weak self] in
+                self?.hide()
+                self?.onHelp?()
+            },
             onDrag: { [weak self] drag in self?.drag(drag) },
             onOrganize: { [weak self] meme, action in self?.organize(meme, action) }
         )
@@ -74,14 +80,15 @@ final class PanelController: NSObject, NSWindowDelegate {
     /// Polls the mouse after the panel lost focus with a button down.
     private var mouseUpTimer: Timer?
 
-    /// Adds what the pasteboard holds (⌘V or a drop) to the meme folder.
-    private func add(from pasteboard: NSPasteboard) {
+    /// Adds what the pasteboard holds (⌘V or a drop) to the meme folder,
+    /// turning a still image into a sticker unless `convert` is false (⌥⌘V).
+    private func add(from pasteboard: NSPasteboard, convert: Bool = true) {
         let folder = library.folder
         isImporting = true
         Task {
             defer { isImporting = false }
             do {
-                let urls = try await MemeImporter.importItems(from: pasteboard, into: folder)
+                let urls = try await MemeImporter.importItems(from: pasteboard, into: folder, convert: convert)
                 added(urls)
             } catch {
                 failed(error)
@@ -229,14 +236,14 @@ final class PanelController: NSObject, NSWindowDelegate {
     }
 
     /// ⌘V with an empty search field and an image, an image file or a link
-    /// on the clipboard adds it to the meme folder. Otherwise the search
-    /// field pastes the text as usual.
+    /// on the clipboard adds it to the meme folder as a sticker; ⌥⌘V adds
+    /// the image as it is. Otherwise the search field pastes the text as usual.
     private func pasteMeme(for event: NSEvent) -> Bool {
         let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
-        guard modifiers == .command, Int(event.keyCode) == kVK_ANSI_V,
+        guard modifiers == .command || modifiers == [.command, .option], Int(event.keyCode) == kVK_ANSI_V,
               model.query.isEmpty, MemeImporter.canImport(.general)
         else { return false }
-        add(from: .general)
+        add(from: .general, convert: !modifiers.contains(.option))
         return true
     }
 

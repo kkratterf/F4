@@ -51,6 +51,16 @@
         }
       }
     },
+    "Add your stickers": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi i tuoi sticker"
+          }
+        }
+      }
+    },
     "Added %@ stickers from %@": {
       "localizations": {
         "it": {
@@ -87,6 +97,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiunto in %@"
+          }
+        }
+      }
+    },
+    "Any sticker or image you can copy can live in F4. It takes three keys.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qualsiasi sticker o immagine che puoi copiare può stare in F4. Bastano tre tasti."
           }
         }
       }
@@ -162,6 +182,16 @@
         }
       }
     },
+    "Copy a sticker or an image": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copia uno sticker o un'immagine"
+          }
+        }
+      }
+    },
     "Couldn't download the image: %@": {
       "localizations": {
         "it": {
@@ -212,6 +242,16 @@
         }
       }
     },
+    "F4 keeps it as a sticker. A photo or a meme is fitted into a square, whole, nothing cut. ⌥⌘V keeps it exactly as it is.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "F4 lo tiene come sticker. Una foto o un meme entra intero in un quadrato, senza tagli. ⌥⌘V lo tiene esattamente com'è."
+          }
+        }
+      }
+    },
     "Favourites": {
       "localizations": {
         "it": {
@@ -238,6 +278,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Le cartelle fanno da categorie: la ricerca trova uno sticker anche dalla sua cartella."
+          }
+        }
+      }
+    },
+    "From any app.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Da qualsiasi app."
+          }
+        }
+      }
+    },
+    "How to add stickers": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come aggiungere sticker"
+          }
+        }
+      }
+    },
+    "How to Add Stickers…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come aggiungere sticker…"
+          }
+        }
+      }
+    },
+    "In WhatsApp, right-click a sticker and choose Copy. Photos, pictures from a website and files in Finder work too.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Su WhatsApp, clic destro su uno sticker e scegli Copia. Funzionano anche le foto, le immagini di un sito e i file nel Finder."
           }
         }
       }
@@ -382,6 +462,16 @@
         }
       }
     },
+    "Paste it": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incollalo"
+          }
+        }
+      }
+    },
     "Quit F4": {
       "localizations": {
         "it": {
@@ -458,6 +548,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rinomina…"
+          }
+        }
+      }
+    },
+    "Right-click a sticker to move it into a folder. Folders become sections, and you can search them by name.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clic destro su uno sticker per spostarlo in una cartella. Le cartelle diventano sezioni e le puoi cercare per nome."
           }
         }
       }
@@ -572,6 +672,16 @@
         }
       }
     },
+    "To send one: fn F4, type, Enter. It is copied: paste it with ⌘V wherever you want.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Per mandarne uno: fn F4, scrivi, Invio. È copiato: incollalo con ⌘V dove vuoi."
+          }
+        }
+      }
+    },
     "Top Level": {
       "localizations": {
         "it": {
@@ -608,6 +718,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "il file supera i 50 MB"
+          }
+        }
+      }
+    },
+    "Welcome to F4": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benvenuto in F4"
           }
         }
       }
