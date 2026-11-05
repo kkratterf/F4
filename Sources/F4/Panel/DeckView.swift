@@ -9,6 +9,8 @@ struct DeckView: View {
     let onPick: (Meme) -> Void
     /// The + button: pick files to add.
     let onAdd: () -> Void
+    /// The ⓘ button: how to add stickers.
+    let onHelp: () -> Void
     /// The user drags the panel by its search bar or footer.
     let onDrag: (PanelDrag) -> Void
     /// Move, rename or trash a meme from its right-click menu.
@@ -45,7 +47,7 @@ struct DeckView: View {
             .padding(.vertical, 16)
             .background(WindowDragArea(onDrag: onDrag))
 
-            TabBar(selection: $model.tab, onAdd: onAdd)
+            TabBar(selection: $model.tab, onAdd: onAdd, onHelp: onHelp)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 10)
 
@@ -319,6 +321,7 @@ private struct SectionHeader: View {
 private struct TabBar: View {
     @Binding var selection: MemeTab
     let onAdd: () -> Void
+    let onHelp: () -> Void
 
     var body: some View {
         HStack(spacing: 4) {
@@ -347,6 +350,13 @@ private struct TabBar: View {
             }
             .buttonStyle(.borderless)
             .help("Add stickers. You can also paste them with ⌘V or drop them here.")
+            Button(action: onHelp) {
+                Image(systemName: "info.circle")
+                    .font(.system(size: 13, weight: .medium))
+            }
+            .buttonStyle(.borderless)
+            .help("How to add stickers")
+            .accessibilityLabel(Text("How to add stickers"))
         }
     }
 

@@ -10,6 +10,7 @@ final class AppSettings: ObservableObject {
         static let memeFolder = "memeFolderPath"
         static let showStarterPack = "showStarterPack"
         static let didSeedLibrary = "didSeedLibrary"
+        static let didShowWelcome = "didShowWelcome"
     }
 
     private let defaults: UserDefaults
@@ -31,6 +32,12 @@ final class AppSettings: ObservableObject {
     var didSeedLibrary: Bool {
         get { defaults.bool(forKey: Key.didSeedLibrary) }
         set { defaults.set(newValue, forKey: Key.didSeedLibrary) }
+    }
+
+    /// Whether "Add your stickers" was shown, on the first launch.
+    var didShowWelcome: Bool {
+        get { defaults.bool(forKey: Key.didShowWelcome) }
+        set { defaults.set(newValue, forKey: Key.didShowWelcome) }
     }
 
     /// Show the stickers built into F4 after the stickers of a folder

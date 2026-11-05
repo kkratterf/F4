@@ -28,7 +28,9 @@ jobs:
         run: swift build -c debug
 
       - name: Test
-        run: swift test
+        # StickerConverterTests keep the stickers they make next to the UI
+        # screenshots, so the converter's output can be looked at.
+        run: F4_STICKER_PREVIEW="$PWD/dist/ui" swift test
 
       - name: Build the app bundle
         run: scripts/build-app.sh release
@@ -87,16 +89,21 @@ jobs:
           esac
 
       - name: Screenshot the UI
-        # Opens the app as a user would and captures the screen: the panel,
-        # a search, the Copied toast and the menu bar menu. The pictures land on the
+        # Opens the app as a user would and captures the screen: the welcome
+        # window, the panel, a search, the Copied toast and the menu bar menu. The pictures land on the
         # ui-screenshots/pr-N branch (job below), so changes to the UI can
         # be looked at before a release. Best effort.
         continue-on-error: true
         run: |
           app="$PWD/dist/F4.app"
           mkdir -p dist/ui
+          # As on a first launch: the "Add your stickers" window.
+          defaults delete com.kkratterf.f4 didShowWelcome 2>/dev/null || true
           open "$app"
           sleep 6
+          screencapture -x dist/ui/0-welcome.png
+          open "f4://open"
+          sleep 3
           screencapture -x dist/ui/1-panel.png
           open "f4://search?q=clown"
           sleep 3
