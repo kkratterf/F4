@@ -2,7 +2,8 @@ import Foundation
 import F4Core
 
 /// Downloads a `ContentPack` (the Boris pack...) into the meme folder, when
-/// the user picks it in the menu bar's Packs submenu: never on its own.
+/// the user turns it on in the menu bar's Packs submenu: never on its own.
+/// Turning it off moves its folders to the Trash (`LibraryOrganizer`).
 ///
 /// Each GIF or sticker comes straight from GIPHY's media host, so no API key
 /// is needed. Files already in the pack's folder are skipped, so downloading
@@ -51,6 +52,12 @@ final class PackDownloader: ObservableObject {
             library.reload()
             done(added, failed)
         }
+    }
+
+    /// Marks `pack` as off, once its folders went to the Trash.
+    func forget(_ pack: ContentPack) {
+        downloaded.remove(pack.id)
+        defaults.set(downloaded.sorted(), forKey: Self.downloadedKey)
     }
 
     /// Four downloads at a time, each written next to its siblings.

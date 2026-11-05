@@ -74,7 +74,7 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 
 F4 has no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
 
-- **Open Meme Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Packs ▸** (when F4 lists a pack: a click downloads its GIFs and stickers from GIPHY into your folder, and again only fetches what is missing) and **Choose Meme Folder…**
+- **Open Meme Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its GIFs and stickers from GIPHY into your folder, off moves them to the Trash) and **Choose Meme Folder…**
 - **Paste After Copying**: F4 presses ⌘V in the front app for you (needs Accessibility).
 - **F4 Key Without fn**: on a Mac keyboard, the F4 key alone opens F4 instead of Spotlight or Launchpad (needs Accessibility; fn F4 always works).
 - **Search GIPHY** and **Open at Login**, plus **Show Starter Pack** when you use a folder of your own.

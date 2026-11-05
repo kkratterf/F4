@@ -23,6 +23,17 @@ final class ContentPackTests: XCTestCase {
         ])
     }
 
+    func testCategoriesAreThePacksFolders() {
+        let pack = ContentPack(
+            id: "boris",
+            name: "Boris",
+            gifs: ["https://giphy.com/gifs/a-AbC1", "https://giphy.com/gifs/b-AbC2"],
+            stickers: ["https://giphy.com/stickers/c-XyZ7"]
+        )
+        XCTAssertEqual(pack.categories, ["GIFs/Boris", "Stickers/Boris"])
+        XCTAssertEqual(ContentPack(id: "s", name: "S", stickers: ["https://giphy.com/stickers/c-XyZ7"]).categories, ["Stickers/S"])
+    }
+
     func testParsesThePacksFileAndSkipsEmptyPacks() throws {
         let json = """
         {"packs": [

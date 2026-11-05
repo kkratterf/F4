@@ -266,17 +266,25 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         return parent
     }
 
-    /// "Packs ▸ each pack": downloads its GIFs and stickers into the meme
-    /// folder, only when the user picks it. A checkmark marks a pack
-    /// already downloaded; picking it again fetches only what is missing.
+    /// "Packs ▸ each pack", a switch: turning a pack on downloads its GIFs
+    /// and stickers into the meme folder (only then, never on its own);
+    /// turning it off moves them to the Trash, after a confirmation.
     private func packsItem() -> NSMenuItem {
         let submenu = NSMenu()
         submenu.autoenablesItems = false
         for pack in packs.packs {
             let isDownloading = packs.downloading == pack.id
             let title = isDownloading ? String(localized: "Downloading \(pack.name)…") : pack.name
-            let entry = item(title) { [weak self] in self?.download(pack) }
-            entry.state = packs.downloaded.contains(pack.id) ? .on : .off
+            let isOn = packs.downloaded.contains(pack.id)
+            let entry = item(title) { [weak self] in
+                guard let self else { return }
+                if isOn {
+                    if organizer.trashFolders(pack.categories, named: pack.name) { packs.forget(pack) }
+                } else {
+                    download(pack)
+                }
+            }
+            entry.state = isOn ? .on : .off
             entry.isEnabled = packs.downloading == nil
             submenu.addItem(entry)
         }
@@ -292,7 +300,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
                 ? String(localized: "Added 1 meme from \(pack.name)")
                 : String(localized: "Added \(String(added)) memes from \(pack.name)")
             if failed > 0 {
-                alert.informativeText = String(localized: "\(String(failed)) could not be downloaded. Pick the pack again to retry.")
+                alert.informativeText = String(localized: "\(String(failed)) could not be downloaded.")
             }
             NSApp.activate(ignoringOtherApps: true)
             alert.window.level = .modalPanel

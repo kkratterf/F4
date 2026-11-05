@@ -1,12 +1,12 @@
 {
   "sourceLanguage": "en",
   "strings": {
-    "%@ could not be downloaded. Pick the pack again to retry.": {
+    "%@ could not be downloaded.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ non si sono potuti scaricare. Scegli di nuovo il pacchetto per riprovare."
+            "value": "%@ non si sono potuti scaricare."
           }
         }
       }

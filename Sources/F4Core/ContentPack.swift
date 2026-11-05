@@ -42,6 +42,14 @@ public struct ContentPack: Codable, Equatable, Sendable {
         public let name: String
     }
 
+    /// The library folders the pack fills (`GIFs/Boris`, `Stickers/Boris`):
+    /// what turning it off moves to the Trash.
+    public var categories: [String] {
+        var seen: [String] = []
+        for item in items where !seen.contains(item.category) { seen.append(item.category) }
+        return seen
+    }
+
     /// The pack's files, GIFs first. Links that are not GIPHY page links
     /// are skipped.
     public var items: [Item] {
