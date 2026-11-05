@@ -83,6 +83,18 @@ final class DeckModel: ObservableObject {
         results.indices.contains(selection) ? results[selection] : nil
     }
 
+    /// Where the mouse was the last time it moved over a cell.
+    private var pointer: CGPoint?
+
+    /// The mouse moved over the cell at `index`: it becomes the selection,
+    /// as in Raycast. Only when the mouse itself moved, so a grid that the
+    /// arrow keys scroll under a still pointer keeps the keyboard's choice.
+    func pointerMoved(to location: CGPoint, over index: Int) {
+        defer { pointer = location }
+        guard let pointer, pointer != location, results.indices.contains(index) else { return }
+        selection = index
+    }
+
     /// Moves the selection in the grid. Returns false when there is nothing to select.
     @discardableResult
     func move(_ direction: GridDirection) -> Bool {
@@ -139,6 +151,7 @@ final class DeckModel: ObservableObject {
         konamiActive = false
         if query.isEmpty { refresh() } else { query = "" }
         selection = 0
+        pointer = nil
         openCount += 1
     }
 
@@ -184,6 +197,10 @@ final class DeckModel: ObservableObject {
         }
         if keepSelection, let selected, let index = results.firstIndex(of: selected) {
             selection = index
+        } else if keepSelection, selected != nil, !results.isEmpty {
+            // The selected meme left this tab (unfavourited in Favourites,
+            // moved out of a folder): stay where it was.
+            selection = min(selection, results.count - 1)
         } else if egg?.effect == .randomPick, !results.isEmpty {
             selection = Int.random(in: results.indices)
         } else {

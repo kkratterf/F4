@@ -1,3 +1,4 @@
+import AppKit
 import F4Core
 import SwiftUI
 
@@ -102,6 +103,8 @@ struct DeckView: View {
         .onAppear { searchFocused = true }
         .onChange(of: model.openCount) { searchFocused = true }
         .onChange(of: palette.isOpen) { if !palette.isOpen { searchFocused = true } }
+        // A click on a tab must not leave the search field without focus.
+        .onChange(of: model.tab) { searchFocused = true }
         .onChange(of: model.easterEgg) {
             if model.easterEgg?.effect == .barrelRoll {
                 withAnimation(.easeInOut(duration: 1.1)) { roll += 360 }
@@ -262,7 +265,9 @@ struct DeckView: View {
                 }
                 .padding(14)
             }
-            .onChange(of: model.selection) {
+            // On the meme rather than the index: after a tab switch the
+            // index stays 0 but the grid holds other memes.
+            .onChange(of: model.selectedMeme?.id) {
                 if let meme = model.selectedMeme {
                     proxy.scrollTo(meme.id)
                 }
@@ -287,6 +292,9 @@ extension DeckView {
             onToggleFavourite: { model.usage.toggleFavourite(meme) }
         )
         .id(meme.id)
+        .onContinuousHover { phase in
+            if case .active = phase { model.pointerMoved(to: NSEvent.mouseLocation, over: index) }
+        }
         .onTapGesture { onPick(meme) }
         .contextMenu {
             Button("Copy") { onPick(meme) }

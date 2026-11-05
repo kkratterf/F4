@@ -38,7 +38,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | | |
 | --- | --- |
 | 🎞️ **Animated stickers stay animated** | F4 writes the file URL (`public.file-url`) and the raw bytes under the file's UTI, never a decoded `NSImage`, so apps paste the animation. PNG, WebP (WhatsApp and Telegram's format), GIF and JPEG all work as stickers. |
-| ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the hovered or selected sticker animates. |
+| ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the selected sticker animates (moving the mouse over one selects it). |
 | 🔎 **Fuzzy search** | Type a few letters of the name or the folder: "tif" finds "this is fine". Favourites (click the star on a sticker, or ⌘D) get their own section on top and their own tab; each top-level folder gets a tab too (Tab cycles, ⌘1…⌘9 jump), then the ones you used last. |
 | 📦 **Packs you switch on** | The menu bar's **Packs** lists sticker packs: switch one on and F4 downloads it into a folder of your library, switch it off and it goes to the Trash. F4 ships only the list of links, never the files, and downloads nothing until you switch a pack on. |
 | 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji (`Emoji/`) and its own stickers (`F4/`: "basito", "dai dai dai", the F4 keycap...), copied into F4's library on the first launch, so they are yours to move, rename or delete. With a folder of your own they are listed after your stickers instead (Show Starter Pack in the menu bar). |

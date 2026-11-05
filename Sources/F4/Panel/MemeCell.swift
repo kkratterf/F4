@@ -6,7 +6,9 @@ import SwiftUI
 ///
 /// Shows the cached thumbnail at once if there is one, otherwise decodes it
 /// in the background (`ThumbnailCache`). Thumbnails are static: a GIF shows
-/// its first frame, and plays only while the cell is hovered or selected.
+/// its first frame, and plays only while the cell is selected. The mouse
+/// selects the cell it moves over (`DeckModel.pointerMoved`), so there is
+/// one highlighted cell, never a hovered one and a selected one.
 struct MemeCell: View {
     /// Pixels for a 128 pt cell on a Retina display.
     static let thumbnailPixels = 256
@@ -18,12 +20,11 @@ struct MemeCell: View {
     var onToggleFavourite: (() -> Void)?
 
     @State private var image: CGImage?
-    @State private var isHovered = false
-    /// The full GIF, loaded only while the cell is hovered or selected.
+    /// The full GIF, loaded only while the cell is selected.
     @State private var animation: NSImage?
 
     private var shouldAnimate: Bool {
-        meme.kind.isAnimated && (isHovered || isSelected)
+        meme.kind.isAnimated && isSelected
     }
 
     var body: some View {
@@ -41,7 +42,7 @@ struct MemeCell: View {
                 }
             }
             .overlay(alignment: .bottom) {
-                if isHovered || isSelected {
+                if isSelected {
                     Text(meme.name)
                         .font(.caption)
                         .lineLimit(1)
@@ -63,9 +64,9 @@ struct MemeCell: View {
                 }
             }
             .overlay(alignment: .topLeading) {
-                // Always there on a favourite, on hover otherwise: a click
-                // adds or removes the favourite without copying the meme.
-                if isFavourite || isHovered {
+                // Always there on a favourite, on the selected cell otherwise:
+                // a click adds or removes the favourite without copying the meme.
+                if isFavourite || isSelected {
                     Button {
                         onToggleFavourite?()
                     } label: {
@@ -92,7 +93,6 @@ struct MemeCell: View {
                     .strokeBorder(isSelected ? Color.accentColor : .clear, lineWidth: 3)
             }
             .contentShape(Rectangle())
-            .onHover { isHovered = $0 }
             .help(meme.category.map { "\($0)/\(meme.name)" } ?? meme.name)
             .accessibilityElement()
             .accessibilityLabel(meme.name)
