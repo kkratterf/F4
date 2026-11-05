@@ -3,8 +3,8 @@ import SwiftUI
 
 /// Plays an animated GIF with `NSImageView`, which drives the frames itself.
 ///
-/// Only the hovered or selected cell uses it, so at most a couple of GIFs
-/// animate at once; every other cell stays a static thumbnail.
+/// Only the selected cell uses it, so at most one GIF
+/// animates at once; every other cell stays a static thumbnail.
 struct AnimatedImageView: NSViewRepresentable {
     let image: NSImage
 

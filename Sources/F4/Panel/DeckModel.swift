@@ -53,6 +53,15 @@ final class DeckModel: ObservableObject {
         self.usage = usage
         self.defaults = defaults
         tab = defaults.string(forKey: Self.tabKey).flatMap(MemeTab.init(rawValue:)) ?? .all
+        // A folder tab whose folder is gone (renamed, trashed) goes back to All.
+        library.$folders.dropFirst()
+            .sink { [weak self] folders in
+                Task { @MainActor in
+                    guard let self, !MemeTab.tabs(folders: folders).contains(self.tab) else { return }
+                    self.tab = .all
+                }
+            }
+            .store(in: &cancellables)
         // The publishers fire before the new value is stored; refresh on the next turn.
         library.$memes.dropFirst().map { _ in () }
             .merge(with: usage.$favourites.dropFirst().map { _ in () })
@@ -72,6 +81,18 @@ final class DeckModel: ObservableObject {
 
     var selectedMeme: Meme? {
         results.indices.contains(selection) ? results[selection] : nil
+    }
+
+    /// Where the mouse was the last time it moved over a cell.
+    private var pointer: CGPoint?
+
+    /// The mouse moved over the cell at `index`: it becomes the selection,
+    /// as in Raycast. Only when the mouse itself moved, so a grid that the
+    /// arrow keys scroll under a still pointer keeps the keyboard's choice.
+    func pointerMoved(to location: CGPoint, over index: Int) {
+        defer { pointer = location }
+        guard let pointer, pointer != location, results.indices.contains(index) else { return }
+        selection = index
     }
 
     /// Moves the selection in the grid. Returns false when there is nothing to select.
@@ -102,9 +123,18 @@ final class DeckModel: ObservableObject {
         refresh()
     }
 
+    /// The tabs: Stickers, Favourites, then one per top-level folder.
+    var tabs: [MemeTab] { MemeTab.tabs(folders: library.folders) }
+
     /// Tab and ⇧Tab: the next or previous tab.
     func cycleTab(backwards: Bool) {
-        tab = tab.next(backwards: backwards)
+        tab = tab.next(in: tabs, backwards: backwards)
+    }
+
+    /// ⌘1…⌘9: the tab at `index` (0 is Stickers), when there is one.
+    func selectTab(at index: Int) {
+        let tabs = tabs
+        if tabs.indices.contains(index) { tab = tabs[index] }
     }
 
     /// Feeds every key press in the panel to the Konami code detector.
@@ -121,6 +151,7 @@ final class DeckModel: ObservableObject {
         konamiActive = false
         if query.isEmpty { refresh() } else { query = "" }
         selection = 0
+        pointer = nil
         openCount += 1
     }
 
@@ -166,6 +197,10 @@ final class DeckModel: ObservableObject {
         }
         if keepSelection, let selected, let index = results.firstIndex(of: selected) {
             selection = index
+        } else if keepSelection, selected != nil, !results.isEmpty {
+            // The selected meme left this tab (unfavourited in Favourites,
+            // moved out of a folder): stay where it was.
+            selection = min(selection, results.count - 1)
         } else if egg?.effect == .randomPick, !results.isEmpty {
             selection = Int.random(in: results.indices)
         } else {

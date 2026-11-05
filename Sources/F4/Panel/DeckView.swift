@@ -1,3 +1,4 @@
+import AppKit
 import F4Core
 import SwiftUI
 
@@ -5,12 +6,16 @@ import SwiftUI
 struct DeckView: View {
     @ObservedObject var model: DeckModel
     @ObservedObject var library: MemeLibrary
+    /// ⌘K and ⌘M: the actions over the panel.
+    @ObservedObject var palette: ActionPalette
     /// The primary action: copy the meme and hide the panel.
     let onPick: (Meme) -> Void
     /// The + button: pick files to add.
     let onAdd: () -> Void
     /// The ⓘ button: how to add stickers.
     let onHelp: () -> Void
+    /// The footer's Actions button: what ⌘K opens.
+    let onActions: () -> Void
     /// The user drags the panel by its search bar or footer.
     let onDrag: (PanelDrag) -> Void
     /// Move, rename or trash a meme from its right-click menu.
@@ -47,7 +52,7 @@ struct DeckView: View {
             .padding(.vertical, 16)
             .background(WindowDragArea(onDrag: onDrag))
 
-            TabBar(selection: $model.tab, onAdd: onAdd, onHelp: onHelp)
+            TabBar(selection: $model.tab, tabs: model.tabs, onAdd: onAdd, onHelp: onHelp)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 10)
 
@@ -79,6 +84,15 @@ struct DeckView: View {
             footer
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .bottomTrailing) {
+            if palette.isOpen {
+                ActionPaletteView(palette: palette)
+                    .padding(.trailing, 10)
+                    .padding(.bottom, 48)
+                    .transition(.opacity.combined(with: .scale(scale: 0.97, anchor: .bottomTrailing)))
+            }
+        }
+        .animation(.easeOut(duration: 0.12), value: palette.isOpen)
         .animation(.spring(duration: 0.3), value: model.easterEgg)
         .animation(.spring(duration: 0.3), value: model.notice)
         .rotationEffect(.degrees(roll))
@@ -88,6 +102,9 @@ struct DeckView: View {
         .overlay(panelShape.strokeBorder(Color.primary.opacity(0.12), lineWidth: 1))
         .onAppear { searchFocused = true }
         .onChange(of: model.openCount) { searchFocused = true }
+        .onChange(of: palette.isOpen) { if !palette.isOpen { searchFocused = true } }
+        // A click on a tab must not leave the search field without focus.
+        .onChange(of: model.tab) { searchFocused = true }
         .onChange(of: model.easterEgg) {
             if model.easterEgg?.effect == .barrelRoll {
                 withAnimation(.easeInOut(duration: 1.1)) { roll += 360 }
@@ -109,19 +126,6 @@ struct DeckView: View {
                     .truncationMode(.middle)
                     .foregroundStyle(.secondary)
                 Spacer(minLength: 12)
-                Button {
-                    model.usage.toggleFavourite(meme)
-                } label: {
-                    HStack(spacing: 6) {
-                        Text(model.usage.isFavourite(meme)
-                            ? LocalizedStringKey("Remove from Favourites")
-                            : LocalizedStringKey("Add to Favourites"))
-                        KeyHint(key: "⌘D")
-                    }
-                }
-                .keyboardShortcut("d", modifiers: .command)
-                Divider()
-                    .frame(height: 16)
                 // Enter is handled by the search field; this is for the mouse.
                 Button {
                     onPick(meme)
@@ -130,6 +134,15 @@ struct DeckView: View {
                         Text("Copy")
                             .fontWeight(.medium)
                         KeyHint(key: "↵")
+                    }
+                }
+                Divider()
+                    .frame(height: 16)
+                // ⌘K is handled by PanelController's key monitor; this is for the mouse.
+                Button(action: onActions) {
+                    HStack(spacing: 6) {
+                        Text("Actions")
+                        KeyHint(key: "⌘K")
                     }
                 }
             } else {
@@ -198,7 +211,13 @@ struct DeckView: View {
                 systemImage: "star",
                 description: Text("Click the star on a sticker, or select it and press ⌘D, to keep it here. Do it again to remove it.")
             )
-        case .all:
+        case .folder where model.query.trimmingCharacters(in: .whitespaces).isEmpty:
+            ContentUnavailableView(
+                "This folder is empty",
+                systemImage: "folder",
+                description: Text("Paste a sticker here with ⌘V, or select one in another tab and press ⌘M to move it in.")
+            )
+        case .all, .folder:
             ContentUnavailableView.search(text: model.query)
         }
     }
@@ -246,7 +265,9 @@ struct DeckView: View {
                 }
                 .padding(14)
             }
-            .onChange(of: model.selection) {
+            // On the meme rather than the index: after a tab switch the
+            // index stays 0 but the grid holds other memes.
+            .onChange(of: model.selectedMeme?.id) {
                 if let meme = model.selectedMeme {
                     proxy.scrollTo(meme.id)
                 }
@@ -271,6 +292,9 @@ extension DeckView {
             onToggleFavourite: { model.usage.toggleFavourite(meme) }
         )
         .id(meme.id)
+        .onContinuousHover { phase in
+            if case .active = phase { model.pointerMoved(to: NSEvent.mouseLocation, over: index) }
+        }
         .onTapGesture { onPick(meme) }
         .contextMenu {
             Button("Copy") { onPick(meme) }
@@ -316,34 +340,26 @@ private struct SectionHeader: View {
     }
 }
 
-/// Stickers · Favourites, under the search field. Tab, ⌘1 and ⌘2 switch too
-/// (`PanelController`).
+/// Stickers · Favourites · each folder, under the search field. Tab and
+/// ⌘1…⌘9 switch too (`PanelController`).
 private struct TabBar: View {
     @Binding var selection: MemeTab
+    let tabs: [MemeTab]
     let onAdd: () -> Void
     let onHelp: () -> Void
 
     var body: some View {
         HStack(spacing: 4) {
-            ForEach(MemeTab.allCases, id: \.self) { tab in
-                Button {
-                    selection = tab
-                } label: {
-                    Text(Self.title(tab))
-                        .font(.system(size: 12, weight: .semibold))
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 4)
-                        .background(
-                            selection == tab ? Color.accentColor.opacity(0.25) : Color.clear,
-                            in: Capsule()
-                        )
-                        .foregroundStyle(selection == tab ? .primary : .secondary)
-                        .contentShape(Capsule())
+            ScrollViewReader { proxy in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 4) {
+                        ForEach(tabs, id: \.self) { tab in
+                            chip(tab).id(tab)
+                        }
+                    }
                 }
-                .buttonStyle(.plain)
-                .accessibilityAddTraits(selection == tab ? .isSelected : [])
+                .onChange(of: selection) { proxy.scrollTo(selection) }
             }
-            Spacer()
             Button(action: onAdd) {
                 Label("Add", systemImage: "plus")
                     .font(.system(size: 12, weight: .semibold))
@@ -360,17 +376,37 @@ private struct TabBar: View {
         }
     }
 
-    private static func title(_ tab: MemeTab) -> LocalizedStringKey {
+    private func chip(_ tab: MemeTab) -> some View {
+        Button {
+            selection = tab
+        } label: {
+            Self.title(tab)
+                .font(.system(size: 12, weight: .semibold))
+                .lineLimit(1)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 4)
+                .background(
+                    selection == tab ? Color.accentColor.opacity(0.25) : Color.clear,
+                    in: Capsule()
+                )
+                .foregroundStyle(selection == tab ? .primary : .secondary)
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(selection == tab ? .isSelected : [])
+    }
+
+    private static func title(_ tab: MemeTab) -> Text {
         switch tab {
-        case .all: return "Stickers"
-        case .favourites: return "Favourites"
+        case .all: return Text("Stickers")
+        case .favourites: return Text("Favourites")
+        case .folder(let name): return Text(verbatim: name)
         }
     }
 }
 
-/// The translucent HUD material behind the panel content.
-/// A key as the footer shows it: "↵", "⌘D".
-private struct KeyHint: View {
+/// A key as the footer and the action palette show it: "↵", "⌘K".
+struct KeyHint: View {
     let key: String
 
     var body: some View {
