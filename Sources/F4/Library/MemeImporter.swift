@@ -81,7 +81,8 @@ enum MemeImporter {
         if !images.isEmpty {
             var saved: [URL] = []
             for (data, kind) in images {
-                saved.append(try await write(data, kind: kind, name: String(localized: "sticker"), into: folder, convert: convert))
+                // A copied image has no file name: read one off the picture.
+                saved.append(try await write(data, kind: kind, name: nil, into: folder, convert: convert))
             }
             return saved
         }
@@ -167,9 +168,14 @@ enum MemeImporter {
         }.value
     }
 
-    private static func write(_ data: Data, kind: MemeKind, name: String, into folder: URL, convert: Bool) async throws -> URL {
+    /// Saves `data` in `folder` as `name`, or, when `name` is nil, as what
+    /// `StickerNamer` reads on the picture (its caption, or what it shows),
+    /// and "sticker" when it reads nothing.
+    private static func write(_ data: Data, kind: MemeKind, name: String?, into folder: URL, convert: Bool) async throws -> URL {
         let target = folder
+        let fallback = String(localized: "sticker")
         return try await Task.detached(priority: .userInitiated) {
+            let name = name ?? StickerNamer.name(for: data).map { MemeImport.baseName($0) } ?? fallback
             var (data, kind) = (data, kind)
             if convert, Self.isConvertible(kind), let sticker = StickerConverter.sticker(from: data) {
                 (data, kind) = (sticker, .png)
