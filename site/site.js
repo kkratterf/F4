@@ -5,8 +5,8 @@
 
   var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // A GIF that fails to load (GIPHY down or blocked) leaves its coloured
-  // tile instead of a broken-image icon.
+  // A sticker that fails to load (Google Fonts down or blocked) leaves its
+  // coloured tile instead of a broken-image icon.
   document.addEventListener("error", function (e) {
     var img = e.target;
     if (img && img.tagName === "IMG" && img.closest(".f4p-cell, .pasted, .clip")) img.style.visibility = "hidden";
@@ -43,9 +43,9 @@
     });
   });
 
-  // The hero Mac: a chat, then F4 opens over it, a few letters find a GIF,
-  // Enter pastes it into the chat, and again. Only the selected GIF plays,
-  // like in the app. With reduced motion it stays on the open panel.
+  // The hero Mac: a chat, then F4 opens over it, a few letters find a
+  // sticker, Enter pastes it into the chat, and again. Only the selected
+  // sticker plays, like in the app. With reduced motion it stays on the open panel.
   var demo = document.querySelector("[data-demo]");
   if (demo && !still) {
     var query = demo.querySelector("[data-demo-query]");
@@ -53,7 +53,7 @@
     var hint = demo.querySelector("[data-demo-hint]");
     var pasted = demo.querySelector("[data-demo-pasted]");
     var cells = Array.prototype.slice.call(demo.querySelectorAll("[data-demo-grid] .f4p-cell"));
-    var words = ["no", "cool", "worst", "mock", "dance", "idk"];
+    var words = ["joy", "dai", "skull", "basito", "party", "nope"];
     var step = 0;
     var later = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
     var setState = function (s) { demo.setAttribute("data-state", s); };
@@ -74,7 +74,9 @@
       cells.forEach(function (cell) {
         var on = cell === first;
         cell.classList.toggle("on", on);
+        // Text stickers are drawn in CSS and have no image to swap.
         var img = cell.querySelector("img");
+        if (!img || !cell.dataset.anim) return;
         var src = on ? cell.dataset.anim : cell.dataset.still;
         if (img.getAttribute("src") !== src) img.src = src;
       });
@@ -106,13 +108,17 @@
         .then(function () {
           var hit = select(word);
           hint.textContent = demo.dataset.copied;
-          if (hit) pasted.src = hit.dataset.anim;
+          if (hit) {
+            pasted.innerHTML = hit.innerHTML;
+            var img = pasted.querySelector("img");
+            if (img && hit.dataset.anim) img.src = hit.dataset.anim;
+          }
           return later(700);
         })
         .then(function () { setState("paste"); return later(3400); })
         .then(loop);
     };
-    select("no");
+    select("joy");
     later(2200).then(loop);
   }
 
