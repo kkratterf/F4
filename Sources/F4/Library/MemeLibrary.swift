@@ -18,18 +18,22 @@ final class MemeLibrary: ObservableObject {
     @Published private(set) var folders: [String] = []
     /// Whether the starter pack is listed after the user's memes.
     private(set) var showsStarterPack: Bool
-    /// Called once the starter pack has been copied into F4's own library,
-    /// so it is never copied again (`AppSettings.didSeedLibrary`).
-    var onSeeded: (() -> Void)?
-    /// True until the starter pack has been copied into F4's own library.
-    private var needsSeeding: Bool
+    /// Called after starter folders were copied into F4's own library, with
+    /// every top-level starter folder copied so far, so none is copied
+    /// twice (`AppSettings.seededStarterFolders`): stickers the user deleted
+    /// stay deleted, and a folder added in an update still arrives.
+    var onSeeded: ((Set<String>) -> Void)?
+    /// The top-level starter folders already copied into F4's own library.
+    private var seededStarterFolders: Set<String>
+    /// Whether this launch already looked for starter folders to copy.
+    private var didCheckStarter = false
     private var scanTask: Task<Void, Never>?
     private var watcher: FolderWatcher?
 
-    init(folder: URL = MemeScanner.defaultFolder, showsStarterPack: Bool = true, needsSeeding: Bool = false) {
+    init(folder: URL = MemeScanner.defaultFolder, showsStarterPack: Bool = true, seededStarterFolders: Set<String> = []) {
         self.folder = folder
         self.showsStarterPack = showsStarterPack
-        self.needsSeeding = needsSeeding
+        self.seededStarterFolders = seededStarterFolders
     }
 
     /// Whether the folder is F4's own library (`LibraryFolders.appLibrary`).
@@ -84,19 +88,20 @@ final class MemeLibrary: ObservableObject {
 
     /// Rescans the folder off the main thread and publishes the result.
     /// Creates the folder on first launch, so the user has a place to drop
-    /// memes, and the first time it is F4's own library, copies the starter
-    /// pack into it before scanning.
+    /// memes, and, once a launch when it is F4's own library, copies the
+    /// starter folders it has never copied before scanning.
     func reload() {
         scanTask?.cancel()
         let folder = folder
         let isAppLibrary = isAppLibrary
         let starter = showsStarterPack && !isAppLibrary ? Self.starterFolder : nil
-        let seedFrom = needsSeeding && isAppLibrary ? Self.starterFolder : nil
+        let seedFrom = !didCheckStarter && isAppLibrary ? Self.starterFolder : nil
+        let alreadySeeded = seededStarterFolders
         scanTask = Task { [weak self] in
-            let result = await Task.detached(priority: .userInitiated) { () -> Result<([Meme], [String], Bool), Error> in
+            let result = await Task.detached(priority: .userInitiated) { () -> Result<([Meme], [String], Set<String>?), Error> in
                 Result {
                     try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
-                    let seeded = seedFrom.map { Self.copyStarterPack(from: $0, into: folder) } ?? false
+                    let seeded = seedFrom.flatMap { Self.copyStarterPack(from: $0, into: folder, seeded: alreadySeeded) }
                     let own = try MemeScanner.scan(folder: folder)
                     // The user's memes first; the starter pack never fails the scan.
                     let builtIn = starter.flatMap { try? MemeScanner.scan(folder: $0) } ?? []
@@ -107,9 +112,13 @@ final class MemeLibrary: ObservableObject {
             defer { if !self.hasLoaded { self.hasLoaded = true } }
             switch result {
             case .success(let (memes, folders, seeded)):
-                if seeded && self.needsSeeding {
-                    self.needsSeeding = false
-                    self.onSeeded?()
+                if let seeded {
+                    self.didCheckStarter = true
+                    let all = self.seededStarterFolders.union(seeded)
+                    if all != self.seededStarterFolders {
+                        self.seededStarterFolders = all
+                        self.onSeeded?(all)
+                    }
                 }
                 self.memes = memes
                 self.folders = folders
@@ -123,19 +132,20 @@ final class MemeLibrary: ObservableObject {
         }
     }
 
-    /// Copies the starter pack (Emoji/, F4/) into `folder`, skipping
-    /// files already there, so the memes become the user's to move or
-    /// delete. True when it ran to the end. Blocking: off the main thread.
-    nonisolated private static func copyStarterPack(from starter: URL, into folder: URL) -> Bool {
+    /// Copies the starter folders (Emoji/, F4/, maramao/) not in `seeded`
+    /// into `folder`, skipping files already there, so the memes become the
+    /// user's to move or delete. Returns every top-level starter folder when
+    /// it ran to the end, nil otherwise. Blocking: off the main thread.
+    nonisolated private static func copyStarterPack(from starter: URL, into folder: URL, seeded: Set<String>) -> Set<String>? {
         let fileManager = FileManager.default
-        guard let memes = try? MemeScanner.scan(folder: starter) else { return false }
+        guard let memes = try? MemeScanner.scan(folder: starter) else { return nil }
         let root = starter.standardizedFileURL.resolvingSymlinksInPath().path + "/"
         let relative = memes.map { meme -> String in
             let path = meme.url.standardizedFileURL.resolvingSymlinksInPath().path
             return path.hasPrefix(root) ? String(path.dropFirst(root.count)) : meme.url.lastPathComponent
         }
         let existing = Set(relative.filter { fileManager.fileExists(atPath: folder.appendingPathComponent($0).path) })
-        for path in LibraryFolders.starterFilesToCopy(relative, existing: existing) {
+        for path in LibraryFolders.starterFilesToCopy(relative, existing: existing, seeded: seeded) {
             let destination = folder.appendingPathComponent(path)
             do {
                 try fileManager.createDirectory(at: destination.deletingLastPathComponent(), withIntermediateDirectories: true)
@@ -144,7 +154,7 @@ final class MemeLibrary: ObservableObject {
                 NSLog("F4: could not copy the starter meme %@: %@", path, error.localizedDescription)
             }
         }
-        return true
+        return Set(relative.map(LibraryFolders.topFolder(of:)))
     }
 
     /// Starts the folder watcher once the folder exists (the first scan creates

@@ -27,7 +27,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var library = MemeLibrary(
         folder: settings.memeFolder,
         showsStarterPack: settings.showStarterPack,
-        needsSeeding: !settings.didSeedLibrary
+        seededStarterFolders: settings.seededStarterFolders
     )
     private let usage = UsageStore()
     private lazy var organizer = LibraryOrganizer(library: library, usage: usage)
@@ -53,7 +53,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         // No Dock icon and no menu bar of our own (also set via LSUIElement in the bundle).
         NSApp.setActivationPolicy(.accessory)
-        library.onSeeded = { [weak self] in self?.settings.didSeedLibrary = true }
+        library.onSeeded = { [weak self] folders in self?.settings.seededStarterFolders = folders }
         library.reload()
         settings.$memeFolder
             .dropFirst()
