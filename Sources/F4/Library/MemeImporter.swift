@@ -16,6 +16,7 @@ enum MemeImporter {
     enum Failure: LocalizedError {
         case nothingToAdd
         case download(String)
+        case packAlreadyAdded(String)
 
         var errorDescription: String? {
             switch self {
@@ -23,6 +24,8 @@ enum MemeImporter {
                 return String(localized: "F4 can only add GIF, PNG, JPEG and WebP images, and WhatsApp sticker packs (.wastickers).")
             case .download(let reason):
                 return String(localized: "Couldn't download the image: \(reason)")
+            case .packAlreadyAdded(let folder):
+                return String(localized: "You already have every sticker of \(folder).")
             }
         }
     }
@@ -201,6 +204,11 @@ enum MemeImporter {
     }
 
     private static func download(_ link: URL, into folder: URL) async throws -> [URL] {
+        // A getstickerpack pack (its page or its "Add to WhatsApp" link):
+        // the whole pack. A link to one of its files is just that sticker.
+        if MemeKind(url: link) == nil, let slug = StickerPackLink.slug(from: link) {
+            return try await downloadPack(slug: slug, title: StickerPackLink.title(from: link), into: folder)
+        }
         let giphy = MemeImport.giphyMedia(for: link)
         let source = giphy?.url ?? link
         let configuration = URLSessionConfiguration.ephemeral
@@ -234,6 +242,26 @@ enum MemeImporter {
         guard let kind = MemeImport.kind(sniffing: data) else { throw Failure.nothingToAdd }
         let name = giphy?.name ?? MemeImport.suggestedName(for: source)
         return [try await write(data, kind: kind, name: name, into: folder)]
+    }
+}
+
+extension MemeImporter {
+    /// Downloads a getstickerpack pack into a folder named after it.
+    fileprivate static func downloadPack(slug: String, title: String?, into folder: URL) async throws -> [URL] {
+        let name = StickerPackLink.folderName(slug: slug, title: title)
+        let target = folder.appendingPathComponent(name, isDirectory: true)
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        let session = URLSession(configuration: configuration)
+        defer { session.finishTasksAndInvalidate() }
+        let (added, existing) = await Task.detached(priority: .userInitiated) {
+            await StickerPackFetcher.fetch(slug: slug, into: target, session: session)
+        }.value
+        if added.isEmpty {
+            if existing > 0 { throw Failure.packAlreadyAdded(name) }
+            throw Failure.download(String(localized: "the pack has no stickers F4 can download"))
+        }
+        return added
     }
 }
 

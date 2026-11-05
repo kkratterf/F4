@@ -13,7 +13,8 @@ public struct ContentPack: Codable, Equatable, Sendable {
     /// Shown in the menu, and the folder name in the library ("Boris").
     public let name: String
     /// Links to the sticker files ("https://example.com/pack/sticker_1.webp"),
-    /// or GIPHY page links, which become their GIF.
+    /// GIPHY page links, which become their GIF, or getstickerpack pack
+    /// links, which bring the whole pack (`StickerPackLink`).
     public let stickers: [String]
 
     public init(id: String, name: String, stickers: [String]) {
@@ -35,11 +36,20 @@ public struct ContentPack: Codable, Equatable, Sendable {
     /// moves to the Trash.
     public var category: String { LibraryFolders.folderName(name) ?? id }
 
+    /// The getstickerpack packs among the links ("memes-19"): their
+    /// stickers are found by downloading them one after the other.
+    public var stickerPacks: [String] {
+        stickers.compactMap { link in
+            MemeImport.webURL(in: link).flatMap(Self.stickerPack(in:))
+        }
+    }
+
     /// The pack's files, named after their link. Anything that is not an
-    /// http(s) link is skipped.
+    /// http(s) link is skipped, and so are the getstickerpack pack links
+    /// (`stickerPacks`).
     public var items: [Item] {
         stickers.compactMap { link in
-            guard let url = MemeImport.webURL(in: link) else { return nil }
+            guard let url = MemeImport.webURL(in: link), Self.stickerPack(in: url) == nil else { return nil }
             if let media = MemeImport.giphyMedia(for: url) {
                 return Item(source: media.url, category: category, name: media.name)
             }
@@ -47,10 +57,14 @@ public struct ContentPack: Codable, Equatable, Sendable {
         }
     }
 
+    private static func stickerPack(in url: URL) -> String? {
+        MemeKind(url: url) == nil ? StickerPackLink.slug(from: url) : nil
+    }
+
     /// The packs in `packs.json`: `{"packs": [{"id", "name", "stickers"}]}`.
     /// A pack with no usable link is left out.
     public static func packs(from data: Data) throws -> [ContentPack] {
         struct File: Decodable { let packs: [ContentPack] }
-        return try JSONDecoder().decode(File.self, from: data).packs.filter { !$0.items.isEmpty }
+        return try JSONDecoder().decode(File.self, from: data).packs.filter { !$0.items.isEmpty || !$0.stickerPacks.isEmpty }
     }
 }

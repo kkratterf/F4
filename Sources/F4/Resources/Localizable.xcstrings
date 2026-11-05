@@ -752,6 +752,16 @@
         }
       }
     },
+    "the pack has no stickers F4 can download": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "il pack non ha sticker che F4 possa scaricare"
+          }
+        }
+      }
+    },
     "The starter pack uses Google's Noto Animated Emoji (CC BY 4.0). F4 goes online only for updates, links you paste or drop, and packs you turn on.": {
       "localizations": {
         "it": {
@@ -868,6 +878,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "il file supera i 50 MB"
+          }
+        }
+      }
+    },
+    "You already have every sticker of %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hai già tutti gli sticker di %@."
           }
         }
       }
