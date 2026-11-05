@@ -78,9 +78,10 @@ python3 -m http.server -d site 8000   # preview the website at http://localhost:
 
 | Job | Runs on | Checks |
 | --- | --- | --- |
-| Build and test | macOS | `swift build`, `swift test`, builds `F4.app` and checks it (universal binary, signature, `LSUIElement`, Italian strings, icon, Sparkle framework and rpath, launches and stays up for 8 seconds), builds the DMG, mounts it to check the layout and screenshots its Finder window. Uploads the zip, the DMG and the screenshot (`F4-dmg-window`) as artifacts |
+| Build and test | macOS | `swift build`, `swift test`, builds `F4.app` and checks it (universal binary, signature, `LSUIElement`, Italian strings, icon, Sparkle framework and rpath, launches and stays up for 8 seconds), builds the DMG, mounts it to check the layout and screenshots its Finder window. Screenshots the running app (panel, a search, the menu bar menu). Uploads the zip, the DMG and the screenshots (`F4-dmg-window`, `F4-ui`) as artifacts |
 | Lint scripts | Linux | ShellCheck on `scripts/*.sh` and `install.sh`, `check-strings.py`, a round trip of `update-appcast.py` |
 | Raycast extension | Linux | `npm ci` and `ray build` in `raycast/` |
+| Publish UI screenshots | Linux | On pull requests from this repo, pushes the `F4-ui` screenshots to the `ui-screenshots/pr-N` branch, so the UI of a PR can be looked at on GitHub (or with `git fetch`) before it ships. Best effort |
 | Homebrew cask | macOS | `brew style` and an offline `brew audit --strict` of `Casks/f4.rb` |
 
 ## Rules for changes
