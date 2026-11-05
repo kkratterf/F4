@@ -37,6 +37,6 @@ cask "f4" do
     or run:
       xattr -dr com.apple.quarantine #{appdir}/F4.app
 
-    Your memes go in ~/Pictures/Memes (or any folder you pick in Settings).
+    Paste or drop your memes into the panel: they go in F4's library (or any folder you pick from the menu bar).
   EOS
 end

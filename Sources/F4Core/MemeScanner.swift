@@ -2,11 +2,10 @@ import Foundation
 
 /// Lists the memes in a folder and its subfolders.
 public enum MemeScanner {
-    /// `~/Pictures/Memes`, used until the user picks another folder.
+    /// F4's own library (`LibraryFolders.appLibrary`), used until the user
+    /// picks another folder.
     public static var defaultFolder: URL {
-        FileManager.default.homeDirectoryForCurrentUser
-            .appendingPathComponent("Pictures", isDirectory: true)
-            .appendingPathComponent("Memes", isDirectory: true)
+        LibraryFolders.appLibrary()
     }
 
     /// How deep subfolders are scanned (the folder itself is depth 0).
@@ -47,6 +46,32 @@ public enum MemeScanner {
             ))
         }
         return memes.sorted(by: finderOrder)
+    }
+
+    /// The subfolders of `folder` (up to `maxDepth`), as categories relative
+    /// to it ("reactions", "reactions/dogs"), empty ones included, sorted the
+    /// way Finder sorts them. Hidden folders and packages are skipped.
+    /// Blocking: call it off the main thread.
+    public static func folders(in folder: URL, fileManager: FileManager = .default) -> [String] {
+        guard let enumerator = fileManager.enumerator(
+            at: folder,
+            includingPropertiesForKeys: [.isDirectoryKey, .isPackageKey],
+            options: [.skipsHiddenFiles, .skipsPackageDescendants]
+        ) else { return [] }
+        let root = folder.standardizedFileURL.resolvingSymlinksInPath().pathComponents
+        var folders: [String] = []
+        for case let url as URL in enumerator {
+            let values = try? url.resourceValues(forKeys: [.isDirectoryKey, .isPackageKey])
+            guard values?.isDirectory == true, values?.isPackage != true else { continue }
+            if enumerator.level > maxDepth {
+                enumerator.skipDescendants()
+                continue
+            }
+            let path = url.standardizedFileURL.resolvingSymlinksInPath().pathComponents
+            guard path.count > root.count else { continue }
+            folders.append(path[root.count...].joined(separator: "/"))
+        }
+        return folders.sorted { $0.localizedStandardCompare($1) == .orderedAscending }
     }
 
     private static func finderOrder(_ lhs: Meme, _ rhs: Meme) -> Bool {

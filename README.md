@@ -27,8 +27,8 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 
 ## How it works
 
-1. Put your memes, GIFs and stickers in a folder. `~/Pictures/Memes` by default, or any folder you pick from the menu bar (Choose Meme Folder…). Subfolders become categories.
-2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or let F4 catch the key: on the first launch, and in Settings, F4 offers **Open F4 with the F4 key alone, without fn** (needs Accessibility; without it fn F4 keeps working). On most other keyboards F4 just works.
+1. Paste (⌘V), drop or **Add** your memes, GIFs and stickers in the panel. They go in F4's own library, `~/Library/Application Support/F4/Memes`, which comes with the starter pack already in it; or pick any folder of yours from the menu bar (Choose Meme Folder…). Subfolders become categories.
+2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. Or let F4 catch the key: on the first launch, and in its menu (**F4 Key Without fn**), F4 offers the F4 key alone (needs Accessibility; without it fn F4 keeps working). On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The meme is copied; paste it with ⌘V, or let F4 paste it for you.
 
 **Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen, and opens where you left it next time.
@@ -41,10 +41,10 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 | ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the hovered or selected GIF animates. |
 | 🔎 **Fuzzy search** | Type a few letters of the name: "tif" finds "this is fine". Favourites (click the star on a meme, or ⌘D) get their own section on top, then the ones you used last. |
 | 🗂️ **GIFs and stickers** | Tabs split the panel into All, Favourites, GIFs and Stickers (Tab or ⌘1–⌘4). PNG and WebP files, and anything in a `Stickers` folder, are stickers. |
-| 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), listed after your memes. Turn them off in the menu bar (Show Starter Pack). |
+| 🎁 **Starter pack** | F4 never opens empty: it ships with animated emoji GIFs and its own stickers ("basito", "dai dai dai", the F4 keycap...), copied into F4's library on the first launch, so they are yours to move, rename or delete. With a folder of your own they are listed after your memes instead (Show Starter Pack in the menu bar). |
 | 🔍 **GIPHY inside** | In the GIFs and Stickers tabs, GIPHY results follow your own: trending when the search is empty. **Enter** copies one and saves it in your folder, so next time it is local, instant and offline; **⌘D** saves it as a favourite. |
 | ➕ **Add from the panel** | Press ⌘V in the panel to add a copied GIF, sticker or image link (in WhatsApp or Telegram: right-click a sticker → Copy), drop files or stickers on it, or click **Add**. GIFs go into `GIFs/`, stickers into `Stickers/` in your folder. No Finder needed. |
-| 🗂️ **Categories** | Each subfolder is a category you can search by name, so a big library stays findable. |
+| 🗂️ **Folders without Finder** | Each subfolder is a category you can search by name. Right-click a meme in the panel to **Move To** a folder (or a **New Folder…**), **Rename…** it or **Move to Trash**; the menu bar's **Folders** creates, renames and trashes folders. Favourites and recents follow the files. |
 | 📋 **Optional auto-paste** | F4 can press ⌘V in the frontmost app after copying. Off by default; it needs the Accessibility permission. |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. Only two optional features ask for Accessibility: auto-paste, and the F4 key alone without fn on a Mac keyboard. |
 | 🖥️ **Menu bar** | No Dock icon and no Settings window. The menu bar icon opens the panel, copies one of your last 5 memes in a click, leads to the meme folder, and holds every option as a checkmark. |
@@ -74,10 +74,10 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 
 F4 has no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
 
-- **Open Meme Folder** and **Choose Meme Folder…**
+- **Open Meme Folder**, **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder) and **Choose Meme Folder…**
 - **Paste After Copying**: F4 presses ⌘V in the front app for you (needs Accessibility).
 - **F4 Key Without fn**: on a Mac keyboard, the F4 key alone opens F4 instead of Spotlight or Launchpad (needs Accessibility; fn F4 always works).
-- **Show Starter Pack**, **Search GIPHY** and **Open at Login**.
+- **Search GIPHY** and **Open at Login**, plus **Show Starter Pack** when you use a folder of your own.
 - **Shortcut ▸**: fn F4 (the default), ⌥Space, ⌃⌥Space, ⇧⌘M or F5.
 - **Check for Updates…** and **About F4** (credits).
 

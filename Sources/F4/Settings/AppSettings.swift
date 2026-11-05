@@ -16,11 +16,14 @@ final class AppSettings: ObservableObject {
         static let giphyAPIKey = "giphyAPIKey"
         static let pressF4WithoutFn = "pressF4WithoutFn"
         static let didOfferF4WithoutFn = "didOfferF4WithoutFn"
+        static let didSeedLibrary = "didSeedLibrary"
     }
 
     private let defaults: UserDefaults
 
-    /// The folder F4 reads memes from. `~/Pictures/Memes` until the user picks another.
+    /// The folder F4 reads memes from: F4's own library
+    /// (`~/Library/Application Support/F4/Memes`) until the user picks
+    /// another, or `~/Pictures/Memes` for someone upgrading who has memes there.
     @Published var memeFolder: URL {
         didSet { defaults.set(memeFolder.path(percentEncoded: false), forKey: Key.memeFolder) }
     }
@@ -52,7 +55,15 @@ final class AppSettings: ObservableObject {
         set { defaults.set(newValue, forKey: Key.didOfferF4WithoutFn) }
     }
 
-    /// Show the GIFs and stickers built into F4 next to the user's own. On by default.
+    /// Whether the starter pack was already copied into F4's own library. It
+    /// is copied once: memes the user deletes stay deleted.
+    var didSeedLibrary: Bool {
+        get { defaults.bool(forKey: Key.didSeedLibrary) }
+        set { defaults.set(newValue, forKey: Key.didSeedLibrary) }
+    }
+
+    /// Show the GIFs and stickers built into F4 after the memes of a folder
+    /// other than F4's own library (which holds a copy of them). On by default.
     @Published var showStarterPack: Bool {
         didSet { defaults.set(showStarterPack, forKey: Key.showStarterPack) }
     }
@@ -77,11 +88,11 @@ final class AppSettings: ObservableObject {
         giphyAPIKey = defaults.string(forKey: Key.giphyAPIKey) ?? ""
         pasteAfterCopy = defaults.bool(forKey: Key.pasteAfterCopy)
         pressF4WithoutFn = defaults.bool(forKey: Key.pressF4WithoutFn)
-        if let path = defaults.string(forKey: Key.memeFolder), !path.isEmpty {
-            memeFolder = URL(fileURLWithPath: path, isDirectory: true)
-        } else {
-            memeFolder = MemeScanner.defaultFolder
-        }
+        let initial = LibraryFolders.initialFolder(
+            savedPath: defaults.string(forKey: Key.memeFolder),
+            legacyHasMemes: Self.hasMemes(LibraryFolders.legacyFolder())
+        )
+        memeFolder = initial.url
         if defaults.object(forKey: Key.shortcutKeyCode) != nil {
             toggleShortcut = HotKeyCombo(
                 keyCode: defaults.integer(forKey: Key.shortcutKeyCode),
@@ -90,6 +101,17 @@ final class AppSettings: ObservableObject {
         } else {
             toggleShortcut = .toggleDefault
         }
+        if initial.persist {
+            // Keep reading ~/Pictures/Memes even if it is emptied later.
+            defaults.set(initial.url.path(percentEncoded: false), forKey: Key.memeFolder)
+        }
+    }
+
+    /// Whether `folder` holds anything besides hidden files: a quick look at
+    /// the top level only, done once at launch.
+    private static func hasMemes(_ folder: URL) -> Bool {
+        let entries = (try? FileManager.default.contentsOfDirectory(atPath: folder.path)) ?? []
+        return entries.contains { !$0.hasPrefix(".") }
     }
 
     var isUsingDefaultFolder: Bool {

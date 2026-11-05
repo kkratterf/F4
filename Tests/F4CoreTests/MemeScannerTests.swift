@@ -63,6 +63,20 @@ final class MemeScannerTests: XCTestCase {
         XCTAssertEqual(try MemeScanner.scan(folder: folder).map(\.name), ["ok"])
     }
 
+    func testListsFoldersEmptyOnesIncluded() throws {
+        try touch("ok.gif", in: "reactions/dogs")
+        try FileManager.default.createDirectory(
+            at: folder.appendingPathComponent("Empty", isDirectory: true),
+            withIntermediateDirectories: true
+        )
+        try touch("secret.gif", in: ".hidden")
+        try touch("deep.gif", in: "a/b/c/d/e")
+        XCTAssertEqual(
+            MemeScanner.folders(in: folder),
+            ["a", "a/b", "a/b/c", "a/b/c/d", "Empty", "reactions", "reactions/dogs"]
+        )
+    }
+
     func testMissingFolderThrows() {
         XCTAssertThrowsError(try MemeScanner.scan(folder: folder.appendingPathComponent("nope")))
     }

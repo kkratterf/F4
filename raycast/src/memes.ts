@@ -1,3 +1,4 @@
+import { execFileSync } from "node:child_process";
 import { readdir, stat } from "node:fs/promises";
 import { homedir } from "node:os";
 import { basename, extname, join, relative, sep } from "node:path";
@@ -17,11 +18,28 @@ const EXTENSIONS = new Set([".gif", ".png", ".jpg", ".jpeg", ".webp"]);
 /** Same depth as the app (MemeScanner.maxDepth). */
 const MAX_DEPTH = 4;
 
-/** `~/Pictures/Memes` unless the user picked another folder; `~` is expanded. */
+/**
+ * The folder picked in the extension preferences (`~` is expanded), else the
+ * one the F4 app reads (its `memeFolderPath` default), else F4's own library
+ * in `~/Library/Application Support/F4/Memes`.
+ */
 export function memeFolder(preference?: string): string {
   const folder = preference?.trim();
-  if (!folder) return join(homedir(), "Pictures", "Memes");
-  return folder.startsWith("~") ? join(homedir(), folder.slice(1)) : folder;
+  if (folder) return folder.startsWith("~") ? join(homedir(), folder.slice(1)) : folder;
+  return appFolder() ?? join(homedir(), "Library", "Application Support", "F4", "Memes");
+}
+
+/** The meme folder the F4 app uses, when the user picked one or kept `~/Pictures/Memes`. */
+function appFolder(): string | undefined {
+  try {
+    const path = execFileSync("defaults", ["read", "com.kkratterf.f4", "memeFolderPath"], {
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "ignore"],
+    }).trim();
+    return path || undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**

@@ -8,7 +8,7 @@ import F4Core
 /// too, as Maramao's menu does.
 ///
 /// Sections, each between separators: open F4, the recent memes, the meme
-/// folder, the options (each a checkmark, the shortcut in a submenu),
+/// folder and its folders, the options (each a checkmark, the shortcut in a submenu),
 /// updates and About, quit. The menu is rebuilt every time it opens, so the
 /// recents and the checkmarks are always current.
 @MainActor
@@ -31,6 +31,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     private let menu = NSMenu()
     private let settings: AppSettings
+    private let library: MemeLibrary
+    private let organizer: LibraryOrganizer
     private let loginItem = LoginItem()
     private let onOpen: () -> Void
     private let onOpenFolder: () -> Void
@@ -47,6 +49,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     ///   - onCopy: copies a meme picked from the menu.
     init(
         settings: AppSettings,
+        library: MemeLibrary,
+        organizer: LibraryOrganizer,
         shortcut: String,
         recentMemes: @escaping () -> [Meme],
         onCopy: @escaping (Meme) -> Void,
@@ -55,6 +59,8 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         onChooseFolder: @escaping () -> Void
     ) {
         self.settings = settings
+        self.library = library
+        self.organizer = organizer
         self.recentMemes = recentMemes
         self.onCopy = onCopy
         self.onOpen = onOpen
@@ -139,6 +145,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         }
         items.append(.separator())
         items.append(item(String(localized: "Open Meme Folder")) { [weak self] in self?.onOpenFolder() })
+        items.append(foldersItem())
         items.append(item(String(localized: "Choose Meme Folder…")) { [weak self] in self?.onChooseFolder() })
         items.append(.separator())
         items.append(contentsOf: optionItems())
@@ -197,12 +204,15 @@ final class StatusItemController: NSObject, NSMenuDelegate {
             items.append(accessibilityItem())
         }
 
-        let starter = item(String(localized: "Show Starter Pack")) { [weak self] in
-            self?.settings.showStarterPack.toggle()
+        // F4's own library holds a copy of the starter pack: nothing to show on top.
+        if !library.isAppLibrary {
+            let starter = item(String(localized: "Show Starter Pack")) { [weak self] in
+                self?.settings.showStarterPack.toggle()
+            }
+            starter.state = settings.showStarterPack ? .on : .off
+            starter.toolTip = String(localized: "The GIFs and stickers built into F4, listed after your memes.")
+            items.append(starter)
         }
-        starter.state = settings.showStarterPack ? .on : .off
-        starter.toolTip = String(localized: "The GIFs and stickers built into F4, listed after your memes.")
-        items.append(starter)
 
         if GiphyClient.shared.hasKey {
             let giphy = item(String(localized: "Search GIPHY")) { [weak self] in
@@ -223,6 +233,31 @@ final class StatusItemController: NSObject, NSMenuDelegate {
 
         items.append(shortcutItem())
         return items
+    }
+
+    /// "Folders ▸ New Folder…, then each folder ▸ Rename…, Move to Trash":
+    /// the folders of the library, managed without Finder. Moving a meme
+    /// into one is in the meme's right-click menu in the panel.
+    private func foldersItem() -> NSMenuItem {
+        let submenu = NSMenu()
+        submenu.autoenablesItems = false
+        submenu.addItem(item(String(localized: "New Folder…")) { [weak self] in
+            _ = try? self?.organizer.newFolder()
+        })
+        let folders = library.folders
+        if !folders.isEmpty { submenu.addItem(.separator()) }
+        for category in folders {
+            let actions = NSMenu()
+            actions.autoenablesItems = false
+            actions.addItem(item(String(localized: "Rename…")) { [weak self] in self?.organizer.renameFolder(category) })
+            actions.addItem(item(String(localized: "Move to Trash")) { [weak self] in self?.organizer.trashFolder(category) })
+            let entry = NSMenuItem(title: category, action: nil, keyEquivalent: "")
+            entry.submenu = actions
+            submenu.addItem(entry)
+        }
+        let parent = NSMenuItem(title: String(localized: "Folders"), action: nil, keyEquivalent: "")
+        parent.submenu = submenu
+        return parent
     }
 
     /// "Allow Accessibility…": opens System Settings when an option needs it.

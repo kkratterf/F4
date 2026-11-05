@@ -25,10 +25,12 @@ final class PanelController: NSObject, NSWindowDelegate {
     private var didDrag = false
 
     private let usage: UsageStore
+    private let organizer: LibraryOrganizer
 
-    init(library: MemeLibrary, usage: UsageStore) {
+    init(library: MemeLibrary, usage: UsageStore, organizer: LibraryOrganizer) {
         self.library = library
         self.usage = usage
+        self.organizer = organizer
         model = DeckModel(library: library, usage: usage, giphy: .shared)
         panel = FloatingPanel(contentRect: NSRect(origin: .zero, size: Self.size))
         super.init()
@@ -39,7 +41,8 @@ final class PanelController: NSObject, NSWindowDelegate {
             onAdd: { [weak self] in self?.chooseFiles() },
             onPickWeb: { [weak self] result in self?.pick(result) },
             onPinWeb: { [weak self] result in self?.pin(result) },
-            onDrag: { [weak self] drag in self?.drag(drag) }
+            onDrag: { [weak self] drag in self?.drag(drag) },
+            onOrganize: { [weak self] meme, action in self?.organize(meme, action) }
         )
         let hosting = DropHostingView(rootView: deck)
         hosting.onDragChange = { [weak self] inside in self?.dragIsInside = inside }
@@ -91,9 +94,9 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
     }
 
-    /// Set while the Add button's file picker is open: it takes the focus,
-    /// and the panel must stay for the result.
-    private var isChoosingFiles = false
+    /// Set while the Add button's file picker or an organizing prompt is
+    /// open: it takes the focus, and the panel must stay for the result.
+    private var isShowingDialog = false
 
     /// The Add button: a file picker. F4 comes to the front for it (an open
     /// panel needs an active app), and the panel waits behind it.
@@ -110,12 +113,12 @@ final class PanelController: NSObject, NSWindowDelegate {
         picker.allowedContentTypes = MemeKind.allCases.compactMap { UTType($0.typeIdentifier) }
         picker.prompt = String(localized: "Add")
         picker.message = String(localized: "Choose GIFs and stickers to add. F4 copies them into its own folder, so the originals can stay where they are.")
-        isChoosingFiles = true
+        isShowingDialog = true
         NSApp.activate(ignoringOtherApps: true)
         picker.level = .modalPanel
         picker.begin { [weak self] response in
             guard let self else { return }
-            self.isChoosingFiles = false
+            self.isShowingDialog = false
             self.panel.makeKeyAndOrderFront(nil)
             guard response == .OK else { return }
             let urls = picker.urls
@@ -129,6 +132,17 @@ final class PanelController: NSObject, NSWindowDelegate {
                 }
             }
         }
+    }
+
+    /// Moves, renames or trashes a meme from its right-click menu. A prompt
+    /// (a name to type) brings F4 to the front; the panel stays behind it
+    /// and gets the focus back with the result in its notice line.
+    private func organize(_ meme: Meme, _ action: MemeAction) {
+        isShowingDialog = true
+        let message = organizer.perform(action, on: meme)
+        isShowingDialog = false
+        if let message { model.show(notice: message) }
+        if panel.isVisible { panel.makeKeyAndOrderFront(nil) }
     }
 
     private func added(_ urls: [URL]) {
@@ -309,8 +323,8 @@ final class PanelController: NSObject, NSWindowDelegate {
     // MARK: NSWindowDelegate
 
     func windowDidResignKey(_ notification: Notification) {
-        // The Add button's file picker takes the focus for a while.
-        if isChoosingFiles { return }
+        // The Add button's file picker and the organizing prompts take the focus for a while.
+        if isShowingDialog { return }
         // A press in another app may be the start of a drag towards the
         // panel (a sticker out of WhatsApp or a file out of Finder): stay
         // until the button is released, and stay if it was released over us.
