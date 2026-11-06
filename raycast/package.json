@@ -2,7 +2,7 @@
   "$schema": "https://www.raycast.com/schemas/extension.json",
   "name": "f4",
   "title": "F4",
-  "description": "Search your meme folder and copy memes that paste as files, so GIFs stay animated in Slack, Discord and Telegram.",
+  "description": "Search your F4 stickers and copy one as a file, so animated stickers stay animated in WhatsApp, Slack and Telegram.",
   "icon": "icon.png",
   "author": "kkratterf",
   "license": "MIT",
@@ -10,17 +10,17 @@
   "commands": [
     {
       "name": "search-memes",
-      "title": "Search Memes",
+      "title": "Search Stickers",
       "subtitle": "F4",
-      "description": "Search the memes in your meme folder and copy or paste one.",
+      "description": "Search the stickers in your F4 library and copy or paste one.",
       "mode": "view"
     }
   ],
   "preferences": [
     {
       "name": "folder",
-      "title": "Meme Folder",
-      "description": "The folder with your memes. Leave empty to use the same folder as the F4 app.",
+      "title": "Sticker Folder",
+      "description": "The folder with your stickers. Leave empty to use the same folder as the F4 app.",
       "type": "directory",
       "required": false
     },
