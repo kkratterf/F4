@@ -85,14 +85,43 @@ final class DeckModel: ObservableObject {
 
     /// Where the mouse was the last time it moved over a cell.
     private var pointer: CGPoint?
+    /// Set by any key pressed in the panel: the keyboard leads, and the
+    /// mouse takes the selection back only after a deliberate move.
+    private var keyboardLeads = false
+    /// Where the mouse was when the keyboard took the lead.
+    private var keyboardAnchor: CGPoint?
+    /// How far, in points, the mouse must move after a key press before
+    /// hovering selects again: more than a nudge of the trackpad.
+    static let deliberateMove: CGFloat = 24
 
     /// The mouse moved over the cell at `index`: it becomes the selection,
     /// as in Raycast. Only when the mouse itself moved, so a grid that the
-    /// arrow keys scroll under a still pointer keeps the keyboard's choice.
+    /// arrow keys scroll under a still pointer keeps the keyboard's choice,
+    /// and after a key press only once it moved `deliberateMove` points.
     func pointerMoved(to location: CGPoint, over index: Int) {
         defer { pointer = location }
         guard let pointer, pointer != location, results.indices.contains(index) else { return }
+        if keyboardLeads {
+            let anchor = keyboardAnchor ?? pointer
+            keyboardAnchor = anchor
+            guard hypot(location.x - anchor.x, location.y - anchor.y) >= Self.deliberateMove else { return }
+            keyboardLeads = false
+            keyboardAnchor = nil
+        }
         selection = index
+    }
+
+    /// A key was pressed in the panel.
+    func keyboardUsed() {
+        keyboardLeads = true
+        keyboardAnchor = pointer
+    }
+
+    /// Bumped to ask the view to focus the search field.
+    @Published private(set) var focusRequests = 0
+
+    func focusSearch() {
+        focusRequests += 1
     }
 
     /// Moves the selection in the grid. Returns false when there is nothing to select.
@@ -152,6 +181,8 @@ final class DeckModel: ObservableObject {
         if query.isEmpty { refresh() } else { query = "" }
         selection = 0
         pointer = nil
+        keyboardLeads = false
+        keyboardAnchor = nil
         openCount += 1
     }
 
