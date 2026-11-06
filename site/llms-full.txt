@@ -115,7 +115,7 @@ The empty state draws the basito face in code. A file named `.basito.png`, `.bas
 
 ### Raycast
 
-The F4 Raycast extension, in https://github.com/kkratterf/f4/tree/main/raycast, has one command, "Search Memes", that searches the same folder (set in the extension preferences, `~/Pictures/Memes` by default) and copies or pastes a meme as a file, so GIFs stay animated there too. It is not in the Raycast Store yet; install it from the repository with `cd raycast && npm install && npm run dev`.
+The F4 Raycast extension, in https://github.com/kkratterf/f4/tree/main/raycast, has one command, "Search Stickers", that searches the same folder as the app (F4's library, or a folder set in the extension preferences) and copies or pastes a sticker as a file, so animated stickers stay animated there too. It is not in the Raycast Store yet; install it from the repository with `cd raycast && npm install && npm run dev`.
 
 ## Automation: f4:// URLs
 

@@ -46,7 +46,7 @@ export default function SearchMemes() {
         const message = reason instanceof Error ? reason.message : String(reason);
         setError(message);
         setMemes([]);
-        showToast({ style: Toast.Style.Failure, title: "Can't read the meme folder", message });
+        showToast({ style: Toast.Style.Failure, title: "Can't read the sticker folder", message });
       });
   }, [folder]);
 
@@ -57,13 +57,13 @@ export default function SearchMemes() {
       {memes?.length === 0 && (
         <Grid.EmptyView
           icon={error ? Icon.Warning : "icon.png"}
-          title={error ? "Can't read the meme folder" : "F4. Basito. No memes yet"}
+          title={error ? "Can't read the sticker folder" : "F4. Basito. No stickers yet"}
           description={error ?? `Drop GIFs, stickers and JPEGs into ${folder}.`}
         />
       )}
       {memes?.map((meme) => {
-        const copyAction = <Action title="Copy Meme" icon={Icon.Clipboard} onAction={() => copy(meme)} />;
-        const pasteAction = <Action title="Paste Meme" icon={Icon.Text} onAction={() => paste(meme)} />;
+        const copyAction = <Action title="Copy Sticker" icon={Icon.Clipboard} onAction={() => copy(meme)} />;
+        const pasteAction = <Action title="Paste Sticker" icon={Icon.Text} onAction={() => paste(meme)} />;
         return (
           <Grid.Item
             key={meme.path}
