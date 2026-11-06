@@ -200,9 +200,8 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the short 
 
 ## Credits
 
-- The GIFs on the website are powered by [GIPHY](https://giphy.com) and come from the official channels of [The Office](https://giphy.com/theoffice), [Parks and Recreation](https://giphy.com/parksandrec), [NBC](https://giphy.com/nbc), [Brooklyn Nine-Nine](https://giphy.com/brooklynninenine) and [SpongeBob SquarePants](https://giphy.com/spongebob). They belong to their owners and are not part of F4.
 - The animated emoji on the website are [Noto Emoji](https://googlefonts.github.io/noto-emoji-animation/) by Google, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-- The cats in the starter pack's **maramao** folder are internet memes whose authors we don't know. If one of them is yours and you want it out of F4, [open an issue](https://github.com/kkratterf/f4/issues) and it goes.
+- The cats in the starter pack's **maramao** folder, also shown on the website, are internet memes whose authors we don't know. If one of them is yours and you want it out of F4, [open an issue](https://github.com/kkratterf/f4/issues) and it goes.
 - The logo is Stanis from [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)), "F4, basito".
 - Headings on the website use [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (SIL Open Font License 1.1).
 
