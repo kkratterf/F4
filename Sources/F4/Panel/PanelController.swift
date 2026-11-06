@@ -231,14 +231,74 @@ final class PanelController: NSObject, NSWindowDelegate {
         guard keyMonitor == nil else { return }
         keyMonitor = NSEvent.addLocalMonitorForEvents(matching: .keyDown) { [weak self] event in
             guard let self, event.window === self.panel else { return event }
+            // The keyboard leads: the mouse only takes the selection back
+            // once it really moves (`DeckModel.pointerMoved`).
+            self.model.keyboardUsed()
             if self.palette.isOpen { return self.paletteKey(event) ? nil : event }
             self.model.feedKonami(Self.konamiKey(for: event))
             if self.switchTab(for: event) { return nil }
-            if self.command(for: event) { return nil }
+            if let action = self.command(for: event) {
+                Self.later(action)
+                return nil
+            }
             if self.pasteMeme(for: event) { return nil }
-            guard let direction = Self.direction(for: event) else { return event }
-            return self.model.move(direction) ? nil : event
+            if self.pickOrHide(for: event) { return nil }
+            if let direction = Self.direction(for: event) {
+                return self.model.move(direction) ? nil : event
+            }
+            // Anything else is typing: it goes to the search field, even
+            // after a click somewhere in the panel took the focus from it.
+            self.focusSearchField()
+            return event
         }
+    }
+
+    /// Runs `action` after the key event that asked for it is done. A
+    /// rename or tags prompt is a modal alert, and a modal loop started from
+    /// inside the key monitor does not get its keys: the prompt opened
+    /// from the keyboard did nothing, while the same item clicked worked.
+    private static func later(_ action: @escaping @MainActor () -> Void) {
+        DispatchQueue.main.async { MainActor.assumeIsolated { action() } }
+    }
+
+    /// Enter copies the selected sticker and Esc closes the panel, wherever
+    /// the focus is in the panel. Not while an input method is composing,
+    /// whose Enter and Esc belong to the text.
+    private func pickOrHide(for event: NSEvent) -> Bool {
+        guard event.modifierFlags.intersection([.command, .option, .control]).isEmpty else { return false }
+        if let editor = panel.firstResponder as? NSTextView, editor.hasMarkedText() { return false }
+        switch Int(event.keyCode) {
+        case kVK_Return, kVK_ANSI_KeypadEnter:
+            guard let meme = model.selectedMeme else { return false }
+            Self.later { [weak self] in self?.pick(meme) }
+        case kVK_Escape:
+            Self.later { [weak self] in self?.hide() }
+        default:
+            return false
+        }
+        return true
+    }
+
+    /// Gives the search field the focus back, with the caret at the end, if
+    /// something else in the panel took it (a click on a tab or a sticker).
+    private func focusSearchField() {
+        if let editor = panel.firstResponder as? NSTextView, editor.isFieldEditor { return }
+        guard let field = panel.contentView.flatMap(Self.editableField(in:)) else {
+            model.focusSearch()
+            return
+        }
+        panel.makeFirstResponder(field)
+        if let editor = field.currentEditor() {
+            editor.selectedRange = NSRange(location: (editor.string as NSString).length, length: 0)
+        }
+    }
+
+    private static func editableField(in view: NSView) -> NSTextField? {
+        if let field = view as? NSTextField, field.isEditable { return field }
+        for subview in view.subviews {
+            if let field = editableField(in: subview) { return field }
+        }
+        return nil
     }
 
     /// Tab / ⇧Tab cycle through Stickers, Favourites and the folder tabs; ⌘1…⌘9 jump to one. Returns true when
@@ -259,42 +319,65 @@ final class PanelController: NSObject, NSWindowDelegate {
     // MARK: Actions
 
     /// ⌘K actions, ⌘M move to a folder, ⌘D favourite, ⌘R rename, ⌘T tags and, with
-    /// an empty search field, ⌘⌫ to the Trash, on the selected sticker.
-    /// Returns true when the key was taken.
-    private func command(for event: NSEvent) -> Bool {
+    /// an empty search field, ⌘⌫ to the Trash, on the selected sticker: what
+    /// to run for `event`, or nil when it is none of them. The letters are
+    /// read from the keyboard layout, so ⌘T is the key marked T on any layout.
+    private func command(for event: NSEvent) -> (@MainActor () -> Void)? {
         let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
-        guard modifiers == .command, let meme = model.selectedMeme else { return false }
+        guard modifiers == .command, let meme = model.selectedMeme else { return nil }
         let editable = !library.isStarter(meme)
-        switch Int(event.keyCode) {
-        case kVK_ANSI_K:
-            openActions()
-        case kVK_ANSI_D:
-            usage.toggleFavourite(meme)
-        case kVK_ANSI_M where editable:
-            openMoveTo(meme)
-        case kVK_ANSI_R where editable:
-            organize(meme, .rename)
-        case kVK_ANSI_T where editable:
-            organize(meme, .editTags)
-        case kVK_Delete where editable && model.query.isEmpty:
-            organize(meme, .trash)
-        default:
-            return false
+        if Int(event.keyCode) == kVK_Delete {
+            guard editable, model.query.isEmpty else { return nil }
+            return { [weak self] in self?.organize(meme, .trash) }
         }
-        return true
+        switch Self.letter(of: event) {
+        case "k":
+            return { [weak self] in self?.openActions() }
+        case "d":
+            return { [weak self] in self?.usage.toggleFavourite(meme) }
+        case "m" where editable:
+            return { [weak self] in self?.openMoveTo(meme) }
+        case "r" where editable:
+            return { [weak self] in self?.organize(meme, .rename) }
+        case "t" where editable:
+            return { [weak self] in self?.organize(meme, .editTags) }
+        default:
+            return nil
+        }
+    }
+
+    /// The letter a key types on the current layout, lower case; on a
+    /// layout without Latin letters, the letter at that key on a US keyboard.
+    private static func letter(of event: NSEvent) -> Character? {
+        if let typed = event.charactersIgnoringModifiers?.lowercased().first, typed.isASCII, typed.isLetter {
+            return typed
+        }
+        let keys: [Int: Character] = [
+            kVK_ANSI_K: "k", kVK_ANSI_D: "d", kVK_ANSI_M: "m", kVK_ANSI_R: "r", kVK_ANSI_T: "t",
+        ]
+        return keys[Int(event.keyCode)]
     }
 
     /// The keys while the palette is open: arrows move, Enter runs, Escape
-    /// and ⌘K close it; everything else types in its filter field.
+    /// and ⌘K close it, and a sticker shortcut (⌘R, ⌘T, ⌘M, ⌘D, ⌘⌫) closes it
+    /// and runs; everything else types in its filter field.
     private func paletteKey(_ event: NSEvent) -> Bool {
         let modifiers = event.modifierFlags.intersection([.command, .option, .control, .shift])
         switch Int(event.keyCode) {
         case kVK_UpArrow: palette.move(by: -1)
         case kVK_DownArrow: palette.move(by: 1)
-        case kVK_Return, kVK_ANSI_KeypadEnter: palette.runSelected()
+        case kVK_Return, kVK_ANSI_KeypadEnter: Self.later { [palette] in palette.runSelected() }
         case kVK_Escape: palette.close()
-        case kVK_ANSI_K where modifiers == .command: palette.close()
-        default: return false
+        default:
+            if modifiers == .command, Self.letter(of: event) == "k" {
+                palette.close()
+                return true
+            }
+            // ⌘⌫ clears the filter while there is one to clear.
+            if Int(event.keyCode) == kVK_Delete, !palette.filter.isEmpty { return false }
+            guard let action = command(for: event) else { return false }
+            palette.close()
+            Self.later(action)
         }
         return true
     }

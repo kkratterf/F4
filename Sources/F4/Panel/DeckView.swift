@@ -42,11 +42,6 @@ struct DeckView: View {
                     .textFieldStyle(.plain)
                     .font(.system(size: 24, weight: .regular))
                     .focused($searchFocused)
-                    .onSubmit {
-                        if let meme = model.selectedMeme {
-                            onPick(meme)
-                        }
-                    }
             }
             .padding(.horizontal, 20)
             .padding(.vertical, 16)
@@ -105,6 +100,7 @@ struct DeckView: View {
         .onChange(of: palette.isOpen) { if !palette.isOpen { searchFocused = true } }
         // A click on a tab must not leave the search field without focus.
         .onChange(of: model.tab) { searchFocused = true }
+        .onChange(of: model.focusRequests) { searchFocused = true }
         .onChange(of: model.easterEgg) {
             if model.easterEgg?.effect == .barrelRoll {
                 withAnimation(.easeInOut(duration: 1.1)) { roll += 360 }
@@ -417,6 +413,8 @@ private struct TabBar: View {
                 .contentShape(Capsule())
         }
         .buttonStyle(.plain)
+        // A click on a tab never takes the keyboard from the search field.
+        .focusable(false)
         .accessibilityAddTraits(selection == tab ? .isSelected : [])
     }
 
