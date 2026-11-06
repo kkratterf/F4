@@ -12,6 +12,7 @@ final class AppSettings: ObservableObject {
         static let didSeedLibrary = "didSeedLibrary"
         static let seededStarterFolders = "seededStarterFolders"
         static let didShowWelcome = "didShowWelcome"
+        static let didRemoveRetiredStarter = "didRemoveRetiredStarter"
     }
 
     private let defaults: UserDefaults
@@ -38,6 +39,13 @@ final class AppSettings: ObservableObject {
             return defaults.bool(forKey: Key.didSeedLibrary) ? LibraryFolders.firstStarterFolders : []
         }
         set { defaults.set(newValue.sorted(), forKey: Key.seededStarterFolders) }
+    }
+
+    /// Whether the Emoji and F4 starter folders, which F4 stopped shipping
+    /// in 0.7, were moved out of F4's own library (`MemeLibrary`). Once.
+    var didRemoveRetiredStarter: Bool {
+        get { defaults.bool(forKey: Key.didRemoveRetiredStarter) }
+        set { defaults.set(newValue, forKey: Key.didRemoveRetiredStarter) }
     }
 
     /// Whether "Add your stickers" was shown, on the first launch.

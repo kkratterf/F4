@@ -10,10 +10,6 @@ struct DeckView: View {
     @ObservedObject var palette: ActionPalette
     /// The primary action: copy the meme and hide the panel.
     let onPick: (Meme) -> Void
-    /// The + button: pick files to add.
-    let onAdd: () -> Void
-    /// The ⓘ button: how to add stickers.
-    let onHelp: () -> Void
     /// The footer's Actions button: what ⌘K opens.
     let onActions: () -> Void
     /// The user drags the panel by its search bar or footer.
@@ -47,7 +43,7 @@ struct DeckView: View {
             .padding(.vertical, 16)
             .background(WindowDragArea(onDrag: onDrag))
 
-            TabBar(selection: $model.tab, tabs: model.tabs, onAdd: onAdd, onHelp: onHelp)
+            TabBar(selection: $model.tab, tabs: model.tabs)
                 .padding(.horizontal, 16)
                 .padding(.bottom, 10)
 
@@ -365,8 +361,6 @@ private struct SectionHeader: View {
 private struct TabBar: View {
     @Binding var selection: MemeTab
     let tabs: [MemeTab]
-    let onAdd: () -> Void
-    let onHelp: () -> Void
 
     var body: some View {
         HStack(spacing: 4) {
@@ -380,19 +374,6 @@ private struct TabBar: View {
                 }
                 .onChange(of: selection) { proxy.scrollTo(selection) }
             }
-            Button(action: onAdd) {
-                Label("Add", systemImage: "plus")
-                    .font(.system(size: 12, weight: .semibold))
-            }
-            .buttonStyle(.borderless)
-            .help("Add stickers. You can also paste them with ⌘V or drop them here.")
-            Button(action: onHelp) {
-                Image(systemName: "info.circle")
-                    .font(.system(size: 13, weight: .medium))
-            }
-            .buttonStyle(.borderless)
-            .help("How to add stickers")
-            .accessibilityLabel(Text("How to add stickers"))
         }
     }
 

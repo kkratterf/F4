@@ -27,7 +27,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private lazy var library = MemeLibrary(
         folder: settings.memeFolder,
         showsStarterPack: settings.showStarterPack,
-        seededStarterFolders: settings.seededStarterFolders
+        seededStarterFolders: settings.seededStarterFolders,
+        removesRetiredStarter: !settings.didRemoveRetiredStarter
     )
     private let usage = UsageStore()
     private lazy var organizer = LibraryOrganizer(library: library, usage: usage)
@@ -54,6 +55,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         // No Dock icon and no menu bar of our own (also set via LSUIElement in the bundle).
         NSApp.setActivationPolicy(.accessory)
         library.onSeeded = { [weak self] folders in self?.settings.seededStarterFolders = folders }
+        library.onRetiredStarterRemoved = { [weak self] in self?.settings.didRemoveRetiredStarter = true }
         library.reload()
         settings.$memeFolder
             .dropFirst()
@@ -66,7 +68,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             .sink { [weak self] shows in self?.library.setShowsStarterPack(shows) }
             .store(in: &cancellables)
         let panel = PanelController(library: library, usage: usage, organizer: organizer)
-        panel.onHelp = { [weak self] in self?.welcome.show() }
         self.panel = panel
         // Before the shortcut, so a shortcut macOS refuses shows in the menu.
         statusItem = StatusItemController(

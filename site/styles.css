@@ -442,8 +442,7 @@ kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-si
 .f4p-cell img, .pasted img, .clip img { color: transparent; font-size: 0; }
 @media (max-width: 640px) { .mac-screen, .screen { aspect-ratio: 4 / 3.4; } .over { padding-top: 5%; } .screen .f4p { width: 90%; } }
 
-/* Stickers: the starter text stickers, drawn in CSS like make-stickers.swift
-   draws them in the app (fill, dark outline, thick white border, a tilt) */
+/* Stickers: text stickers drawn in CSS (fill, dark outline, thick white border, a tilt) */
 .f4p-cell:has(.tsk), .pasted.sticker { display: grid; place-items: center; container-type: inline-size; }
 .tsk {
   display: inline-block; transform: rotate(var(--t, 0deg));
