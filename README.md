@@ -178,7 +178,7 @@ open dist/F4.app
 
 ## Privacy
 
-F4 has no analytics, no account and no server. It reads the files in your sticker folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); downloading a link you paste or drop into the panel yourself; and downloading a pack you switch on in the menu bar's **Packs**. The update check can be turned off when Sparkle first asks.
+F4 has no analytics, no account and no server. It reads the files in your sticker folder locally and writes the one you pick to the clipboard. It goes online for three things only: the update check against the release feed on [the website](https://f4.kkratter.com/appcast.xml); downloading a link you paste or drop into the panel yourself; and downloading a pack you switch on in the menu bar's **Packs**. The update check can be turned off in Terminal with `defaults write com.kkratterf.f4 SUEnableAutomaticChecks -bool false`.
 
 ## FAQ
 

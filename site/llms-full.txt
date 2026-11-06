@@ -9,7 +9,7 @@
 - Website: https://f4.kkratter.com/ (English) and https://f4.kkratter.com/it/ (Italian); FAQ: https://f4.kkratter.com/faq/
 - Bundle identifier: `com.kkratterf.f4`. The app is `F4.app`; it has no Dock icon and lives in the menu bar.
 - Languages: English, and Italian when macOS runs in Italian.
-- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (can be turned off), to download a link the user pastes or drops into the panel, and to download a pack the user switches on in the menu bar's Packs.
+- Privacy: no analytics, no account, no server. Files are read locally. F4 goes online only for the update check against https://f4.kkratter.com/appcast.xml (turned off with `defaults write com.kkratterf.f4 SUEnableAutomaticChecks -bool false`), to download a link the user pastes or drops into the panel, and to download a pack the user switches on in the menu bar's Packs.
 - Permissions: none needed.
 - The name comes from "F4, basito", the stunned face of Stanis in the Italian TV series Boris.
 
