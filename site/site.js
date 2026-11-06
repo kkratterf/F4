@@ -53,7 +53,7 @@
     var hint = demo.querySelector("[data-demo-hint]");
     var pasted = demo.querySelector("[data-demo-pasted]");
     var cells = Array.prototype.slice.call(demo.querySelectorAll("[data-demo-grid] .f4p-cell"));
-    var words = ["joy", "dai", "skull", "basito", "party", "nope"];
+    var words = ["risata", "boh", "shock", "triste", "ti prego", "bleh"];
     var step = 0;
     var later = function (ms) { return new Promise(function (r) { setTimeout(r, ms); }); };
     var setState = function (s) { demo.setAttribute("data-state", s); };
@@ -118,7 +118,7 @@
         .then(function () { setState("paste"); return later(3400); })
         .then(loop);
     };
-    select("joy");
+    select("boh");
     later(2200).then(loop);
   }
 
