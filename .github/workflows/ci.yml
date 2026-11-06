@@ -53,11 +53,8 @@ jobs:
           test -d "$app/Contents/Frameworks/Sparkle.framework"
           otool -L "$app/Contents/MacOS/F4" | grep Sparkle
           otool -l "$app/Contents/MacOS/F4" | grep -A2 LC_RPATH
-          # Starter pack: committed animated emoji plus stickers drawn at build time.
-          gifs=$(find "$app/Contents/Resources/Starter/Emoji" -name '*.gif' | wc -l)
-          stickers=$(find "$app/Contents/Resources/Starter/F4" -name '*.png' 2>/dev/null | wc -l)
-          test "$gifs" -ge 20 || { echo "::error::starter emoji missing from F4.app ($gifs)"; exit 1; }
-          test "$stickers" -ge 10 || { echo "::error::starter stickers missing from F4.app ($stickers)"; exit 1; }
+          # Starter pack: the maramao cats, and nothing else.
+          test "$(ls "$app/Contents/Resources/Starter")" = maramao || { echo "::error::the starter pack must be maramao alone"; exit 1; }
           cats=$(find "$app/Contents/Resources/Starter/maramao" -name '*.png' | wc -l)
           test "$cats" -ge 12 || { echo "::error::maramao cats missing from F4.app ($cats)"; exit 1; }
           # Smoke test: the app must launch and stay up.
@@ -82,7 +79,7 @@ jobs:
           # Copies a starter sticker without showing the panel, through Launch
           # Services: the copy F4 put in its own library on the first launch.
           printf 'nothing' | pbcopy
-          open "f4://copy?name=clown"
+          open "f4://copy?name=boh"
           copied=""
           for _ in 1 2 3 4 5 6 7 8 9 10; do
             sleep 1
@@ -92,8 +89,8 @@ jobs:
           pkill -x F4 || true
           echo "clipboard: $copied"
           case "$copied" in
-            */Application%20Support/F4/Memes/Emoji/clown.gif) ;;
-            *) echo "::error::f4://copy?name=clown did not copy the clown sticker from F4's library"; exit 1 ;;
+            */Application%20Support/F4/Memes/maramao/boh.png) ;;
+            *) echo "::error::f4://copy?name=boh did not copy the boh sticker from F4's library"; exit 1 ;;
           esac
 
       - name: Screenshot the UI
@@ -113,11 +110,11 @@ jobs:
           open "f4://open"
           sleep 3
           screencapture -x dist/ui/1-panel.png
-          open "f4://search?q=clown"
+          open "f4://search?q=boh"
           sleep 3
           screencapture -x dist/ui/2-search.png
           # The "Copied to Clipboard" toast, caught before it fades.
-          open "f4://copy?name=clown"
+          open "f4://copy?name=boh"
           sleep 0.6
           screencapture -x dist/ui/3-toast.png
           sleep 2
@@ -153,7 +150,7 @@ jobs:
           open "f4://open"
           sleep 3
           # Copying hides the panel.
-          open "f4://copy?name=clown"
+          open "f4://copy?name=boh"
           sleep 3
           open "f4://open"
           sleep 3

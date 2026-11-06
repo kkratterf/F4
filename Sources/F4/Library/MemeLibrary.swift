@@ -25,15 +25,26 @@ final class MemeLibrary: ObservableObject {
     var onSeeded: ((Set<String>) -> Void)?
     /// The top-level starter folders already copied into F4's own library.
     private var seededStarterFolders: Set<String>
+    /// Whether the Emoji and F4 starter folders of 0.6 and earlier are
+    /// still to be moved to the Trash (`LibraryFolders.retiredStarterFiles`).
+    private var removesRetiredStarter: Bool
+    /// Called once they were, so it happens once (`AppSettings.didRemoveRetiredStarter`).
+    var onRetiredStarterRemoved: (() -> Void)?
     /// Whether this launch already looked for starter folders to copy.
     private var didCheckStarter = false
     private var scanTask: Task<Void, Never>?
     private var watcher: FolderWatcher?
 
-    init(folder: URL = MemeScanner.defaultFolder, showsStarterPack: Bool = true, seededStarterFolders: Set<String> = []) {
+    init(
+        folder: URL = MemeScanner.defaultFolder,
+        showsStarterPack: Bool = true,
+        seededStarterFolders: Set<String> = [],
+        removesRetiredStarter: Bool = false
+    ) {
         self.folder = folder
         self.showsStarterPack = showsStarterPack
         self.seededStarterFolders = seededStarterFolders
+        self.removesRetiredStarter = removesRetiredStarter
     }
 
     /// Whether the folder is F4's own library (`LibraryFolders.appLibrary`).
@@ -97,10 +108,13 @@ final class MemeLibrary: ObservableObject {
         let starter = showsStarterPack && !isAppLibrary ? Self.starterFolder : nil
         let seedFrom = !didCheckStarter && isAppLibrary ? Self.starterFolder : nil
         let alreadySeeded = seededStarterFolders
+        let retire = isAppLibrary && removesRetiredStarter
+        if retire { removesRetiredStarter = false }
         scanTask = Task { [weak self] in
             let result = await Task.detached(priority: .userInitiated) { () -> Result<([Meme], [String], Set<String>?), Error> in
                 Result {
                     try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+                    if retire { Self.trashRetiredStarter(in: folder) }
                     let seeded = seedFrom.flatMap { Self.copyStarterPack(from: $0, into: folder, seeded: alreadySeeded) }
                     let own = try MemeScanner.scan(folder: folder)
                     // The user's memes first; the starter pack never fails the scan.
@@ -108,7 +122,9 @@ final class MemeLibrary: ObservableObject {
                     return (own + builtIn, MemeScanner.folders(in: folder), seeded)
                 }
             }.value
-            guard !Task.isCancelled, let self else { return }
+            guard let self else { return }
+            if retire { self.onRetiredStarterRemoved?() }
+            guard !Task.isCancelled else { return }
             defer { if !self.hasLoaded { self.hasLoaded = true } }
             switch result {
             case .success(let (memes, folders, seeded)):
@@ -132,7 +148,7 @@ final class MemeLibrary: ObservableObject {
         }
     }
 
-    /// Copies the starter folders (Emoji/, F4/, maramao/) not in `seeded`
+    /// Copies the starter folders (maramao/ today) not in `seeded`
     /// into `folder`, skipping files already there, so the memes become the
     /// user's to move or delete. Returns every top-level starter folder when
     /// it ran to the end, nil otherwise. Blocking: off the main thread.
@@ -155,6 +171,30 @@ final class MemeLibrary: ObservableObject {
             }
         }
         return Set(relative.map(LibraryFolders.topFolder(of:)))
+    }
+
+    /// Moves to the Trash the starter stickers F4 no longer ships (Emoji/
+    /// and F4/, copied up to 0.6), where they still are, then each of those
+    /// folders left with nothing in it. Anything the user added, renamed or
+    /// moved stays. Blocking: off the main thread.
+    nonisolated private static func trashRetiredStarter(in folder: URL) {
+        let fileManager = FileManager.default
+        for path in LibraryFolders.retiredStarterFiles {
+            let url = folder.appendingPathComponent(path)
+            guard fileManager.fileExists(atPath: url.path) else { continue }
+            do {
+                try fileManager.trashItem(at: url, resultingItemURL: nil)
+            } catch {
+                NSLog("F4: could not move the old starter sticker %@ to the Trash: %@", path, error.localizedDescription)
+            }
+        }
+        for name in LibraryFolders.retiredStarterFolders {
+            let url = folder.appendingPathComponent(name, isDirectory: true)
+            guard let contents = try? fileManager.contentsOfDirectory(atPath: url.path),
+                  contents.allSatisfy({ $0 == ".DS_Store" })
+            else { continue }
+            try? fileManager.trashItem(at: url, resultingItemURL: nil)
+        }
     }
 
     /// Starts the folder watcher once the folder exists (the first scan creates

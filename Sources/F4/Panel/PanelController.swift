@@ -2,7 +2,6 @@ import AppKit
 import Carbon.HIToolbox
 import F4Core
 import SwiftUI
-import UniformTypeIdentifiers
 
 /// Owns the floating panel and shows or hides it.
 ///
@@ -25,8 +24,6 @@ final class PanelController: NSObject, NSWindowDelegate {
     private var didDrag = false
 
     private let usage: UsageStore
-    /// The ⓘ button: shows how to add stickers.
-    var onHelp: (() -> Void)?
     /// ⌘K and ⌘M: the actions over the panel.
     private let palette = ActionPalette()
     private let organizer: LibraryOrganizer
@@ -43,11 +40,6 @@ final class PanelController: NSObject, NSWindowDelegate {
             library: library,
             palette: palette,
             onPick: { [weak self] meme in self?.pick(meme) },
-            onAdd: { [weak self] in self?.chooseFiles() },
-            onHelp: { [weak self] in
-                self?.hide()
-                self?.onHelp?()
-            },
             onActions: { [weak self] in self?.openActions() },
             onDrag: { [weak self] drag in self?.drag(drag) },
             onOrganize: { [weak self] meme, action in self?.organize(meme, action) }
@@ -107,45 +99,9 @@ final class PanelController: NSObject, NSWindowDelegate {
         }
     }
 
-    /// Set while the Add button's file picker or an organizing prompt is
-    /// open: it takes the focus, and the panel must stay for the result.
+    /// Set while an organizing prompt is open: it takes the focus, and the
+    /// panel must stay for the result.
     private var isShowingDialog = false
-
-    /// The Add button: a file picker. F4 comes to the front for it (an open
-    /// panel needs an active app), and the panel waits behind it.
-    ///
-    /// The picker only chooses files: they are copied into the meme folder,
-    /// wherever they are. It starts in Downloads, where saved GIFs usually
-    /// land, instead of the last folder any app's picker was in.
-    private func chooseFiles() {
-        let picker = NSOpenPanel()
-        picker.directoryURL = FileManager.default.urls(for: .downloadsDirectory, in: .userDomainMask).first
-        picker.canChooseFiles = true
-        picker.canChooseDirectories = false
-        picker.allowsMultipleSelection = true
-        picker.allowedContentTypes = MemeKind.allCases.compactMap { UTType($0.typeIdentifier) }
-            + [UTType(filenameExtension: "wastickers"), UTType.zip].compactMap { $0 }
-        picker.prompt = String(localized: "Add")
-        picker.message = String(localized: "Choose stickers or WhatsApp sticker packs (.wastickers) to add. F4 copies them into its own folder, so the originals can stay where they are.")
-        isShowingDialog = true
-        NSApp.activate(ignoringOtherApps: true)
-        picker.level = .modalPanel
-        picker.begin { [weak self] response in
-            guard let self else { return }
-            self.isShowingDialog = false
-            self.panel.makeKeyAndOrderFront(nil)
-            guard response == .OK else { return }
-            let urls = picker.urls
-            let folder = self.targetFolder
-            Task {
-                do {
-                    self.added(try await MemeImporter.importFiles(urls, into: folder))
-                } catch {
-                    self.failed(error)
-                }
-            }
-        }
-    }
 
     /// Moves, renames or trashes a meme from its right-click menu. A prompt
     /// (a name to type) brings F4 to the front; the panel stays behind it
@@ -481,7 +437,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     // MARK: NSWindowDelegate
 
     func windowDidResignKey(_ notification: Notification) {
-        // The Add button's file picker and the organizing prompts take the focus for a while.
+        // The organizing prompts take the focus for a while.
         if isShowingDialog { return }
         // A press in another app may be the start of a drag towards the
         // panel (a sticker out of WhatsApp or a file out of Finder): stay

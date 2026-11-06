@@ -31,26 +31,6 @@
         }
       }
     },
-    "Add": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi"
-          }
-        }
-      }
-    },
-    "Add stickers. You can also paste them with ⌘V or drop them here.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Aggiungi sticker. Puoi anche incollarli con ⌘V o trascinarli qui."
-          }
-        }
-      }
-    },
     "Add to Favourites": {
       "localizations": {
         "it": {
@@ -158,16 +138,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Controlla aggiornamenti…"
-          }
-        }
-      }
-    },
-    "Choose stickers or WhatsApp sticker packs (.wastickers) to add. F4 copies them into its own folder, so the originals can stay where they are.": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Scegli gli sticker o i pacchetti di sticker di WhatsApp (.wastickers) da aggiungere. F4 li copia nella sua cartella, gli originali possono restare dove sono."
           }
         }
       }
@@ -358,16 +328,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Da qualsiasi app."
-          }
-        }
-      }
-    },
-    "How to add stickers": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Come aggiungere sticker"
           }
         }
       }

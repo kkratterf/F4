@@ -88,23 +88,15 @@ else
   echo "warning: Resources/AppIcon.icns missing, building without an icon" >&2
 fi
 
-# Starter pack (issue #92): what a new user sees before adding their own:
-# Emoji/ (animated emoji stickers), F4/ (stickers drawn in code) and
-# maramao/ (meme cats the maintainer chose, added in 0.5.0).
-# The GIFs are Google's Noto Animated Emoji (CC BY 4.0, credited in the app
-# and the README); the stickers are drawn in code. MemeLibrary copies them
-# into F4's own library (~/Library/Application Support/F4/Memes), each
-# top-level folder once.
+# Starter pack (issue #92): what a new user sees before adding their own.
+# Since 0.7 it is maramao/ alone (meme cats the maintainer chose, added in
+# 0.5.0, the maintainer's call). MemeLibrary copies it into F4's own
+# library (~/Library/Application Support/F4/Memes), each top-level folder once.
 STARTER="$RES/Starter"
 rm -rf "$STARTER"
-mkdir -p "$STARTER/Emoji"
-ditto "$ROOT/Resources/Starter/GIFs" "$STARTER/Emoji"
-# The maramao cats: meme stickers the maintainer chose, as they are.
+mkdir -p "$STARTER"
 ditto "$ROOT/Resources/Starter/maramao" "$STARTER/maramao"
-if ! swift "$ROOT/scripts/make-stickers.swift" "$STARTER/F4"; then
-  echo "warning: could not draw the starter stickers, building without them" >&2
-fi
-echo "Starter pack: $(find "$STARTER/Emoji" -name '*.gif' | wc -l | tr -d ' ') animated emoji, $(find "$STARTER/F4" -name '*.png' | wc -l | tr -d ' ') drawn stickers, $(find "$STARTER/maramao" -name '*.png' | wc -l | tr -d ' ') maramao cats"
+echo "Starter pack: $(find "$STARTER/maramao" -name '*.png' | wc -l | tr -d ' ') maramao cats"
 
 # Sticker packs: links only, never files. PackDownloader fetches them into
 # the library when the user switches a pack on in the menu bar's Packs.

@@ -91,6 +91,29 @@ public enum LibraryFolders {
     /// kept a list of them (`didSeedLibrary` was a single flag).
     public static let firstStarterFolders: Set<String> = ["Emoji", "F4"]
 
+    /// The starter folders F4 copied into its library up to 0.6 and no
+    /// longer ships: since 0.7 the starter pack is maramao alone (the
+    /// maintainer's call).
+    public static let retiredStarterFolders: Set<String> = ["Emoji", "F4"]
+
+    /// The files those folders held, relative to the library. F4 moves to
+    /// the Trash only these, where they still are, and then a retired
+    /// folder left empty: a sticker the user added there stays.
+    public static let retiredStarterFiles: [String] = {
+        let emoji: [String] = [
+            "100", "broken heart", "clap applause", "clown", "cool sunglasses", "crying sob",
+            "eye roll", "eyes", "fire", "grimace yikes", "heart eyes love", "melting",
+            "mind blown", "nerd actually", "party", "pleading puppy eyes", "please thank you",
+            "rolling on the floor laughing", "salute", "scream shock", "skull dead",
+            "sweat smile awkward", "tada congrats", "tears of joy", "thinking hmm", "thumbs up ok",
+        ]
+        let drawn: [String] = [
+            "f4 keycap", "basito", "dai dai dai", "smarmella", "apri tutto", "lol", "nope", "same",
+            "plus one", "ship it", "big mood", "bruh", "wow",
+        ]
+        return emoji.map { "Emoji/\($0).gif" } + drawn.map { "F4/\($0).png" }
+    }()
+
     /// The top-level folder of a path relative to the starter pack
     /// ("maramao/boh.png" is in "maramao"); a file at the top is its own.
     public static func topFolder(of path: String) -> String {

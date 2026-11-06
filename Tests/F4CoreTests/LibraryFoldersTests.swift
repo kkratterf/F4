@@ -90,6 +90,16 @@ final class LibraryFoldersTests: XCTestCase {
         XCTAssertEqual(LibraryFolders.topFolder(of: "top.png"), "top.png")
     }
 
+    func testTheRetiredStarterFilesAreOnlyEmojiAndF4() {
+        let files = LibraryFolders.retiredStarterFiles
+        XCTAssertEqual(files.count, 39)
+        XCTAssertEqual(Set(files).count, files.count)
+        XCTAssertEqual(Set(files.map(LibraryFolders.topFolder(of:))), LibraryFolders.retiredStarterFolders)
+        XCTAssertTrue(files.contains("Emoji/clown.gif"))
+        XCTAssertTrue(files.contains("F4/basito.png"))
+        XCTAssertFalse(LibraryFolders.retiredStarterFolders.contains("maramao"))
+    }
+
     func testRelocatedPathFollowsMovesAndRenames() {
         XCTAssertEqual(LibraryFolders.relocatedPath("/m/a.gif", from: "/m/a.gif", to: "/m/b.gif"), "/m/b.gif")
         XCTAssertEqual(LibraryFolders.relocatedPath("/m/cats/a.gif", from: "/m/cats", to: "/m/dogs"), "/m/dogs/a.gif")
