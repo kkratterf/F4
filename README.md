@@ -21,7 +21,7 @@ Stickers like on WhatsApp, but for the whole Mac. Press **F4**, type a few lette
 curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh
 ```
 
-or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F4.dmg), or use [Homebrew](#3-homebrew). F4 is not notarized yet: see [first launch](#4-first-launch-and-gatekeeper) if macOS blocks it.
+or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F4.dmg), or use [Homebrew](#3-homebrew). F4 is signed with a Developer ID and notarized by Apple, so it opens like any other app.
 
 ---
 
@@ -125,19 +125,13 @@ The tap lives in this repository (`Casks/f4.rb`) and is updated by every release
 
 ### 4. First launch and Gatekeeper
 
-F4 is not notarized by Apple yet, so the first time you open a copy from the DMG or the zip macOS says it cannot verify the developer. To open it anyway:
+Since 0.7.1, F4 is signed with a Developer ID and notarized by Apple: open it from Applications and macOS asks only once whether to open an app downloaded from the internet.
 
-1. Try to open it once and close the warning.
-2. Go to **System Settings → Privacy & Security**, scroll down and click **Open Anyway** next to the message about F4.
-3. Enter your Mac password and confirm.
-
-Or clear the quarantine flag in Terminal:
+Versions up to 0.7.0 were not notarized. If macOS says it cannot verify the developer of one of those, go to **System Settings → Privacy & Security** and click **Open Anyway** next to the message about F4, or clear the quarantine flag in Terminal:
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/F4.app
 ```
-
-The install script does this for you. You only need to do it once per version.
 
 ### 5. Where is it?
 

@@ -43,12 +43,9 @@ Every release on https://github.com/kkratterf/f4/releases ships `F4-x.y.z.zip`, 
 
 ### First launch and Gatekeeper
 
-F4 is not notarized by Apple yet, so the first launch of a copy from the DMG or the zip shows "Apple could not verify F4 is free of malware" (or "cannot verify the developer"). To open it:
+Since 0.7.1, F4 is signed with a Developer ID Application certificate, with the hardened runtime, and notarized by Apple; the ticket is stapled to the app and the DMG, so Gatekeeper opens it even offline, after the usual "downloaded from the internet" question.
 
-1. Open F4 once and close the warning.
-2. System Settings > Privacy & Security, scroll down, click "Open Anyway" next to the message about F4, enter the Mac password.
-
-Or, in Terminal: `xattr -dr com.apple.quarantine /Applications/F4.app`. The install script does this already. It is needed once per downloaded version, not after automatic updates.
+Versions up to 0.7.0 were not notarized: their first launch shows "Apple could not verify F4 is free of malware" (or "cannot verify the developer"). For those, go to System Settings > Privacy & Security and click "Open Anyway" next to the message about F4, or run `xattr -dr com.apple.quarantine /Applications/F4.app`, or update to the latest version.
 
 ### Where is it after installing?
 
