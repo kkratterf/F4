@@ -1,6 +1,6 @@
 # F4
 
-> F4 is a free, open-source sticker app for macOS, like WhatsApp stickers but for the whole Mac: a Spotlight-like floating panel that searches a local library of stickers (PNG, WebP, GIF, JPEG, animated ones included) and copies one to the clipboard in a keystroke, ready to paste in WhatsApp, Slack, Telegram or any other app. Native Swift app (SwiftUI and AppKit), macOS 14 Sonoma or later, Apple Silicon and Intel, MIT license, no special permissions, no tracking, no account. The interface is English, with an Italian translation when macOS runs in Italian. Website: https://f4.kkratter.com/ (English) and https://f4.kkratter.com/it/ (Italian). FAQ: https://f4.kkratter.com/faq/
+> F4 is a free, open-source sticker app for macOS, like WhatsApp stickers but for the whole Mac: a Spotlight-like floating panel that searches a local library of stickers (PNG, WebP, GIF, JPEG, animated ones included) and copies one to the clipboard in a keystroke, ready to paste in Slack, Discord, Teams, Telegram or any other app. Native Swift app (SwiftUI and AppKit), macOS 14 Sonoma or later, Apple Silicon and Intel, MIT license, no special permissions, no tracking, no account. The interface is English, with an Italian translation when macOS runs in Italian. Website: https://f4.kkratter.com/ (English) and https://f4.kkratter.com/it/ (Italian). FAQ: https://f4.kkratter.com/faq/
 
 Key facts:
 

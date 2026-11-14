@@ -18,7 +18,7 @@
   <a href="#install">Other ways to install</a>
 </p>
 
-Stickers like on WhatsApp, but for the whole Mac. Press **fn F4**, type a few letters, hit Enter: the sticker is on your clipboard, animation included, ready to paste into WhatsApp, Slack, Discord, Telegram or anywhere else. A native macOS app in Swift (SwiftUI and AppKit), free and open source, with no account and no tracking.
+Stickers like on WhatsApp, but for the whole Mac. Press **fn F4**, type a few letters, hit Enter: the sticker is on your clipboard, animation included, ready to paste into Slack, Discord, Teams, Telegram or anywhere else. A native macOS app in Swift (SwiftUI and AppKit), free and open source, with no account and no tracking.
 
 *F4, basito.* Named after the most famous face in [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)).
 
