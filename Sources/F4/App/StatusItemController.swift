@@ -26,6 +26,8 @@ final class StatusItemController: NSObject, NSMenuDelegate, NSWindowDelegate {
     private let packs: PackDownloader
     private let onOpen: () -> Void
     private let onHelp: () -> Void
+    /// "Add Stickers…": the window stickers are dropped into.
+    private let onAddStickers: () -> Void
     private let recentMemes: () -> [Meme]
     private let onCopy: (Meme) -> Void
     /// A sticker, an image or a link dropped on the icon.
@@ -48,6 +50,7 @@ final class StatusItemController: NSObject, NSMenuDelegate, NSWindowDelegate {
         onCopy: @escaping (Meme) -> Void,
         onDrop: @escaping (NSPasteboard) -> Void,
         onOpen: @escaping () -> Void,
+        onAddStickers: @escaping () -> Void,
         onHelp: @escaping () -> Void
     ) {
         self.settings = settings
@@ -59,6 +62,7 @@ final class StatusItemController: NSObject, NSMenuDelegate, NSWindowDelegate {
         self.onDrop = onDrop
         self.onOpen = onOpen
         self.onHelp = onHelp
+        self.onAddStickers = onAddStickers
         self.shortcut = shortcut
         super.init()
         menu.delegate = self
@@ -162,6 +166,7 @@ final class StatusItemController: NSObject, NSMenuDelegate, NSWindowDelegate {
         }
         items.append(.separator())
         items.append(foldersItem())
+        items.append(item(String(localized: "Add Stickers…")) { [weak self] in self?.onAddStickers() })
         if !packs.packs.isEmpty {
             items.append(packsItem())
         }

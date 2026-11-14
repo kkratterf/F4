@@ -27,7 +27,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 
 ## How it works
 
-1. Copy any sticker or image (⌘C: in WhatsApp, right-click a sticker → Copy), press **fn F4** and paste it with **⌘V**: F4 keeps it as a sticker. You can also drop files on the panel, or drag a sticker out of any app onto F4's icon in the menu bar, and switch on the packs you want from the menu bar (**Packs**). They go in F4's own library, `~/Library/Application Support/F4/Memes`, which comes with a starter pack already in it. Subfolders become categories.
+1. Copy any sticker or image (⌘C: in WhatsApp, right-click a sticker → Copy), press **fn F4** and paste it with **⌘V**: F4 keeps it as a sticker. You can also drop files on the panel, drag a sticker out of any app onto F4's icon in the menu bar, or open **Add Stickers…** in the menu bar: a window that stays open to drop stickers into (from WhatsApp too) or to pick images in Finder, and switch on the packs you want from the menu bar (**Packs**). They go in F4's own library, `~/Library/Application Support/F4/Memes`, which comes with a starter pack already in it. Subfolders become categories.
 2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
 3. Type to search, move with the arrow keys, press **Enter**. The sticker is copied and a small **Copied to Clipboard** toast says so; paste it with ⌘V wherever you want.
 
@@ -78,7 +78,7 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 F4 has no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
 
 - **Open F4** and your **Recent Stickers**.
-- **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder) and **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its stickers into a folder named after it, off moves that folder to the Trash).
+- **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Add Stickers…** (a window that stays open above other apps: drop stickers into it, from WhatsApp too, or click it to pick images in Finder) and **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its stickers into a folder named after it, off moves that folder to the Trash).
 - **Show Starter Pack**, only if you use a sticker folder picked in a version before 0.4.3.
 - **Check for Updates…** and **Quit F4**.
 

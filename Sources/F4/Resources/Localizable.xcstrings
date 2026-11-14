@@ -31,6 +31,46 @@
         }
       }
     },
+    "Add": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi"
+          }
+        }
+      }
+    },
+    "Add Stickers": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carica sticker"
+          }
+        }
+      }
+    },
+    "Add Stickers…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carica sticker…"
+          }
+        }
+      }
+    },
+    "Add to": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi in"
+          }
+        }
+      }
+    },
     "Add to Favourites": {
       "localizations": {
         "it": {
@@ -218,6 +258,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Download di %@…"
+          }
+        }
+      }
+    },
+    "Drag them out of WhatsApp, a browser or Finder, or click to choose images on your Mac.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascinali da WhatsApp, da un browser o dal Finder, oppure clicca per scegliere le immagini sul tuo Mac."
+          }
+        }
+      }
+    },
+    "Drop stickers here": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina qui gli sticker"
           }
         }
       }
