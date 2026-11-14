@@ -186,14 +186,21 @@ final class DeckModel: ObservableObject {
         openCount += 1
     }
 
-    /// Recomputes the results from the memes of the current tab: favourites
-    /// and recents first while the query is empty, best fuzzy matches otherwise.
+    /// Recomputes the results from the memes of the current tab: the last
+    /// used first in Stickers (favourites first in the other tabs) while the
+    /// query is empty, best fuzzy matches otherwise.
     private func refresh(keepSelection: Bool = false) {
         let selected = selectedMeme
         let egg = query.isEmpty && konamiActive ? EasterEggs.konami : EasterEggs.match(query)
         if easterEgg != egg { easterEgg = egg }
         let memes = tab.filter(library.memes, favourites: usage.favourites)
-        let arranged = { MemeOrdering.arrange(memes, favourites: self.usage.favourites, recents: self.usage.recents) }
+        let arranged = {
+            // Stickers: the last used first. Favourites and folder tabs:
+            // favourites, then recents, then folder order.
+            self.tab == .all
+                ? MemeOrdering.byLastUse(memes, recents: self.usage.recents)
+                : MemeOrdering.arrange(memes, favourites: self.usage.favourites, recents: self.usage.recents)
+        }
         if let egg, egg.showsAllMemes {
             switch egg.effect {
             case .favouritesOnly:

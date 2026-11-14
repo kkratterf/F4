@@ -39,4 +39,32 @@ final class MemeOrderingTests: XCTestCase {
         let capped = MemeOrdering.recording(url("d"), in: recents, limit: 3)
         XCTAssertEqual(capped, [url("d"), url("b"), url("a")])
     }
+
+    private func meme(_ name: String, added seconds: TimeInterval) -> Meme {
+        Meme(url: URL(fileURLWithPath: "/m/\(name).gif"), kind: .gif, modificationDate: Date(timeIntervalSince1970: seconds))
+    }
+
+    func testLastUseOrderPutsRecentsFirstThenNewestAdded() {
+        let memes = [meme("old", added: 10), meme("new", added: 30), meme("mid", added: 20), meme("used", added: 5)]
+        let ordered = MemeOrdering.byLastUse(memes, recents: [url("used"), url("mid")])
+        XCTAssertEqual(ordered.map(\.name), ["used", "mid", "new", "old"])
+    }
+
+    func testLastUseOrderDoesNotPinFavourites() {
+        // Favourites have their own tab: in Stickers only the last use counts.
+        let ordered = MemeOrdering.byLastUse(memes, recents: [url("d"), url("b")])
+        XCTAssertEqual(ordered.map(\.name), ["d", "b", "a", "c", "e"])
+    }
+
+    func testLastUseOrderKeepsFolderOrderForTheSameDate() {
+        XCTAssertEqual(MemeOrdering.byLastUse(memes, recents: []).map(\.name), ["a", "b", "c", "d", "e"])
+        XCTAssertEqual(MemeOrdering.byLastUse(memes, recents: [url("gone")]).map(\.name), ["a", "b", "c", "d", "e"])
+    }
+
+    func testRecordingRemembersEnoughForTheStickersTab() {
+        var recents: [URL] = []
+        for index in 0..<600 { recents = MemeOrdering.recording(url("s\(index)"), in: recents) }
+        XCTAssertEqual(recents.count, MemeOrdering.recentsLimit)
+        XCTAssertEqual(recents.first, url("s599"))
+    }
 }
