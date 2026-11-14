@@ -35,12 +35,15 @@ name: Release
 # secrets are set too, the app and the DMG are notarized by Apple and the
 # tickets stapled (scripts/notarize.sh), so Gatekeeper opens the download with
 # no "Open Anyway". Without them the build stays ad-hoc signed, with a warning.
-#   DEVELOPER_ID_P12_BASE64      the "Developer ID Application" certificate and
-#                                its private key, exported as .p12, in base64
-#   DEVELOPER_ID_P12_PASSWORD    the password of that .p12
-#   APPLE_ID                     the Apple Account of the developer team
-#   APPLE_APP_SPECIFIC_PASSWORD  an app-specific password of that account
-#   APPLE_TEAM_ID                the 10-character team ID
+#   APPLE_DEVELOPER_ID_P12_BASE64    the "Developer ID Application" certificate
+#                                    and its private key, as .p12, in base64
+#   APPLE_DEVELOPER_ID_P12_PASSWORD  the password of that .p12
+#   APPLE_TEAM_ID                    the 10-character team ID (checked
+#                                    against the certificate)
+#   APPLE_NOTARY_KEY_ID              App Store Connect API key for notarytool:
+#   APPLE_NOTARY_ISSUER_ID           its ID, its issuer ID and the .p8 file
+#   APPLE_NOTARY_KEY_P8_BASE64       in base64 (or, instead, APPLE_ID and
+#                                    APPLE_APP_SPECIFIC_PASSWORD)
 on:
   push:
     branches: [main]
@@ -107,6 +110,9 @@ jobs:
     needs: version
     if: needs.version.outputs.release == 'true'
     runs-on: macos-15
+    # The first notarizations of a team can take hours (scripts/notarize.sh
+    # waits up to 3 hours for each of the app and the DMG).
+    timeout-minutes: 420
     permissions:
       contents: write
       # To start the Pages deploy after the appcast commit (pushes made with
@@ -134,8 +140,11 @@ jobs:
       - name: Import the Developer ID certificate
         id: signing
         env:
-          P12_BASE64: ${{ secrets.DEVELOPER_ID_P12_BASE64 }}
-          P12_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+          P12_BASE64: ${{ secrets.APPLE_DEVELOPER_ID_P12_BASE64 }}
+          P12_PASSWORD: ${{ secrets.APPLE_DEVELOPER_ID_P12_PASSWORD }}
+          APPLE_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
+          APPLE_NOTARY_ISSUER_ID: ${{ secrets.APPLE_NOTARY_ISSUER_ID }}
+          APPLE_NOTARY_KEY_P8_BASE64: ${{ secrets.APPLE_NOTARY_KEY_P8_BASE64 }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
@@ -143,7 +152,7 @@ jobs:
           if [ -z "$P12_BASE64" ]; then
             echo "signed=false" >> "$GITHUB_OUTPUT"
             echo "notarize=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::DEVELOPER_ID_P12_BASE64 is not set: F4 is ad-hoc signed and not notarized, so macOS asks users to Open Anyway"
+            echo "::warning::APPLE_DEVELOPER_ID_P12_BASE64 is not set: F4 is ad-hoc signed and not notarized, so macOS asks users to Open Anyway"
             exit 0
           fi
           # A throwaway keychain that only this job uses, deleted at the end.
@@ -163,7 +172,7 @@ jobs:
           identity=$(security find-identity -v -p codesigning "$keychain" \
             | grep -o '"Developer ID Application: [^"]*"' | head -n 1 | tr -d '"')
           if [ -z "$identity" ]; then
-            echo "::error::No \"Developer ID Application\" identity in DEVELOPER_ID_P12_BASE64 (export the certificate together with its private key)"
+            echo "::error::No \"Developer ID Application\" identity in APPLE_DEVELOPER_ID_P12_BASE64 (export the certificate together with its private key)"
             security find-identity -v -p codesigning "$keychain"
             exit 1
           fi
@@ -175,11 +184,15 @@ jobs:
           echo "SIGN_IDENTITY=$identity" >> "$GITHUB_ENV"
           echo "keychain=$keychain" >> "$GITHUB_OUTPUT"
           echo "signed=true" >> "$GITHUB_OUTPUT"
-          if [ -n "$APPLE_ID" ] && [ -n "$APPLE_APP_SPECIFIC_PASSWORD" ] && [ -n "$APPLE_TEAM_ID" ]; then
+          if [ -n "$APPLE_NOTARY_KEY_P8_BASE64" ] && [ -n "$APPLE_NOTARY_KEY_ID" ] && [ -n "$APPLE_NOTARY_ISSUER_ID" ]; then
+            echo "::notice::Notarizing with the App Store Connect API key $APPLE_NOTARY_KEY_ID"
+            echo "notarize=true" >> "$GITHUB_OUTPUT"
+          elif [ -n "$APPLE_ID" ] && [ -n "$APPLE_APP_SPECIFIC_PASSWORD" ] && [ -n "$APPLE_TEAM_ID" ]; then
+            echo "::notice::Notarizing with an Apple Account and an app-specific password"
             echo "notarize=true" >> "$GITHUB_OUTPUT"
           else
             echo "notarize=false" >> "$GITHUB_OUTPUT"
-            echo "::warning::APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD or APPLE_TEAM_ID is not set: F4 is signed but not notarized"
+            echo "::warning::No notary credentials (APPLE_NOTARY_KEY_ID, APPLE_NOTARY_ISSUER_ID, APPLE_NOTARY_KEY_P8_BASE64): F4 is signed but not notarized"
           fi
 
       - name: Build F4.app
@@ -188,6 +201,9 @@ jobs:
       - name: Notarize F4.app
         if: steps.signing.outputs.notarize == 'true'
         env:
+          APPLE_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
+          APPLE_NOTARY_ISSUER_ID: ${{ secrets.APPLE_NOTARY_ISSUER_ID }}
+          APPLE_NOTARY_KEY_P8_BASE64: ${{ secrets.APPLE_NOTARY_KEY_P8_BASE64 }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
@@ -200,6 +216,9 @@ jobs:
       - name: Build the DMG
         env:
           NOTARIZE: ${{ steps.signing.outputs.notarize }}
+          APPLE_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
+          APPLE_NOTARY_ISSUER_ID: ${{ secrets.APPLE_NOTARY_ISSUER_ID }}
+          APPLE_NOTARY_KEY_P8_BASE64: ${{ secrets.APPLE_NOTARY_KEY_P8_BASE64 }}
           APPLE_ID: ${{ secrets.APPLE_ID }}
           APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
