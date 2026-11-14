@@ -1,0 +1,45 @@
+<!doctype html>
+<!-- README banner (Resources/readme/banner.jpg), rendered by scripts/render-og.mjs.
+     Same look as the social card (og.html), in a wide strip, like Maramao's.
+     Bricolage Grotesque is by Ateliertriay, SIL Open Font License 1.1 (site/fonts/). -->
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  @font-face { font-family: "Bricolage Grotesque"; font-weight: 200 800; src: url(../../site/fonts/bricolage-grotesque-latin.wght.woff2) format("woff2"); }
+  html, body { margin: 0; background: #0a0908; }
+  #card { position: relative; width: 1280px; height: 440px; overflow: hidden; font-family: Inter, -apple-system, system-ui, sans-serif; color: #f4efe9; }
+  .grainient, .grainient canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(10 9 8 / 74%) 0%, rgb(10 9 8 / 38%) 55%, rgb(10 9 8 / 0%) 100%); }
+  .copy { position: absolute; left: 80px; top: 64px; bottom: 64px; width: 760px; display: flex; flex-direction: column; }
+  .brand { display: flex; align-items: center; gap: 14px; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-variation-settings: "opsz" 96; font-size: 36px; letter-spacing: -0.03em; }
+  .brand img { width: 52px; height: 52px; border-radius: 13px; object-fit: cover; }
+  h1 { margin: auto 0 0; font-family: "Bricolage Grotesque", sans-serif; font-weight: 800; font-variation-settings: "opsz" 96; font-size: 68px; line-height: 1.02; letter-spacing: -0.03em; }
+  h1 span { display: block; color: #ffd36e; }
+  p { margin: 22px 0 0; font-weight: 500; font-size: 25px; color: rgb(244 239 233 / 72%); letter-spacing: -0.01em; }
+  .stickers { position: absolute; right: 70px; top: 50%; width: 360px; height: 330px; transform: translateY(-50%); }
+  .stickers img { position: absolute; width: 190px; height: 190px; object-fit: cover; border-radius: 40px;
+                  box-shadow: 0 30px 80px rgb(0 0 0 / 45%), 0 0 0 1px rgb(255 255 255 / 14%); }
+  .stickers img:nth-child(1) { left: 0; top: 10px; transform: rotate(-7deg); }
+  .stickers img:nth-child(2) { right: 0; top: 0; transform: rotate(5deg); }
+  .stickers img:nth-child(3) { left: 85px; bottom: 0; transform: rotate(-2deg); }
+</style>
+</head>
+<body>
+<div id="card">
+  <div class="grainient" data-grainient data-colors="#0a0908,#1f1404,#7a4a06,#ffab1a,#ffc43d" data-angle="20" data-speed="0.8" data-flow="0.9" data-silk="0.3" data-grain-amount="0.03" data-dpr="2"><canvas></canvas></div>
+  <div class="shade"></div>
+  <div class="copy">
+    <div class="brand"><img src="../../Resources/logo/logo.png" alt=""> F4</div>
+    <h1>Your stickers<span>in every chat</span></h1>
+    <p>Free sticker app for the Mac. Press fn F4, type, Enter</p>
+  </div>
+  <div class="stickers">
+    <img src="../../site/media/stickers/ma-che-dici.webp" alt="">
+    <img src="../../site/media/stickers/guerra.webp" alt="">
+    <img src="../../site/media/stickers/risata.webp" alt="">
+  </div>
+</div>
+<script src="../../site/grainient.js"></script>
+</body>
+</html>

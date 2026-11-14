@@ -1,19 +1,26 @@
-<p align="center"><img src="Resources/logo/icon.png" width="128" height="128" alt="The F4 logo: Stanis from Boris, basito"></p>
+<p align="center">
+  <a href="https://f4.kkratter.com/"><img src="Resources/readme/banner.jpg" alt="F4. Your stickers in every chat. Free sticker app for the Mac: press fn F4, type, Enter" width="100%"></a>
+</p>
 
-# F4
+<p align="center">
+  <a href="https://github.com/kkratterf/f4/actions/workflows/ci.yml"><img src="https://github.com/kkratterf/f4/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/kkratterf/f4/releases/latest"><img src="https://img.shields.io/github/v/release/kkratterf/f4?color=ffc43d" alt="Latest release"></a>
+  <img src="https://img.shields.io/badge/macOS-14%2B-1d1d1f?logo=apple" alt="macOS 14 or later">
+  <img src="https://img.shields.io/badge/notarized-by%20Apple-1d1d1f" alt="Signed and notarized">
+  <a href="#license"><img src="https://img.shields.io/badge/license-MIT-1d1d1f" alt="MIT license"></a>
+</p>
 
-**Your stickers, on the Mac.**
+<p align="center">
+  <a href="https://github.com/kkratterf/f4/releases/latest/download/F4.dmg"><b>Download for Mac</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://f4.kkratter.com/">Website</a>
+  &nbsp;·&nbsp;
+  <a href="#install">Other ways to install</a>
+</p>
 
-[![CI](https://github.com/kkratterf/f4/actions/workflows/ci.yml/badge.svg)](https://github.com/kkratterf/f4/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/kkratterf/f4)](https://github.com/kkratterf/f4/releases/latest)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](#license)
-[![Website](https://img.shields.io/badge/website-f4.kkratter.com-FFC43D)](https://f4.kkratter.com/)
-
-Stickers like on WhatsApp, but for the whole Mac. Press **F4**, type a few letters, hit Enter: the sticker is on your clipboard — animation included — ready to paste into WhatsApp, Slack, Discord, Telegram or anywhere else. A native macOS app in Swift (SwiftUI and AppKit), free and open source, no account and no tracking.
+Stickers like on WhatsApp, but for the whole Mac. Press **fn F4**, type a few letters, hit Enter: the sticker is on your clipboard, animation included, ready to paste into WhatsApp, Slack, Discord, Telegram or anywhere else. A native macOS app in Swift (SwiftUI and AppKit), free and open source, with no account and no tracking.
 
 *F4, basito.* Named after the most famous face in [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)).
-
-**Website:** [f4.kkratter.com](https://f4.kkratter.com/)
 
 **Install** (macOS 14+, free, no special permissions):
 
@@ -27,41 +34,93 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
 
 ## How it works
 
-1. Copy any sticker or image (⌘C: in WhatsApp, right-click a sticker → Copy), press **fn F4** and paste it with **⌘V**: F4 keeps it as a sticker. You can also drop files on the panel, drag a sticker out of any app onto F4's icon in the menu bar, or open **Add Stickers…** in the menu bar: a window that stays open to drop stickers into (from WhatsApp too) or to pick images in Finder, and switch on the packs you want from the menu bar (**Packs**). They go in F4's own library, `~/Library/Application Support/F4/Memes`, which comes with a starter pack already in it. Subfolders become categories.
-2. Press **F4** from any app. The panel floats above everything, full-screen apps included, and opens instantly. On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
-3. Type to search, move with the arrow keys, press **Enter**. The sticker is copied and a small **Copied to Clipboard** toast says so; paste it with ⌘V wherever you want.
+<table>
+  <tr>
+    <td width="40%" valign="top">
+      <img src="Resources/readme/welcome.png" alt="The Add your stickers window: copy a sticker with ⌘C, open F4 with fn F4, paste it with ⌘V" width="100%">
+      <h4>1. Add your stickers</h4>
+      Copy any sticker or picture (in WhatsApp: right-click a sticker, Copy), press <b>fn F4</b> and paste it with <b>⌘V</b>. Dropping files on the panel, or on F4 in the menu bar, works too.
+    </td>
+    <td width="60%" valign="top">
+      <img src="Resources/readme/panel.png" alt="The F4 panel: a search field, the Stickers, Favourites and maramao tabs, and a grid of cat stickers" width="100%">
+      <h4>2. Find one and press Enter</h4>
+      <b>fn F4</b> opens the panel over any app, full screen included. Type to search, move with the arrow keys, press <b>Enter</b>: a small <b>Copied to Clipboard</b> toast says it is ready, and <b>⌘V</b> pastes it wherever you want.
+    </td>
+  </tr>
+</table>
 
-**Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen, and opens where you left it next time.
+**Esc**, or a click outside, closes the panel. Drag it by the search bar to move it: it snaps to the centre of the screen and opens where you left it next time.
+
+On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
+
+### Where the stickers come from
+
+- 🎁 **A starter pack.** F4 never opens empty: it ships with a folder of meme cats (`maramao/`), copied into F4's library on the first launch, so they are yours to move, rename or delete.
+- 📋 **Anything you copy.** ⌘V in the panel adds a copied sticker, a picture or an image link. A photo or a meme becomes a 512×512 sticker, the size WhatsApp uses: the whole picture, caption included, fitted into the square with the space left over transparent. Transparent PNGs, GIFs and WebP stay exactly as they are, and **⌥⌘V** keeps any picture as it is. A GIF copied in a browser with Copy Image stays a GIF (F4 downloads it from the image's link). F4 names a copied picture after its caption, or after what it shows ("cat"), and tags it, all read on your Mac.
+- 🫳 **Files you drop.** Drop files on the panel, drag a sticker out of WhatsApp, a browser or Finder onto F4's icon in the menu bar, or open **Add Stickers…** in the menu bar: a window that stays open above other apps to drop stickers into, or to pick images in Finder.
+- 📥 **WhatsApp sticker packs.** Drop or paste a `.wastickers` file, or paste a link to a pack on [getstickerpack.com](https://getstickerpack.com/stickers) (what the "Sticker Maker" apps use): F4 unpacks it into a folder named after the pack.
+- 📦 **Packs you switch on.** When F4 lists packs, the menu bar's **Packs** has a switch for each: on downloads it into a folder of your library, off moves that folder to the Trash. F4 ships only the list of links, never the files.
+
+Everything lives in F4's own library, `~/Library/Application Support/F4/Memes`. Each top-level folder is a tab in the panel, and subfolders are categories you can search by name.
 
 ## Features
 
 | | |
 | --- | --- |
-| 🎞️ **Animated stickers stay animated** | F4 writes the file URL (`public.file-url`) and the raw bytes under the file's UTI, never a decoded `NSImage`, so apps paste the animation. PNG, WebP (WhatsApp and Telegram's format), GIF and JPEG all work as stickers. |
-| ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background. The main thread is never blocked, and only the selected sticker animates (moving the mouse over one selects it; the arrow keys lead, so a nudge of the mouse never takes their choice). |
-| 🔎 **Fuzzy search** | Type a few letters of the name, the folder or a tag: "tif" finds "this is fine". The Stickers tab shows the ones you used last first, then the rest, newest added first; Favourites (click the star on a sticker, or ⌘D) and each top-level folder get a tab to filter by (Tab cycles, ⌘1…⌘9 jump). The arrow keys work the same in every tab. |
-| 📦 **Packs you switch on** | The menu bar's **Packs** lists sticker packs: switch one on and F4 downloads it into a folder of your library, switch it off and it goes to the Trash. F4 ships only the list of links, never the files, and downloads nothing until you switch a pack on. |
-| 🎁 **Starter pack** | F4 never opens empty: it ships with a folder of meme cats (`maramao/`), copied into F4's library on the first launch, so they are yours to move, rename or delete. The emoji and text stickers of 0.6 and earlier are gone: 0.7 moves the untouched ones to the Trash, and keeps anything you added to their folders. With a folder of your own they are listed after your stickers instead (Show Starter Pack in the menu bar). |
-| 📥 **WhatsApp sticker packs** | Drop a `.wastickers` file (the format WhatsApp sticker packs come in) on the panel, paste it with ⌘V, or paste a link to one: F4 unpacks it into a folder named after the pack. Packs from [getstickerpack.com](https://getstickerpack.com/stickers) (what the "Sticker Maker" apps use) work from their link: paste the pack page or its "Add to WhatsApp" link and F4 downloads all its stickers into a folder named after it. Single stickers work too: in WhatsApp for Mac, right-click a sticker → Copy, then ⌘V in the panel. |
-| ➕ **Add from the panel** | Press ⌘V in the panel to add a copied sticker, a sticker pack or an image link (in WhatsApp or Telegram: right-click a sticker → Copy), or drop files or stickers on it. A sticker dragged out of another app (WhatsApp, a browser, Finder) can also be dropped on F4's icon in the menu bar, since the panel closes when that app takes the focus. No Finder needed. The first launch shows how, and so does **How to Add Stickers…** in the menu bar. |
-| 🖼️ **Memes become stickers** | A photo or a meme you add becomes a 512×512 sticker, the size WhatsApp uses: the whole picture, caption included, fitted into the square, with the space left over transparent. Nothing is cut out or added. Transparent PNGs, GIFs and WebP stay exactly as they are, and **⌥⌘V** keeps any picture as it is. A GIF copied in a browser with Copy Image stays a GIF: the browser puts only a still frame on the clipboard, so F4 downloads the GIF from the image's link. A copied image has no file name, so F4 names it after its caption, or after what it shows ("cat"), and tags it with what it shows, all read on your Mac: nothing is sent anywhere. |
-| 🗂️ **Folders without Finder** | Each subfolder is a category you can search by name. Each top-level folder is also a tab, and a sticker pasted while a folder tab is open goes into that folder. From the keyboard: **⌘K** opens the actions for the selected sticker (Copy, Favourite, Move to Folder…, Rename…, Show in Finder, Move to Trash), **⌘M** moves it to a folder (or a **New Folder…**), **⌘R** renames it, **⌘T** edits its tags (Finder tags, so Finder sees them too), **⌘⌫** trashes it; right-click works too; the menu bar's **Folders** creates, renames and trashes folders. Favourites and recents follow the files. |
+| 🎞️ **Animated stickers stay animated** | F4 writes the file URL (`public.file-url`) and the raw bytes under the file's UTI, never a decoded `NSImage`, so apps paste the animation. PNG, WebP (WhatsApp and Telegram's format), GIF and JPEG all work. |
+| ⚡️ **Instant** | Folder scans, thumbnail decoding and file reads happen in the background, and only the selected sticker animates. With 5,000 stickers the panel still opens in under 100 ms (CI checks it). |
+| 🔎 **Fuzzy search** | A few letters of the name, the folder or a tag: "tif" finds "this is fine". The Stickers tab puts the ones you used last first, then the rest, newest added first. |
+| ⌨️ **Keyboard first** | The arrow keys lead and work the same in every tab; the mouse selects a sticker only once it really moves. Every action has a shortcut (below). |
+| 🗂️ **Folders without Finder** | Each top-level folder is a tab, and a sticker pasted while a folder tab is open goes into that folder. Move, rename, tag and trash stickers from the panel; create, rename and trash folders from the menu bar's **Folders**. Favourites and recents follow the files. |
 | 🫳 **Drag one out** | Drag a sticker from the panel into a chat, a document or a Finder window: the file goes over, animated if it is a GIF, and the panel stays open for the next one. |
-| ✅ **Copied, and it tells you** | After a copy a small toast at the bottom of the screen says **Copied to Clipboard**, then fades. It takes no clicks and no focus, so ⌘V works right away. |
-| ♿️ **VoiceOver and Reduce Motion** | VoiceOver reads each sticker's name, folder, tags and whether it is a favourite or animated, and says which sticker the arrow keys landed on. With Reduce Motion on, GIFs stay still in the panel (they are still copied animated). |
+| ♿️ **VoiceOver and Reduce Motion** | VoiceOver reads each sticker's name, folder, tags and whether it is a favourite or animated. With Reduce Motion on, GIFs stay still in the panel (they are still copied animated). |
 | 🔐 **No permissions** | The global shortcut uses Carbon `RegisterEventHotKey`: no Accessibility, no Input Monitoring, no Screen Recording. F4 asks for no permission at all. |
-| 🖥️ **Menu bar** | No Dock icon and no Settings window. The menu bar icon opens the panel, copies one of your last 5 stickers in a click, and manages folders and packs. F4 starts at login on its own. |
-| 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (Check for Updates… in the menu bar). |
+| 🔄 **Updates itself** | F4 checks the release feed and installs a new version in one click (**Check for Updates…** in the menu bar). |
 | 🇮🇹 **English and Italian** | The app follows your Mac's language. |
-| 🧩 **Raycast** | A [Raycast extension](raycast) searches the same folder, if that is where your hands already are. |
+| 🧩 **Raycast** | A [Raycast extension](raycast) searches the same library, if that is where your hands already are. |
 
-### Easter eggs
+### Keyboard shortcuts
 
-The empty state draws the basito face in code. Drop a `.basito.png` (or `.gif`, `.jpg`) in the sticker folder to use your own face instead. Typing a few lines from Boris or The Office in the search field — or the Konami code — does something. Find out which.
+| Key | In the panel |
+| --- | --- |
+| **fn F4** | Open or close F4 from any app (F4 alone with standard function keys) |
+| Arrows, **Enter** | Move the selection, copy the sticker |
+| **Tab**, **⌘1**…**⌘9** | Next tab, jump to a tab |
+| **⌘V**, **⌥⌘V** | Add what you copied, keep a picture exactly as it is |
+| **⌘D** | Add to Favourites, or take it out (the star on a sticker does the same) |
+| **⌘K** | Every action for the selected sticker: Copy, Favourite, Move to Folder…, Rename…, Show in Finder, Move to Trash |
+| **⌘M**, **⌘R**, **⌘T** | Move to a folder (or a **New Folder…**), rename, edit its tags (Finder tags, so Finder sees them too) |
+| **⌘⌫** | Move to the Trash |
+| **Esc** | Close the panel |
+
+Right-click a sticker for the same actions.
+
+### The menu bar
+
+<img src="Resources/readme/menu.png" alt="F4's menu: Open F4, Recent Stickers, Folders, Add Stickers…, How to Add Stickers…, Check for Updates…, Quit F4" width="212" align="right">
+
+F4 has no Dock icon and no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
+
+- **Open F4** and your last 5 **Recent Stickers**, copied in a click.
+- **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder) and **Add Stickers…**.
+- **Packs ▸**, when F4 lists a pack: each one is a switch.
+- **Show Starter Pack**, only if you use a sticker folder picked in a version before 0.4.3.
+- **How to Add Stickers…**, **Check for Updates…** and **Quit F4**.
+
+The icon also takes drops. There is nothing else to set: the shortcut is always **fn F4** and can't be changed, and F4 adds itself to your login items on the first launch (macOS shows a notification; you can remove it in System Settings → General → Login Items).
+
+<br clear="right">
 
 ### Automation: `f4://` URLs
 
-Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 by opening a URL, for example `open "f4://copy?name=this%20is%20fine"` in Terminal.
+Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 by opening a URL.
+
+<details>
+<summary>Show the details</summary>
+
+```bash
+open "f4://copy?name=this%20is%20fine"
+```
 
 | URL | What it does |
 | --- | --- |
@@ -73,16 +132,11 @@ Shortcuts, Raycast, Alfred, a Stream Deck, a script or an AI agent can drive F4 
 
 `f4://copy` picks the sticker the panel would put first for that search (favourites and recents win a tie) and shows the same Copied toast. If F4 is not running, the URL starts it.
 
-### Options
+</details>
 
-F4 has no Settings window: everything is in the menu bar menu, like [Maramao](https://github.com/kkratterf/maramao)'s.
+### Easter eggs
 
-- **Open F4** and your **Recent Stickers**.
-- **Folders ▸** (New Folder…, and Rename… or Move to Trash for each folder), **Add Stickers…** (a window that stays open above other apps: drop stickers into it, from WhatsApp too, or click it to pick images in Finder) and **Packs ▸** (when F4 lists a pack, each one is a switch: on downloads its stickers into a folder named after it, off moves that folder to the Trash).
-- **Show Starter Pack**, only if you use a sticker folder picked in a version before 0.4.3.
-- **Check for Updates…** and **Quit F4**.
-
-There is nothing else to set. The shortcut is always **fn F4** (F4 alone with standard function keys) and can't be changed. F4 adds itself to your login items on the first launch, so it is always there; macOS shows a notification, and you can still remove it in System Settings → General → Login Items.
+The empty state draws the basito face in code. Drop a `.basito.png` (or `.gif`, `.jpg`) in the sticker folder to use your own face instead. Typing a few lines from Boris or The Office in the search field, or the Konami code, does something. Find out which.
 
 ---
 
@@ -127,11 +181,16 @@ The tap lives in this repository (`Casks/f4.rb`) and is updated by every release
 
 Since 0.7.1, F4 is signed with a Developer ID and notarized by Apple: open it from Applications and macOS asks only once whether to open an app downloaded from the internet.
 
-Versions up to 0.7.0 were not notarized. If macOS says it cannot verify the developer of one of those, go to **System Settings → Privacy & Security** and click **Open Anyway** next to the message about F4, or clear the quarantine flag in Terminal:
+<details>
+<summary>Versions up to 0.7.0</summary>
+
+They were not notarized. If macOS says it cannot verify the developer of one of those, go to **System Settings → Privacy & Security** and click **Open Anyway** next to the message about F4, or clear the quarantine flag in Terminal:
 
 ```bash
 xattr -dr com.apple.quarantine /Applications/F4.app
 ```
+
+</details>
 
 ### 5. Where is it?
 
@@ -139,7 +198,7 @@ F4 has no Dock icon. Press **F4** (**fn F4** on a Mac keyboard), or look for the
 
 ### 6. Updating
 
-F4 updates itself: it checks the release feed and offers the new version. You can also decline automatic checks when Sparkle first asks and install new versions by hand (drag the new DMG's app over the old one, or run the one-liner again). Your settings and your memes are kept.
+F4 updates itself: it checks the release feed and offers the new version. You can also decline automatic checks when Sparkle first asks and install new versions by hand (drag the new DMG's app over the old one, or run the one-liner again). Your settings and your stickers are kept.
 
 With Homebrew: the cask is marked `auto_updates`, so a plain `brew upgrade` leaves F4 alone and lets the app update itself.
 
@@ -182,9 +241,9 @@ F4 has no analytics, no account and no server. It reads the files in your sticke
 
 **Can I change the shortcut?** No: F4 is the F4 key, fn F4 on a Mac keyboard, and it stays that way.
 
-**F4 opens Spotlight or Launchpad instead.** On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launchpad): hold **fn** and press **F4**, or turn on **Use F1, F2, etc. keys as standard function keys** in System Settings → Keyboard → Keyboard Shortcuts → Function Keys. On most other keyboards F4 just works.
+**F4 opens Spotlight or Launchpad instead.** Hold **fn** and press **F4**, or turn on standard function keys (see [How it works](#how-it-works)).
 
-**Can a script or an AI assistant use F4?** Yes, with [`f4://` URLs](#automation-f4-urls): `open "f4://copy?name=basito"` copies a sticker from anywhere. Shortcuts actions, a command line tool and an MCP server are on the way. Facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
+**Can a script or an AI assistant use F4?** Yes, with [`f4://` URLs](#automation-f4-urls): `open "f4://copy?name=basito"` copies a sticker from anywhere. Facts for AI assistants live in [llms.txt](https://f4.kkratter.com/llms.txt) and the full reference in [llms-full.txt](https://f4.kkratter.com/llms-full.txt); agents that change the code read [AGENTS.md](AGENTS.md).
 
 ---
 
@@ -194,10 +253,10 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the short 
 
 ## Credits
 
-- The animated emoji on the website are [Noto Emoji](https://googlefonts.github.io/noto-emoji-animation/) by Google, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-- The cats in the starter pack's **maramao** folder, also shown on the website, are internet memes whose authors we don't know. If one of them is yours and you want it out of F4, [open an issue](https://github.com/kkratterf/f4/issues) and it goes.
+- The cats in the starter pack's **maramao** folder, also shown on the website and in this README, are internet memes whose authors we don't know. If one of them is yours and you want it out of F4, [open an issue](https://github.com/kkratterf/f4/issues) and it goes. The same goes for the goat sticker on the website.
+- The Michael Scott GIF at the bottom of the website is from The Office, served by [GIPHY](https://giphy.com/theoffice) and never copied into this repository.
 - The logo is Stanis from [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)), "F4, basito".
-- Headings on the website use [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (SIL Open Font License 1.1).
+- Headings on the website and in the banner use [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (SIL Open Font License 1.1).
 
 ## License
 

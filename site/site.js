@@ -19,29 +19,136 @@
     if (img.complete && img.getAttribute("src") && !img.naturalWidth) img.style.visibility = "hidden";
   });
 
-  // Tabs: one screen on stage at a time. Images in hidden panels are lazy,
-  // so they load only once their tab is picked.
-  document.querySelectorAll("[data-tabs]").forEach(function (box) {
-    var tabs = Array.prototype.slice.call(box.querySelectorAll('[role="tab"]'));
-    function select(tab, focus) {
-      tabs.forEach(function (t) {
-        var on = t === tab;
-        t.setAttribute("aria-selected", on ? "true" : "false");
-        t.tabIndex = on ? 0 : -1;
-        document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+  // "Try it here": a working copy of the panel. Type to search (fuzzy, like
+  // F4Core's FuzzySearch), arrows move the selection, Enter or a click copies
+  // the sticker (as a PNG, where the browser allows it) and closes the panel
+  // with the "Copied to Clipboard" pill; F4 or a click opens it again. The
+  // sticker just copied moves to the front, like the app's Stickers tab.
+  (function () {
+    var sim = document.querySelector("[data-sim]");
+    if (!sim) return;
+    var input = sim.querySelector("[data-sim-input]");
+    var grid = sim.querySelector("[data-sim-grid]");
+    var none = grid.querySelector(".sim-none");
+    var picked = sim.querySelector("[data-sim-picked]");
+    var toast = sim.querySelector("[data-sim-toast]");
+    var all = Array.prototype.slice.call(grid.querySelectorAll(".sim-cell"));
+    var shown = all.slice();
+    var current = 0;
+    var toastTimer = null;
+    var lastPointer = null;
+
+    var fuzzy = function (name, q) {
+      var i = 0;
+      for (var c = 0; c < name.length && i < q.length; c++) if (name[c] === q[i]) i++;
+      return i === q.length;
+    };
+    var columns = function () {
+      return getComputedStyle(grid).gridTemplateColumns.split(" ").length;
+    };
+    var select = function (i, scroll) {
+      if (!shown.length) { picked.textContent = ""; return; }
+      current = Math.max(0, Math.min(shown.length - 1, i));
+      shown.forEach(function (cell, k) { cell.setAttribute("aria-selected", k === current ? "true" : "false"); });
+      picked.textContent = shown[current].dataset.name;
+      if (scroll) shown[current].scrollIntoView({ block: "nearest" });
+    };
+    var filter = function () {
+      var q = input.value.trim().toLowerCase();
+      shown = all.filter(function (cell) {
+        var hit = !q || fuzzy(cell.dataset.name, q);
+        cell.hidden = !hit;
+        return hit;
       });
-      if (focus) tab.focus();
-    }
-    tabs.forEach(function (tab, i) {
-      tab.addEventListener("click", function () { select(tab); });
-      tab.addEventListener("keydown", function (e) {
-        var step = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
-        if (!step) return;
+      none.hidden = shown.length > 0;
+      select(0);
+    };
+    var setOpen = function (open) {
+      sim.dataset.open = open ? "true" : "false";
+      if (open) {
+        input.value = "";
+        filter();
+        grid.scrollTop = 0;
+        input.focus({ preventScroll: true });
+      } else {
+        input.blur();
+      }
+    };
+    var copyImage = function (img) {
+      // Browsers put PNG on the clipboard, not WebP: redraw the sticker first.
+      try {
+        if (!navigator.clipboard || !window.ClipboardItem || !img.naturalWidth) return;
+        var canvas = document.createElement("canvas");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        canvas.getContext("2d").drawImage(img, 0, 0);
+        var blob = new Promise(function (done) { canvas.toBlob(done, "image/png"); });
+        navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]).catch(function () {});
+      } catch (e) { /* the pill still shows: this is a demo */ }
+    };
+    var copy = function () {
+      var cell = shown[current];
+      if (!cell) return;
+      copyImage(cell.querySelector("img"));
+      grid.insertBefore(cell, grid.firstChild);
+      all.splice(all.indexOf(cell), 1);
+      all.unshift(cell);
+      setOpen(false);
+      toast.classList.add("on");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function () { toast.classList.remove("on"); }, 1600);
+    };
+
+    input.addEventListener("input", filter);
+    input.addEventListener("keydown", function (e) {
+      var cols = columns();
+      var step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: cols, ArrowUp: -cols }[e.key];
+      if (step) {
         e.preventDefault();
-        select(tabs[(i + step + tabs.length) % tabs.length], true);
-      });
+        var next = current + step;
+        if (next >= 0 && next < shown.length) select(next, true);
+        else if (step > 0 && current < shown.length - 1 && e.key === "ArrowDown") select(shown.length - 1, true);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        copy();
+      } else if (e.key === "Escape") {
+        e.preventDefault();
+        setOpen(false);
+      }
     });
-  });
+    // Like the app, the mouse selects a sticker only once it really moves.
+    grid.addEventListener("mousemove", function (e) {
+      var here = e.screenX + "," + e.screenY;
+      if (here === lastPointer) return;
+      lastPointer = here;
+      var cell = e.target.closest(".sim-cell");
+      if (cell && shown.indexOf(cell) !== current) select(shown.indexOf(cell));
+    });
+    grid.addEventListener("click", function (e) {
+      var cell = e.target.closest(".sim-cell");
+      if (!cell) return;
+      select(shown.indexOf(cell));
+      copy();
+    });
+    sim.querySelector("[data-sim-copy]").addEventListener("click", copy);
+    sim.querySelector("[data-sim-panel]").addEventListener("mousedown", function (e) {
+      if (e.target !== input) { e.preventDefault(); input.focus({ preventScroll: true }); }
+    });
+    sim.querySelector("[data-sim-desk]").addEventListener("click", function () {
+      if (sim.dataset.open === "false") setOpen(true);
+    });
+    // F4 (fn F4 on a Mac keyboard) opens and closes it while it is on screen.
+    var visible = false;
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }, { threshold: 0.4 }).observe(sim);
+    }
+    document.addEventListener("keydown", function (e) {
+      if (e.key !== "F4" || !visible) return;
+      e.preventDefault();
+      setOpen(sim.dataset.open === "false");
+    });
+    filter();
+  })();
 
   // The hero Mac: a chat, then F4 opens over it, a few letters find a
   // sticker, Enter pastes it into the chat, and again. Only the selected
