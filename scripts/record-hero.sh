@@ -12,8 +12,9 @@
 # good (wallpaper, Dock, dark mode, F4's library and defaults) and records
 # dist/F4.app. With LOCAL=1 it records the F4 installed on a real Mac instead,
 # pointed for the take at LIBRARY (a folder of stickers, the user's library
-# untouched), and puts the wallpaper, the Dock, the appearance and F4's
-# settings back when it ends. Needs Google Chrome, and Accessibility and
+# untouched), keeps its wallpaper and appearance, hides only the Dock and the
+# desktop icons (FULLSCREEN=1 puts the chat in full screen), and puts the
+# Dock, the icons and F4's settings back when it ends. Needs Google Chrome, and Accessibility and
 # Screen Recording for the app that runs it (GitHub's runners grant both).
 # Usage: STICKERS=path/to/stickers scripts/record-hero.sh       (CI)
 #        LOCAL=1 LIBRARY=path/to/stickers scripts/record-hero.sh (a real Mac)
@@ -69,6 +70,7 @@ if [ -n "$LOCAL" ]; then
   old_autohide=$(defaults read com.apple.dock autohide 2>/dev/null || echo 0)
   old_delay=$(defaults read com.apple.dock autohide-delay 2>/dev/null || true)
   old_folder=$(defaults read "$f4_defaults" memeFolderPath 2>/dev/null || true)
+  old_icons=$(defaults read com.apple.finder CreateDesktop 2>/dev/null || true)
   restore() {
     pkill -x F4 || true
     if [ -n "$old_folder" ]; then defaults write "$f4_defaults" memeFolderPath "$old_folder"
@@ -79,21 +81,30 @@ if [ -n "$LOCAL" ]; then
     if [ -n "$old_delay" ]; then defaults write com.apple.dock autohide-delay -float "$old_delay"
     else defaults delete com.apple.dock autohide-delay 2>/dev/null || true; fi
     killall Dock || true
+    if [ -n "$old_icons" ]; then defaults write com.apple.finder CreateDesktop -bool "$([ "$old_icons" = 0 ] && echo false || echo true)"
+    else defaults delete com.apple.finder CreateDesktop 2>/dev/null || true; fi
+    killall Finder || true
     sleep 1
     open "$APP"
   }
   trap restore EXIT
 fi
 
-# A clean desk: dark mode, the website's gradient as wallpaper, no Dock.
-se 'tell appearance preferences to set dark mode to true' || echo "warning: could not turn on dark mode"
+# A clean desk: no Dock and, on a real Mac, no icons on the desktop (its
+# wallpaper stays); on CI also dark mode and the website's gradient.
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-delay -float 1000
 killall Dock || true
-wallpaper="$ROOT/site/media/try-bg.jpg"
-se "tell every desktop to set picture to POSIX file \"$wallpaper\"" ||
-  osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$wallpaper\"" ||
-  echo "warning: could not set the wallpaper"
+if [ -n "$LOCAL" ]; then
+  defaults write com.apple.finder CreateDesktop -bool false
+  killall Finder || true
+else
+  se 'tell appearance preferences to set dark mode to true' || echo "warning: could not turn on dark mode"
+  wallpaper="$ROOT/site/media/try-bg.jpg"
+  se "tell every desktop to set picture to POSIX file \"$wallpaper\"" ||
+    osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$wallpaper\"" ||
+    echo "warning: could not set the wallpaper"
+fi
 
 if [ -n "$LOCAL" ]; then
   # The installed F4, reading LIBRARY for the take.
@@ -144,6 +155,10 @@ else
   sleep 6
 fi
 se "set frontmost of process \"$proc\" to true" || true
+if [ -n "${FULLSCREEN:-}" ]; then
+  se 'keystroke "f" using {control down, command down}'   # the chat fills the screen
+  sleep 3
+fi
 osascript -l JavaScript -e 'ObjC.import("CoreGraphics"); $.CGWarpMouseCursorPosition({x: 5000, y: 5000})' || true
 sleep 1
 screencapture -x "$OUT/setup.png"
