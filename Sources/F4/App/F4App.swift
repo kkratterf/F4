@@ -78,6 +78,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             shortcut: settings.toggleShortcut.displayString,
             recentMemes: { [weak self] in self?.recentMemes() ?? [] },
             onCopy: { [weak self] meme in self?.panel?.pick(meme) },
+            onDrop: { [weak self] pasteboard in self?.panel?.addDropped(from: pasteboard) },
             onOpen: { [weak self] in self?.panel?.show() },
             onHelp: { [weak self] in self?.welcome.show() }
         )

@@ -53,7 +53,7 @@ F4 has no Dock icon and no window at launch. Press F4 (fn-F4 on a Mac keyboard, 
 
 ## Use
 
-1. Put stickers in the library: paste (Command-V) or drop them in the panel, or switch on a pack in the menu bar's Packs. The library is `~/Library/Application Support/F4/Memes` by default (F4's own folder, which gets a copy of the starter pack on the first launch; users upgrading with files in `~/Pictures/Memes` keep that folder). Supported files: GIF, PNG, JPEG, WebP (`.gif`, `.png`, `.jpg`, `.jpeg`, `.webp`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
+1. Put stickers in the library: paste (Command-V) or drop them in the panel, drag them out of any app onto F4's icon in the menu bar (the panel closes when another app takes the focus, so this is the way to drag from WhatsApp), or switch on a pack in the menu bar's Packs. The library is `~/Library/Application Support/F4/Memes` by default (F4's own folder, which gets a copy of the starter pack on the first launch; users upgrading with files in `~/Pictures/Memes` keep that folder). Supported files: GIF, PNG, JPEG, WebP (`.gif`, `.png`, `.jpg`, `.jpeg`, `.webp`). Other files, hidden files and packages are ignored. Subfolders up to four levels deep are scanned and become categories.
 2. Press F4 (fn-F4 on a Mac keyboard) in any app. The panel appears centred on the screen with the mouse, above every window, including full-screen apps.
 3. Type to search, then press Enter. The sticker is on the clipboard and a "Copied to Clipboard" toast shows at the bottom of the screen for about a second (it takes no clicks or focus); paste it with Command-V wherever you want it.
 

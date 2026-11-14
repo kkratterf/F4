@@ -52,6 +52,13 @@ enum MemeImporter {
         return false
     }
 
+    /// Whether a drag carries something to add: what `canImport` takes, or
+    /// a file promised by an app that drags out a sticker without a file yet.
+    static func acceptsDrop(_ pasteboard: NSPasteboard) -> Bool {
+        let promises = NSFilePromiseReceiver.readableDraggedTypes.map { NSPasteboard.PasteboardType($0) }
+        return canImport(pasteboard) || pasteboard.types?.contains(where: { promises.contains($0) }) == true
+    }
+
     /// Saves what the pasteboard holds into `folder` (the top of the
     /// library) and returns the new files. Throws when there is nothing F4
     /// can add. With `convert`, a still PNG or JPEG becomes a sticker

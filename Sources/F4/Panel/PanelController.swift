@@ -92,6 +92,14 @@ final class PanelController: NSObject, NSWindowDelegate {
         return library.folder.appendingPathComponent(name, isDirectory: true)
     }
 
+    /// A drop on the menu bar icon: added like a drop on the panel, which
+    /// then shows the new sticker. The panel can't stay open while another
+    /// app has the focus, so this is where a sticker dragged out of WhatsApp
+    /// (or any app) lands without opening F4 first.
+    func addDropped(from pasteboard: NSPasteboard) {
+        add(from: pasteboard)
+    }
+
     /// Adds what the pasteboard holds (⌘V or a drop) to the meme folder,
     /// turning a still image into a sticker unless `convert` is false (⌥⌘V).
     private func add(from pasteboard: NSPasteboard, convert: Bool = true) {
