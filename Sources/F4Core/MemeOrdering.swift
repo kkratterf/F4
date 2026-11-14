@@ -35,8 +35,36 @@ public enum MemeOrdering {
         return favouriteMemes.map(\.meme) + recentMemes.map(\.meme) + rest
     }
 
+    /// The Stickers tab: the last used first, most recent first, then the
+    /// ones never copied, newest added first (by the file's modification
+    /// date, which is when F4 wrote it), ties in the order of `memes`.
+    /// Favourites are not pinned here: they have their own tab.
+    public static func byLastUse(_ memes: [Meme], recents: [URL]) -> [Meme] {
+        let recentRank = Dictionary(recents.enumerated().map { ($1, $0) }, uniquingKeysWith: { first, _ in first })
+        var used: [(rank: Int, meme: Meme)] = []
+        var unused: [(index: Int, meme: Meme)] = []
+        for (index, meme) in memes.enumerated() {
+            if let rank = recentRank[meme.url] {
+                used.append((rank, meme))
+            } else {
+                unused.append((index, meme))
+            }
+        }
+        used.sort { $0.rank < $1.rank }
+        unused.sort { lhs, rhs in
+            lhs.meme.modificationDate != rhs.meme.modificationDate
+                ? lhs.meme.modificationDate > rhs.meme.modificationDate
+                : lhs.index < rhs.index
+        }
+        return used.map(\.meme) + unused.map(\.meme)
+    }
+
+    /// How many recently copied stickers F4 remembers: enough for the
+    /// Stickers tab to keep the order of everything in regular use.
+    public static let recentsLimit = 500
+
     /// `recents` after copying `url`: moved to the front, capped at `limit`.
-    public static func recording(_ url: URL, in recents: [URL], limit: Int = 30) -> [URL] {
+    public static func recording(_ url: URL, in recents: [URL], limit: Int = recentsLimit) -> [URL] {
         Array(([url] + recents.filter { $0 != url }).prefix(limit))
     }
 }
