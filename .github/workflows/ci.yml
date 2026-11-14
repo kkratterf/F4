@@ -234,8 +234,8 @@ jobs:
 
   ui-screenshots:
     name: Publish UI screenshots
-    # Pushes the screenshots of the build job to the ui-screenshots/pr-N
-    # branch, where they can be viewed on GitHub or fetched with git
+    # Pushes the screenshots of the build job (the app and the installer
+    # window) to the ui-screenshots/pr-N branch, where they can be viewed on GitHub or fetched with git
     # (artifacts need a login to download). Pull requests from this repo only.
     needs: build
     if: always() && github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
@@ -248,6 +248,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: F4-ui
+          path: ui
+
+      - name: Download the installer screenshot
+        uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: F4-dmg-window
           path: ui
 
       - name: Push them to their branch
