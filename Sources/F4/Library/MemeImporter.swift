@@ -47,6 +47,7 @@ enum MemeImporter {
         let types = Set(pasteboard.types ?? [])
         if types.contains(.fileURL) || types.contains(.tiff) || types.contains(.png) { return true }
         if MemeKind.allCases.contains(where: { types.contains(NSPasteboard.PasteboardType($0.typeIdentifier)) }) { return true }
+        if types.contains(where: isAnimatedImageType) { return true }
         if let string = pasteboard.string(forType: .string), MemeImport.webURL(in: string) != nil { return true }
         return false
     }
@@ -119,6 +120,15 @@ enum MemeImporter {
     /// format when it is one F4 keeps (a GIF stays animated), else a TIFF
     /// converted to PNG.
     private static func imageData(in item: NSPasteboardItem) -> (Data, MemeKind)? {
+        // An animated picture under a type of the app's own: WhatsApp, and
+        // apps like it, may name a WebP sticker or a GIF with another
+        // identifier than the standard one. Whatever the type is called,
+        // bytes that are a GIF or a WebP are kept as they are.
+        for type in item.types where isAnimatedImageType(type) {
+            if let data = item.data(forType: type), let kind = MemeImport.kind(sniffing: data), kind == .gif || kind == .webp {
+                return (data, kind)
+            }
+        }
         for kind in [MemeKind.gif, .webp, .png, .jpeg] {
             if let data = item.data(forType: NSPasteboard.PasteboardType(kind.typeIdentifier)), !data.isEmpty {
                 return (data, MemeImport.kind(sniffing: data) ?? kind)
@@ -129,6 +139,16 @@ enum MemeImporter {
             return (png, .png)
         }
         return nil
+    }
+
+    /// A pasteboard type that may hold a GIF or a WebP: one named so, or
+    /// any image type that is not one of the stills F4 reads anyway.
+    private static func isAnimatedImageType(_ type: NSPasteboard.PasteboardType) -> Bool {
+        let name = type.rawValue.lowercased()
+        if name.contains("gif") || name.contains("webp") { return true }
+        let stills: Set<String> = [UTType.png.identifier, UTType.jpeg.identifier, UTType.tiff.identifier]
+        guard !stills.contains(type.rawValue), let uti = UTType(type.rawValue) else { return false }
+        return uti.conforms(to: .image)
     }
 
     /// The animated GIF or WebP behind a still picture on `pasteboard`.
