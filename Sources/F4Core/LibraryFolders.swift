@@ -92,7 +92,7 @@ public enum LibraryFolders {
     public static let firstStarterFolders: Set<String> = ["Emoji", "F4"]
 
     /// The starter folders F4 copied into its library up to 0.6 and no
-    /// longer ships: since 0.7 the starter pack is maramao alone (the
+    /// longer ships: since 0.7 the starter pack is Maramao alone (the
     /// maintainer's call).
     public static let retiredStarterFolders: Set<String> = ["Emoji", "F4"]
 
@@ -114,8 +114,32 @@ public enum LibraryFolders {
         return emoji.map { "Emoji/\($0).gif" } + drawn.map { "F4/\($0).png" }
     }()
 
+    /// Starter folders renamed in an update, old name to new: up to 0.8
+    /// the meme cats were `maramao/`, now `Maramao/` (the maintainer's call).
+    public static let renamedStarterFolders: [String: String] = ["maramao": "Maramao"]
+
+    /// `seeded` with the old names of renamed starter folders replaced by
+    /// the new ones, so a folder already copied under its old name is not
+    /// copied again under the new one.
+    public static func currentStarterFolders(_ seeded: Set<String>) -> Set<String> {
+        Set(seeded.map { renamedStarterFolders[$0] ?? $0 })
+    }
+
+    /// The renames to make in a library whose top level holds `names`
+    /// (exact, case-sensitive file names): a starter folder still under its
+    /// old name, when nothing already has the new name. On a case-insensitive
+    /// volume "Maramao" and "maramao" are the same folder, which keeps the
+    /// case it was created with until it is renamed.
+    public static func starterFolderRenames(existing names: [String]) -> [(from: String, to: String)] {
+        let present = Set(names)
+        return renamedStarterFolders
+            .filter { present.contains($0.key) && !present.contains($0.value) }
+            .sorted { $0.key < $1.key }
+            .map { (from: $0.key, to: $0.value) }
+    }
+
     /// The top-level folder of a path relative to the starter pack
-    /// ("maramao/boh.png" is in "maramao"); a file at the top is its own.
+    /// ("Maramao/boh.png" is in "Maramao"); a file at the top is its own.
     public static func topFolder(of path: String) -> String {
         path.split(separator: "/", maxSplits: 1).first.map(String.init) ?? path
     }

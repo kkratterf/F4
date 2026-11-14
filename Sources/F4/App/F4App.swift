@@ -29,7 +29,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         folder: settings.memeFolder,
         showsStarterPack: settings.showStarterPack,
         seededStarterFolders: settings.seededStarterFolders,
-        removesRetiredStarter: !settings.didRemoveRetiredStarter
+        removesRetiredStarter: !settings.didRemoveRetiredStarter,
+        renamesStarterFolders: !settings.didRenameStarterFolders
     )
     private let usage = UsageStore()
     private lazy var organizer = LibraryOrganizer(library: library, usage: usage)
@@ -57,6 +58,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.setActivationPolicy(.accessory)
         library.onSeeded = { [weak self] folders in self?.settings.seededStarterFolders = folders }
         library.onRetiredStarterRemoved = { [weak self] in self?.settings.didRemoveRetiredStarter = true }
+        library.onStarterFoldersRenamed = { [weak self] moved in
+            for folder in moved { self?.usage.relocate(from: folder.from, to: folder.to) }
+            self?.settings.didRenameStarterFolders = true
+        }
         library.reload()
         settings.$memeFolder
             .dropFirst()

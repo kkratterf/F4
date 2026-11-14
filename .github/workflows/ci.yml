@@ -53,10 +53,10 @@ jobs:
           test -d "$app/Contents/Frameworks/Sparkle.framework"
           otool -L "$app/Contents/MacOS/F4" | grep Sparkle
           otool -l "$app/Contents/MacOS/F4" | grep -A2 LC_RPATH
-          # Starter pack: the maramao cats, and nothing else.
-          test "$(ls "$app/Contents/Resources/Starter")" = maramao || { echo "::error::the starter pack must be maramao alone"; exit 1; }
-          cats=$(find "$app/Contents/Resources/Starter/maramao" -name '*.png' | wc -l)
-          test "$cats" -ge 12 || { echo "::error::maramao cats missing from F4.app ($cats)"; exit 1; }
+          # Starter pack: the Maramao cats, and nothing else.
+          test "$(ls "$app/Contents/Resources/Starter")" = Maramao || { echo "::error::the starter pack must be Maramao alone"; exit 1; }
+          cats=$(find "$app/Contents/Resources/Starter/Maramao" -name '*.png' | wc -l)
+          test "$cats" -ge 12 || { echo "::error::Maramao cats missing from F4.app ($cats)"; exit 1; }
           # Smoke test: the app must launch and stay up.
           "$app/Contents/MacOS/F4" &
           pid=$!
@@ -89,7 +89,7 @@ jobs:
           pkill -x F4 || true
           echo "clipboard: $copied"
           case "$copied" in
-            */Application%20Support/F4/Memes/maramao/boh.png) ;;
+            */Application%20Support/F4/Memes/Maramao/boh.png) ;;
             *) echo "::error::f4://copy?name=boh did not copy the boh sticker from F4's library"; exit 1 ;;
           esac
 
@@ -143,7 +143,7 @@ jobs:
           app="$PWD/dist/F4.app"
           bench="$HOME/Library/Application Support/F4/Memes/Bench"
           mkdir -p "$bench"
-          sips -z 128 128 Resources/Starter/maramao/boh.png --out "$RUNNER_TEMP/seed.png" >/dev/null
+          sips -z 128 128 Resources/Starter/Maramao/boh.png --out "$RUNNER_TEMP/seed.png" >/dev/null
           python3 -c 'import shutil, sys; [shutil.copyfile(sys.argv[1], f"{sys.argv[2]}/sticker {i}.png") for i in range(5000)]' "$RUNNER_TEMP/seed.png" "$bench"
           open "$app"
           sleep 10
