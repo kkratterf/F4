@@ -56,6 +56,7 @@
   <script type="application/ld+json">
   { "@context": "https://schema.org", "@type": "WebSite", "name": "F4", "url": "https://f4.kkratter.com/", "inLanguage": "en" }
   </script>
+  <link rel="preload" as="image" href="media/hero.jpg">
   <link rel="preload" href="/fonts/bricolage-grotesque-latin.wght.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
 
@@ -93,7 +94,9 @@
   <main id="main">
     <!-- The stickers on this page are F4's own starter pack, the maramao cats (site/media/stickers,
          made from Resources/Starter/Maramao and credited in the README), plus the maintainer's
-         goat sticker (capretta.webp) and a Michael Scott GIF hotlinked from GIPHY in the outro. -->
+         goat sticker (capretta.webp) and a Michael Scott GIF hotlinked from GIPHY in the outro.
+         The hero is a real recording of F4 (media/hero.mp4, made by scripts/record-hero.sh on CI
+         and cut by scripts/make-hero-video.sh). -->
     <section class="hero" aria-labelledby="title">
       <div class="grainient" data-grainient data-colors="#0a0908,#1f1404,#7a4a06,#ffab1a,#ffc43d" data-angle="20" data-speed="0.8" data-flow="0.9" data-silk="0.3" data-grain-amount="0.03" data-grain-size="0.5" data-dpr="2" aria-hidden="true"><canvas></canvas></div>
       <div class="wrap">
@@ -104,21 +107,9 @@
         </div>
         <p class="meta"><span>Version <span data-version>0.3.3</span></span><span>macOS 14+</span><span>Free and open source</span></p>
 
-        <figure class="mac" data-demo data-state="panel" aria-label="F4 floating over a chat: it finds a sticker and pastes it" data-copied="Copied" data-copy="Copy">
+        <figure class="mac">
           <div class="mac-screen">
-            <div class="menubar" aria-hidden="true"><svg class="i-apple" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"/></svg><span>Chat</span><i class="opt">File</i><i class="opt">Edit</i><i class="opt">View</i><i class="opt">Window</i><span class="sp"></span><b class="mb-f4">F4</b><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 18.5a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2ZM12 13c2 0 3.8.8 5.1 2.1l-1.5 1.5A5.1 5.1 0 0 0 12 15.1c-1.4 0-2.7.6-3.6 1.5l-1.5-1.5A7.2 7.2 0 0 1 12 13Zm0-5c3.4 0 6.4 1.4 8.6 3.6L19.1 13A10 10 0 0 0 12 10a10 10 0 0 0-7.1 3L3.4 11.6A12.1 12.1 0 0 1 12 8Z"/></svg><i>Fri 17:58</i></div>
-            <div class="desk">
-              <div class="win" aria-hidden="true">
-                <div class="win-bar"><i></i><i></i><i></i><span># team</span></div>
-                <div class="chat">
-                  <div class="msg"><span class="avatar">G</span><div><p class="who">Giulia <time>17:58</time></p><p>deploying to prod on a friday, what could go wrong</p></div></div>
-                  <div class="msg"><span class="avatar a2">M</span><div><p class="who">Marco <time>17:58</time></p><p>who approved this 👀</p></div></div>
-                  <div class="mine"><div class="msg"><span class="avatar a3"><img src="favicon.svg" alt="" width="40" height="40"></span><div><p class="who">You <time>17:59</time></p><span class="pasted sticker" data-demo-pasted><img src="media/stickers/boh.webp" alt="" width="200" height="200"></span></div></div></div>
-                  <div class="compose">Message #team</div>
-                </div>
-              </div>
-            </div>
-            <div class="over" aria-hidden="true"><div class="f4p"><div class="f4p-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="q" data-placeholder="Search…" data-demo-query>no</span><span class="caret"></span><span class="kc hot">F4</span></div><div class="f4p-tabs"><span class="on">Stickers</span><span>Favourites</span></div><div class="f4p-grid" data-demo-grid><div class="f4p-cell st on" data-name="boh.png"><img src="media/stickers/boh.webp" alt="boh" width="200" height="200"></div><div class="f4p-cell st" data-name="triste.png"><img src="media/stickers/triste.webp" alt="triste" width="200" height="200"></div><div class="f4p-cell st" data-name="risata.png"><img src="media/stickers/risata.webp" alt="risata" width="200" height="200"></div><div class="f4p-cell st" data-name="ti prego.png"><img src="media/stickers/ti-prego.webp" alt="ti prego" width="200" height="200"></div><div class="f4p-cell st" data-name="shock.png"><img src="media/stickers/shock.webp" alt="shock" width="200" height="200"></div><div class="f4p-cell st" data-name="bleh.png"><img src="media/stickers/bleh.webp" alt="bleh" width="200" height="200"></div><div class="f4p-cell st" data-name="guerra.png"><img src="media/stickers/guerra.webp" alt="guerra" width="200" height="200"></div><div class="f4p-cell st" data-name="sorriso.png"><img src="media/stickers/sorriso.webp" alt="sorriso" width="200" height="200"></div></div><div class="f4p-foot"><b data-demo-picked>boh.png</b><span><small data-demo-hint>Copy</small><span class="kc">↩</span></span></div></div></div>
+            <video data-clip muted loop playsinline preload="auto" poster="media/hero.jpg" width="1280" height="800" aria-label="Screen recording of F4 on a Mac: over a chat, fn F4 opens the panel, a few letters find a Maramao cat, Enter copies it and ⌘V pastes it into the chat; then the arrow keys and a search find an animated goat, pasted the same way."><source src="media/hero.mp4" type="video/mp4"></video>
           </div>
         </figure>
       </div>

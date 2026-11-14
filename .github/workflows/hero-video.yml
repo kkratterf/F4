@@ -1,0 +1,67 @@
+name: Hero video
+
+# Records the website's hero clip with the real app on a macOS runner
+# (scripts/record-hero.sh) and pushes the raw take to the hero-video/<ref>
+# branch, where scripts/make-hero-video.sh can fetch it and cut the clip
+# (artifacts need a login to download). Runs by hand, and on pull requests
+# that change the recording.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - scripts/record-hero.sh
+      - scripts/hero/**
+      - .github/workflows/hero-video.yml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: hero-video-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  record:
+    name: Record the hero clip
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: macos-15
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build the app bundle
+        run: scripts/build-app.sh release
+
+      - name: The stickers
+        # Stickers for the clip can live on a hero-video/stickers branch,
+        # never on main; without it the take uses the starter pack.
+        run: |
+          mkdir -p dist/stickers
+          if git fetch -q origin hero-video/stickers; then
+            git archive FETCH_HEAD | tar -x -C dist/stickers
+          fi
+          ls dist/stickers | wc -l
+
+      - name: Record
+        run: |
+          system_profiler SPDisplaysDataType | sed -n '/Displays:/,$p'
+          if [ -n "$(ls dist/stickers)" ]; then export STICKERS="$PWD/dist/stickers"; fi
+          scripts/record-hero.sh
+
+      - name: Push the take to its branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: hero-video/${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          cd dist/hero
+          git init -q
+          git checkout -q -b "$BRANCH"
+          git add .
+          git -c user.name="F4 CI" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -qm "Hero take for ${SHA}"
+          git push -q -f "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${BRANCH}"
+          echo "::notice::Hero take: https://github.com/${GITHUB_REPOSITORY}/tree/${BRANCH}"
