@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Chat</title>
+<!--
+  A made-up chat, so the F4 demo never shows a real messenger. scripts/record-hero.sh
+  opens it next to the real F4.app to record the website's hero clip; it also works
+  by hand: open it in Safari or Chrome, press fn F4, pick a sticker, Enter, then ⌘V
+  here, and the sticker shows up as your message, animated if it is. Dropping a
+  sticker dragged out of F4 works too. Typing and Enter sends a text. Add ?it to the
+  address for the Italian version, ?light for a light theme. Nothing leaves the page:
+  no network, no storage.
+-->
+<style>
+  :root {
+    --bg: #0f1012; --side: #16171a; --panel: #1c1d21; --line: rgb(255 255 255 / 8%);
+    --ink: #f2f2f4; --muted: #9a9ba3; --mine: #2b5bd7; --theirs: #26272c; --accent: #ffc43d;
+  }
+  :root.light {
+    --bg: #f4f4f6; --side: #ffffff; --panel: #ffffff; --line: rgb(0 0 0 / 8%);
+    --ink: #17181b; --muted: #6b6c74; --mine: #2f6bff; --theirs: #e8e8ed;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body { display: grid; grid-template-columns: 280px 1fr; background: var(--bg); color: var(--ink);
+         font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif; overflow: hidden; }
+  aside { background: var(--side); border-right: 1px solid var(--line); display: flex; flex-direction: column; }
+  .me { display: flex; align-items: center; gap: 10px; padding: 18px 16px 12px; font-weight: 700; font-size: 18px; }
+  .search { margin: 0 12px 10px; padding: 8px 12px; border-radius: 10px; background: var(--line); color: var(--muted); font-size: 14px; }
+  .conv { display: flex; gap: 12px; align-items: center; padding: 10px 14px; margin: 0 6px; border-radius: 12px; }
+  .conv.on { background: var(--line); }
+  .conv b { display: block; font-size: 14px; }
+  .conv small { display: block; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
+  .av { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; font-weight: 700; color: #111; }
+  main { display: flex; flex-direction: column; min-width: 0; }
+  header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  header b { display: block; }
+  header small { color: var(--muted); font-size: 12.5px; }
+  #log { flex: 1; overflow-y: auto; padding: 24px 6% 12px; display: flex; flex-direction: column; gap: 6px; }
+  .day { align-self: center; margin: 8px 0 14px; padding: 4px 10px; border-radius: 8px; background: var(--line); color: var(--muted); font-size: 12px; }
+  .row { display: flex; gap: 10px; align-items: flex-end; max-width: 70%; }
+  .row.mine { align-self: flex-end; flex-direction: row-reverse; }
+  .row .av { width: 30px; height: 30px; font-size: 12px; }
+  .row.mine .av { visibility: hidden; }
+  .bubble { padding: 8px 12px; border-radius: 16px; background: var(--theirs); }
+  .bubble .who { display: block; font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+  .mine .bubble { background: var(--mine); color: #fff; }
+  .bubble time { display: block; text-align: right; font-size: 11px; opacity: .6; margin-top: 2px; }
+  .sticker { width: 180px; height: 180px; object-fit: contain; display: block; animation: pop .25s cubic-bezier(.2, .9, .3, 1.3); }
+  .sticker-time { text-align: right; font-size: 11px; color: var(--muted); }
+  @keyframes pop { from { transform: scale(.6); opacity: 0; } }
+  form { display: flex; gap: 10px; padding: 12px 20px 18px; background: var(--panel); border-top: 1px solid var(--line); }
+  form input { flex: 1; padding: 11px 16px; border: 0; border-radius: 22px; outline: 0; background: var(--line); color: var(--ink); font: inherit; }
+  .drop { position: fixed; inset: 0; display: none; place-items: center; background: rgb(0 0 0 / 35%); color: #fff; font-size: 22px; font-weight: 700; }
+  .drop.on { display: grid; }
+</style>
+</head>
+<body>
+  <aside>
+    <div class="me">Chats</div>
+    <div class="search" data-t="search">Search</div>
+    <div class="conv on"><span class="av" style="background:#ffc43d">F</span><div><b data-t="group">Friday crew</b><small data-t="last">Marco: who approved this</small></div></div>
+    <div class="conv"><span class="av" style="background:#7dd3fc">G</span><div><b>Giulia</b><small data-t="g1">see you tomorrow!</small></div></div>
+    <div class="conv"><span class="av" style="background:#c4b5fd">L</span><div><b>Luca</b><small data-t="l1">ahah</small></div></div>
+    <div class="conv"><span class="av" style="background:#86efac">S</span><div><b>Sara</b><small data-t="s1">ok perfect</small></div></div>
+  </aside>
+  <main>
+    <header><span class="av" style="background:#ffc43d">F</span><div><b data-t="group">Friday crew</b><small data-t="members">Giulia, Marco, Sara, you</small></div></header>
+    <div id="log">
+      <div class="day" data-t="today">Today</div>
+      <div class="row"><span class="av" style="background:#7dd3fc">G</span><div class="bubble"><span class="who" style="color:#7dd3fc">Giulia</span><span data-t="m1">deploying to prod on a friday, what could go wrong</span><time>17:58</time></div></div>
+      <div class="row"><span class="av" style="background:#fda4af">M</span><div class="bubble"><span class="who" style="color:#fda4af">Marco</span><span data-t="m2">who approved this 👀</span><time>17:58</time></div></div>
+    </div>
+    <form id="form" autocomplete="off"><input id="text" data-ph="placeholder" placeholder="Message"></form>
+  </main>
+  <div class="drop" id="drop" data-t="dropHere">Drop to send</div>
+<script>
+  var it = /[?&]it\b/.test(location.search);
+  if (/[?&]light\b/.test(location.search)) document.documentElement.classList.add("light");
+  var T = {
+    search: "Cerca", group: "Ciurma del venerdì", last: "Marco: chi l'ha approvato", g1: "a domani!", l1: "ahah", s1: "ok perfetto",
+    members: "Giulia, Marco, Sara, tu", today: "Oggi", m1: "deploy in produzione di venerdì, cosa potrebbe andare storto",
+    m2: "chi l'ha approvato 👀", placeholder: "Scrivi un messaggio", dropHere: "Rilascia per inviare"
+  };
+  if (it) {
+    document.documentElement.lang = "it";
+    document.querySelectorAll("[data-t]").forEach(function (el) { el.textContent = T[el.dataset.t]; });
+    document.getElementById("text").placeholder = T.placeholder;
+  }
+  var log = document.getElementById("log");
+  var now = function () { var d = new Date(); return d.getHours() + ":" + String(d.getMinutes()).padStart(2, "0"); };
+  var row = function (inner) {
+    var r = document.createElement("div");
+    r.className = "row mine";
+    r.innerHTML = '<span class="av"></span>';
+    r.appendChild(inner);
+    log.appendChild(r);
+    log.scrollTop = log.scrollHeight;
+  };
+  var sendImage = function (file) {
+    var box = document.createElement("div");
+    var img = document.createElement("img");
+    img.className = "sticker";
+    img.src = URL.createObjectURL(file);
+    var t = document.createElement("div");
+    t.className = "sticker-time";
+    t.textContent = now();
+    box.appendChild(img);
+    box.appendChild(t);
+    row(box);
+  };
+  var sendText = function (text) {
+    var b = document.createElement("div");
+    b.className = "bubble";
+    b.textContent = text;
+    var t = document.createElement("time");
+    t.textContent = now();
+    b.appendChild(t);
+    row(b);
+  };
+  var images = function (dt) {
+    var out = [];
+    Array.prototype.forEach.call(dt.files || [], function (f) { if (/^image\//.test(f.type)) out.push(f); });
+    if (!out.length) Array.prototype.forEach.call(dt.items || [], function (i) {
+      if (i.kind === "file" && /^image\//.test(i.type)) { var f = i.getAsFile(); if (f) out.push(f); }
+    });
+    return out.slice(0, 1);
+  };
+  document.addEventListener("paste", function (e) {
+    var files = images(e.clipboardData);
+    if (!files.length) return;
+    e.preventDefault();
+    files.forEach(sendImage);
+  });
+  var drop = document.getElementById("drop");
+  document.addEventListener("dragover", function (e) { e.preventDefault(); drop.classList.add("on"); });
+  document.addEventListener("dragleave", function (e) { if (!e.relatedTarget) drop.classList.remove("on"); });
+  document.addEventListener("drop", function (e) {
+    e.preventDefault();
+    drop.classList.remove("on");
+    images(e.dataTransfer).forEach(sendImage);
+  });
+  document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var input = document.getElementById("text");
+    if (input.value.trim()) sendText(input.value.trim());
+    input.value = "";
+  });
+  document.getElementById("text").focus();
+</script>
+</body>
+</html>
