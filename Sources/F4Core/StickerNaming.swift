@@ -66,6 +66,32 @@ public enum StickerNaming {
             .map { $0.identifier.replacingOccurrences(of: "_", with: " ") }
     }
 
+    /// Whether a file name (without its extension) says nothing about the
+    /// sticker, so F4 names it after what it reads on the picture instead:
+    /// what WhatsApp, cameras, screenshots and browsers call a file
+    /// ("WhatsApp Image 2026-11-14 at 20.12.03", "STK-20231105-WA0003",
+    /// "IMG_1234", "Screenshot 2026-11-14 alle 21.03", "image (2)",
+    /// "sticker_7"), a hash or a UUID, or no letters at all. A name with
+    /// one real word in it ("boh", "cat 2") is kept.
+    public static func isGenericFileName(_ name: String) -> Bool {
+        let words = name.lowercased()
+            .split { !($0.isLetter || $0.isNumber) }
+            .filter { word in
+                // A word with a digit is a counter, a date, a hash or "wa0003".
+                !word.contains(where: \.isNumber) && word.count > 1 && !genericWords.contains(String(word))
+            }
+        return words.isEmpty
+    }
+
+    /// Words of the names apps give files, in English and Italian.
+    static let genericWords: Set<String> = [
+        "whatsapp", "telegram", "signal", "wa", "tg", "stk", "img", "image", "images", "immagine",
+        "photo", "foto", "pic", "picture", "sticker", "stickers", "screenshot", "screen", "shot",
+        "schermata", "untitled", "senza", "titolo", "unnamed", "download", "file", "pasted",
+        "graphic", "clipboard", "copy", "copia", "at", "alle", "dsc", "pxl", "giphy", "tenor",
+        "gif", "webp", "png", "jpg", "jpeg", "animated", "media", "new", "nuovo",
+    ]
+
     /// Labels too broad to name a sticker by.
     static let vague: Set<String> = [
         "adult", "animal", "art", "blue_sky", "cartoon", "clothing", "container", "document",

@@ -202,34 +202,48 @@ enum MemeImporter {
     private static func copy(_ files: [URL], into folder: URL, convert: Bool) async throws -> [URL] {
         let jobs = files.compactMap { file in MemeKind(url: file).map { (file, $0, folder) } }
         let archives = files.filter(StickerArchive.isArchive)
+        let fallback = String(localized: "sticker")
         return try await Task.detached(priority: .userInitiated) {
             let copied = try jobs.map { file, kind, target in
                 try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
-                let name = file.deletingPathExtension().lastPathComponent
-                if convert, Self.isConvertible(kind), let data = try? Data(contentsOf: file),
-                   let sticker = StickerConverter.sticker(from: data) {
-                    let url = MemeImport.uniqueURL(name: name, kind: .png, in: target)
+                // A file dragged out of WhatsApp or picked in Finder is often
+                // called "WhatsApp Image 2026-…" or "IMG_1234": read the
+                // picture, as for a pasted one, to name it when its own name
+                // says nothing, and to tag it in any case.
+                let original = file.deletingPathExtension().lastPathComponent
+                let data = try? Data(contentsOf: file)
+                let reading = data.flatMap(StickerNamer.reading(for:))
+                let name = StickerNaming.isGenericFileName(original)
+                    ? reading?.name.map { MemeImport.baseName($0) } ?? fallback
+                    : original
+                let url: URL
+                if convert, Self.isConvertible(kind), let data, let sticker = StickerConverter.sticker(from: data) {
+                    url = MemeImport.uniqueURL(name: name, kind: .png, in: target)
                     try sticker.write(to: url, options: .withoutOverwriting)
-                    return url
+                } else {
+                    url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
+                    try FileManager.default.copyItem(at: file, to: url)
                 }
-                let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
-                try FileManager.default.copyItem(at: file, to: url)
+                Self.addTags(reading?.tags ?? [], to: url)
                 return url
             }
             return try copied + archives.flatMap { try unpack($0, into: folder) }
         }.value
     }
 
-    /// Saves `data` in `folder` as `name`, or, when `name` is nil, as what
+    /// Saves `data` in `folder` as `name`, or, when `name` is nil or says
+    /// nothing ("image", a hash: `StickerNaming.isGenericFileName`), as what
     /// `StickerNamer` reads on the picture (its caption, or what it shows),
     /// and "sticker" when it reads nothing; what it shows also becomes the
     /// file's Finder tags.
     private static func write(_ data: Data, kind: MemeKind, name: String?, into folder: URL, convert: Bool) async throws -> URL {
         let target = folder
+        let suggested = name
         let fallback = String(localized: "sticker")
         return try await Task.detached(priority: .userInitiated) {
-            let reading = name == nil ? StickerNamer.reading(for: data) : nil
-            let name = name ?? reading?.name.map { MemeImport.baseName($0) } ?? fallback
+            let reading = StickerNamer.reading(for: data)
+            let given = suggested.flatMap { StickerNaming.isGenericFileName($0) ? nil : $0 }
+            let name = given ?? reading?.name.map { MemeImport.baseName($0) } ?? fallback
             var (data, kind) = (data, kind)
             if convert, Self.isConvertible(kind), let sticker = StickerConverter.sticker(from: data) {
                 (data, kind) = (sticker, .png)
@@ -237,11 +251,17 @@ enum MemeImporter {
             try FileManager.default.createDirectory(at: target, withIntermediateDirectories: true)
             let url = MemeImport.uniqueURL(name: name, kind: kind, in: target)
             try data.write(to: url, options: .withoutOverwriting)
-            if let tags = reading?.tags, !tags.isEmpty {
-                try? (url as NSURL).setResourceValue(tags, forKey: .tagNamesKey)
-            }
+            Self.addTags(reading?.tags ?? [], to: url)
             return url
         }.value
+    }
+
+    /// Adds `tags` to the file's Finder tags, keeping the ones it has.
+    nonisolated private static func addTags(_ tags: [String], to url: URL) {
+        guard !tags.isEmpty else { return }
+        let existing = (try? url.resourceValues(forKeys: [.tagNamesKey]).tagNames) ?? []
+        let all = existing + tags.filter { tag in !existing.contains { $0.caseInsensitiveCompare(tag) == .orderedSame } }
+        try? (url as NSURL).setResourceValue(all, forKey: .tagNamesKey)
     }
 
     /// Still images the converter turns into stickers. GIFs and WebP

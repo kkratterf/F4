@@ -75,4 +75,22 @@ final class StickerNamerTests: XCTestCase {
     func testJunkHasNoName() {
         XCTAssertNil(StickerNamer.name(for: Data("not an image".utf8)))
     }
+
+    func testGenericFileNamesAreRenamed() {
+        for name in [
+            "WhatsApp Image 2026-11-14 at 20.12.03", "WhatsApp Sticker", "STK-20231105-WA0003",
+            "IMG-20231105-WA0001", "IMG_1234", "Screenshot 2026-11-14 at 21.03.11",
+            "Schermata 2026-11-14 alle 21.03.11", "image (2)", "sticker_7", "sticker", "1",
+            "6F9619FF-8B86-D011-B42D-00C04FC964FF", "a3f9c1e0b2", "Pasted Graphic 3", "unnamed",
+            "Senza titolo", "giphy", "PXL_20231105_101010", "",
+        ] {
+            XCTAssertTrue(StickerNaming.isGenericFileName(name), name)
+        }
+    }
+
+    func testRealNamesAreKept() {
+        for name in ["boh", "cat 2", "ma che dici", "Maramao bleh", "this is fine", "basito_face"] {
+            XCTAssertFalse(StickerNaming.isGenericFileName(name), name)
+        }
+    }
 }
