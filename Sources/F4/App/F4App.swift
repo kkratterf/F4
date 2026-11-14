@@ -23,6 +23,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     private var panel: PanelController?
     private var statusItem: StatusItemController?
     private lazy var welcome = WelcomeWindowController { [weak self] in self?.panel?.show() }
+    private lazy var addStickers = AddStickersWindowController(library: library)
     private let settings = AppSettings.shared
     private lazy var library = MemeLibrary(
         folder: settings.memeFolder,
@@ -78,7 +79,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             shortcut: settings.toggleShortcut.displayString,
             recentMemes: { [weak self] in self?.recentMemes() ?? [] },
             onCopy: { [weak self] meme in self?.panel?.pick(meme) },
+            onDrop: { [weak self] pasteboard in self?.panel?.addDropped(from: pasteboard) },
             onOpen: { [weak self] in self?.panel?.show() },
+            onAddStickers: { [weak self] in self?.addStickers.show() },
             onHelp: { [weak self] in self?.welcome.show() }
         )
         registerToggleShortcut()

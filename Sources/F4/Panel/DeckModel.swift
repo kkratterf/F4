@@ -16,14 +16,20 @@ final class DeckModel: ObservableObject {
         didSet {
             guard tab != oldValue else { return }
             defaults.set(tab.rawValue, forKey: Self.tabKey)
+            // A new grid comes up under a still mouse, or under one on its
+            // way back from the tab bar: the selection starts on the first
+            // sticker and stays with the keyboard until the mouse moves
+            // deliberately over the new grid.
+            pointer = nil
+            keyboardLeads = true
+            keyboardAnchor = nil
             refresh()
         }
     }
+    /// What the grid shows, as one flat list in every tab: no headings, so
+    /// a row on screen is always `columns` stickers and the arrow keys move
+    /// the same way everywhere. The tabs are what filters.
     @Published private(set) var results: [Meme] = []
-    /// How many of the first `results` are favourites shown under their own
-    /// "Favourites" heading: with an empty search, outside the Favourites tab.
-    /// 0 when the grid has no sections.
-    @Published private(set) var favouriteCount = 0
     /// Index into `results`. Reset to the best
     /// match whenever the results change.
     @Published var selection = 0
@@ -72,12 +78,6 @@ final class DeckModel: ObservableObject {
 
     /// What the grid shows.
     var itemCount: Int { results.count }
-
-    /// The sizes of the grid's sections, in order: favourites and the rest
-    /// (or all results). Each section starts on a new row.
-    var sections: [Int] {
-        favouriteCount > 0 ? [favouriteCount, results.count - favouriteCount] : [results.count]
-    }
 
     var selectedMeme: Meme? {
         results.indices.contains(selection) ? results[selection] : nil
@@ -128,7 +128,7 @@ final class DeckModel: ObservableObject {
     @discardableResult
     func move(_ direction: GridDirection) -> Bool {
         guard itemCount > 0 else { return false }
-        selection = GridNavigation.move(direction, from: selection, sections: sections, columns: Self.columns)
+        selection = GridNavigation.move(direction, from: selection, count: itemCount, columns: Self.columns)
         return true
     }
 
@@ -208,12 +208,6 @@ final class DeckModel: ObservableObject {
         } else {
             results = FuzzySearch.filter(memes, query: query)
         }
-        // Favourites get their own heading on the home grid, so it is clear
-        // where they are; the Favourites tab and search results have none.
-        let sectioned = egg == nil && tab != .favourites && query.trimmingCharacters(in: .whitespaces).isEmpty
-        let count = sectioned ? results.prefix { usage.favourites.contains($0.url) }.count : 0
-        // A heading over everything would add nothing.
-        favouriteCount = count < results.count ? count : 0
         if let pendingReveal, let meme = library.memes.first(where: { $0.url.standardizedFileURL == pendingReveal }) {
             if !tab.contains(meme, favourites: usage.favourites) {
                 // Setting the tab refreshes again and lands in the branch below.

@@ -104,3 +104,36 @@ extension MemeImport {
         return (media, name.isEmpty ? "giphy \(id)" : name)
     }
 }
+
+extension MemeImport {
+    /// The link to the animated original of a copied picture, if the
+    /// pasteboard names one: browsers put a still PNG or TIFF of a GIF on
+    /// the clipboard ("Copy Image"), with the image's address beside it as
+    /// a URL or as the `<img src>` of the copied HTML. Only http(s) links
+    /// to a .gif or .webp file count, checked in `urls` first, then in `html`.
+    public static func animatedImageLink(urls: [String], html: String?) -> URL? {
+        let sources = urls + (html.map(imageSources(in:)) ?? [])
+        for source in sources {
+            let decoded = source.replacingOccurrences(of: "&amp;", with: "&")
+            guard let url = webURL(in: decoded), let kind = MemeKind(url: url), kind == .gif || kind == .webp
+            else { continue }
+            return url
+        }
+        return nil
+    }
+
+    /// The `src` of every `<img>` in `html`, in order.
+    static func imageSources(in html: String) -> [String] {
+        guard let regex = try? NSRegularExpression(
+            pattern: #"<img\b[^>]*?\bsrc\s*=\s*(?:"([^"]*)"|'([^']*)')"#,
+            options: [.caseInsensitive]
+        ) else { return [] }
+        let range = NSRange(html.startIndex..., in: html)
+        return regex.matches(in: html, range: range).compactMap { match in
+            for group in 1...2 {
+                if let range = Range(match.range(at: group), in: html) { return String(html[range]) }
+            }
+            return nil
+        }
+    }
+}

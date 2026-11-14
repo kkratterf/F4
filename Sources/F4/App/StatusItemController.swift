@@ -12,7 +12,7 @@ import F4Core
 /// starts at login, so neither is an option. The menu is rebuilt every time it opens, so the
 /// recents and the checkmarks are always current.
 @MainActor
-final class StatusItemController: NSObject, NSMenuDelegate {
+final class StatusItemController: NSObject, NSMenuDelegate, NSWindowDelegate {
     /// How many recent memes the menu lists.
     static let recentCount = 5
     /// Points for the thumbnails next to recent memes.
@@ -26,8 +26,12 @@ final class StatusItemController: NSObject, NSMenuDelegate {
     private let packs: PackDownloader
     private let onOpen: () -> Void
     private let onHelp: () -> Void
+    /// "Add Stickers…": the window stickers are dropped into.
+    private let onAddStickers: () -> Void
     private let recentMemes: () -> [Meme]
     private let onCopy: (Meme) -> Void
+    /// A sticker, an image or a link dropped on the icon.
+    private let onDrop: (NSPasteboard) -> Void
     private var shortcut: String
     /// Set when macOS refused the shortcut, usually because another app owns it.
     private var shortcutError: String?
@@ -44,7 +48,9 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         shortcut: String,
         recentMemes: @escaping () -> [Meme],
         onCopy: @escaping (Meme) -> Void,
+        onDrop: @escaping (NSPasteboard) -> Void,
         onOpen: @escaping () -> Void,
+        onAddStickers: @escaping () -> Void,
         onHelp: @escaping () -> Void
     ) {
         self.settings = settings
@@ -53,15 +59,43 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         self.packs = packs
         self.recentMemes = recentMemes
         self.onCopy = onCopy
+        self.onDrop = onDrop
         self.onOpen = onOpen
         self.onHelp = onHelp
+        self.onAddStickers = onAddStickers
         self.shortcut = shortcut
         super.init()
         menu.delegate = self
         menu.autoenablesItems = false
         statusItem.menu = menu
         statusItem.button?.image = Self.keycapImage()
+        // Drop a sticker on the icon to add it: the window of a status item
+        // passes drags to its delegate.
+        statusItem.button?.window?.registerForDraggedTypes(MemeImporter.dropTypes)
+        statusItem.button?.window?.delegate = self
         update(shortcut: shortcut)
+    }
+
+    // MARK: Drops on the icon
+
+    func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        guard MemeImporter.acceptsDrop(sender.draggingPasteboard) else { return [] }
+        statusItem.button?.highlight(true)
+        return .copy
+    }
+
+    func draggingUpdated(_ sender: NSDraggingInfo) -> NSDragOperation {
+        MemeImporter.acceptsDrop(sender.draggingPasteboard) ? .copy : []
+    }
+
+    func draggingExited(_ sender: NSDraggingInfo?) {
+        statusItem.button?.highlight(false)
+    }
+
+    func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
+        statusItem.button?.highlight(false)
+        onDrop(sender.draggingPasteboard)
+        return true
     }
 
     /// "F4" in Inter Display Black, in the logo's 1024 design space (y down,
@@ -132,6 +166,7 @@ final class StatusItemController: NSObject, NSMenuDelegate {
         }
         items.append(.separator())
         items.append(foldersItem())
+        items.append(item(String(localized: "Add Stickers…")) { [weak self] in self?.onAddStickers() })
         if !packs.packs.isEmpty {
             items.append(packsItem())
         }

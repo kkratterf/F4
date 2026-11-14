@@ -238,23 +238,10 @@ struct DeckView: View {
     private var grid: some View {
         ScrollViewReader { proxy in
             ScrollView {
+                // One flat grid in every tab, so each row on screen is the
+                // `DeckModel.columns` stickers the arrow keys move by.
                 LazyVGrid(columns: gridColumns, spacing: 10) {
-                    // Each section starts on a new row, which is what
-                    // `DeckModel.sections` tells the arrow keys.
-                    if model.favouriteCount > 0 {
-                        Section {
-                            memeCells(0..<model.favouriteCount)
-                        } header: {
-                            SectionHeader(title: "Favourites")
-                        }
-                        Section {
-                            memeCells(model.favouriteCount..<model.results.count)
-                        } header: {
-                            SectionHeader(title: "Everything else")
-                        }
-                    } else {
-                        memeCells(model.results.indices)
-                    }
+                    memeCells(model.results.indices)
                 }
                 .padding(14)
             }
@@ -340,19 +327,6 @@ extension DeckView {
                 Button("Move to Trash") { onOrganize(meme, .trash) }
             }
         }
-    }
-}
-
-/// A heading over a section of the grid: "Favourites", "Everything else".
-private struct SectionHeader: View {
-    let title: LocalizedStringKey
-
-    var body: some View {
-        Text(title)
-            .font(.system(size: 11, weight: .semibold))
-            .foregroundStyle(.secondary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.top, 4)
     }
 }
 
