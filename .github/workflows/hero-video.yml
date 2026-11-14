@@ -36,18 +36,20 @@ jobs:
         run: scripts/build-app.sh release
 
       - name: The stickers
-        # The maintainer's own stickers for the clip live on the
-        # hero-video/stickers branch, never on main.
+        # Stickers for the clip can live on a hero-video/stickers branch,
+        # never on main; without it the take uses the starter pack.
         run: |
           mkdir -p dist/stickers
-          git fetch -q origin hero-video/stickers
-          git archive FETCH_HEAD | tar -x -C dist/stickers
+          if git fetch -q origin hero-video/stickers; then
+            git archive FETCH_HEAD | tar -x -C dist/stickers
+          fi
           ls dist/stickers | wc -l
 
       - name: Record
         run: |
           system_profiler SPDisplaysDataType | sed -n '/Displays:/,$p'
-          STICKERS="$PWD/dist/stickers" scripts/record-hero.sh
+          if [ -n "$(ls dist/stickers)" ]; then export STICKERS="$PWD/dist/stickers"; fi
+          scripts/record-hero.sh
 
       - name: Push the take to its branch
         env:
