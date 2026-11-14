@@ -2,19 +2,26 @@
 # Records the website's hero clip on a Mac: the real F4.app over a made-up chat
 # (scripts/hero/chat.html in Google Chrome or Safari), driven by synthetic key presses.
 # fn F4 opens the panel, a search is typed, Enter copies, ⌘V pastes into the
-# chat; twice, the second time an animated sticker. The raw take lands in
+# chat; twice, the second time an animated sticker. The stickers are the
+# maintainer's own (STICKERS=folder, copied into F4's library in place of the
+# starter pack). The raw take lands in
 # $OUT/raw.mov; scripts/make-hero-video.sh turns it into site/media/hero.mp4,
 # its poster and the README preview.
 #
-# It changes the Mac it runs on (wallpaper, Dock, F4's library and defaults),
-# so it is meant for a CI runner (.github/workflows/hero-video.yml). Needs
-# dist/F4.app (scripts/build-app.sh release), and Accessibility
-# and Screen Recording for the shell, which GitHub's macOS runners grant.
-# Usage: scripts/record-hero.sh   (ANIMATED=path/to/sticker.gif to add one)
+# On a CI runner (.github/workflows/hero-video.yml) it changes the Mac for
+# good (wallpaper, Dock, dark mode, F4's library and defaults) and records
+# dist/F4.app. With LOCAL=1 it records the F4 installed on a real Mac instead,
+# pointed for the take at LIBRARY (a folder of stickers, the user's library
+# untouched), and puts the wallpaper, the Dock, the appearance and F4's
+# settings back when it ends. Needs Google Chrome, and Accessibility and
+# Screen Recording for the app that runs it (GitHub's runners grant both).
+# Usage: STICKERS=path/to/stickers scripts/record-hero.sh       (CI)
+#        LOCAL=1 LIBRARY=path/to/stickers scripts/record-hero.sh (a real Mac)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-APP="${APP:-$ROOT/dist/F4.app}"
+LOCAL="${LOCAL:-}"
+if [ -n "$LOCAL" ]; then APP="${APP:-/Applications/F4.app}"; else APP="${APP:-$ROOT/dist/F4.app}"; fi
 OUT="${OUT:-$ROOT/dist/hero}"
 QUERY="${QUERY:-}"            # "?it" records the Italian chat, "?debug" shows what a paste carried
 BROWSER="${BROWSER:-chrome}"  # chrome or safari
@@ -54,6 +61,30 @@ echo "screen: $screen"
 width=${screen%x*}
 height=${screen#*x}
 
+f4_defaults="com.kkratterf.f4"
+if [ -n "$LOCAL" ]; then
+  # Remember what the take changes, and put it back however the script ends.
+  old_wallpaper=$(se 'get picture of desktop 1' 2>/dev/null || true)
+  old_dark=$(se 'get dark mode of appearance preferences' 2>/dev/null || echo false)
+  old_autohide=$(defaults read com.apple.dock autohide 2>/dev/null || echo 0)
+  old_delay=$(defaults read com.apple.dock autohide-delay 2>/dev/null || true)
+  old_folder=$(defaults read "$f4_defaults" memeFolderPath 2>/dev/null || true)
+  restore() {
+    pkill -x F4 || true
+    if [ -n "$old_folder" ]; then defaults write "$f4_defaults" memeFolderPath "$old_folder"
+    else defaults delete "$f4_defaults" memeFolderPath 2>/dev/null || true; fi
+    [ -n "$old_wallpaper" ] && se "tell every desktop to set picture to POSIX file \"$old_wallpaper\"" || true
+    se "tell appearance preferences to set dark mode to $old_dark" || true
+    defaults write com.apple.dock autohide -bool "$([ "$old_autohide" = 1 ] && echo true || echo false)"
+    if [ -n "$old_delay" ]; then defaults write com.apple.dock autohide-delay -float "$old_delay"
+    else defaults delete com.apple.dock autohide-delay 2>/dev/null || true; fi
+    killall Dock || true
+    sleep 1
+    open "$APP"
+  }
+  trap restore EXIT
+fi
+
 # A clean desk: dark mode, the website's gradient as wallpaper, no Dock.
 se 'tell appearance preferences to set dark mode to true' || echo "warning: could not turn on dark mode"
 defaults write com.apple.dock autohide -bool true
@@ -64,14 +95,29 @@ se "tell every desktop to set picture to POSIX file \"$wallpaper\"" ||
   osascript -e "tell application \"Finder\" to set desktop picture to POSIX file \"$wallpaper\"" ||
   echo "warning: could not set the wallpaper"
 
+if [ -n "$LOCAL" ]; then
+  # The installed F4, reading LIBRARY for the take.
+  [ -d "${LIBRARY:-}" ] || { echo "error: set LIBRARY to a folder of stickers" >&2; exit 1; }
+  pkill -x F4 || true
+  sleep 1
+  defaults write "$f4_defaults" memeFolderPath "$(cd "$LIBRARY" && pwd)/"
+else
 # F4 as an existing user has it: welcome window seen, no update prompt.
 defaults write com.kkratterf.f4 didShowWelcome -bool true
 defaults write com.kkratterf.f4 SUEnableAutomaticChecks -bool false
 defaults write com.kkratterf.f4 SUHasLaunchedBefore -bool true
 mkdir -p "$LIB"
-if [ -n "${ANIMATED:-}" ]; then cp "$ANIMATED" "$LIB/"; fi
+fi
+if [ -z "$LOCAL" ] && [ -n "${STICKERS:-}" ]; then
+  cp -R "$STICKERS"/. "$LIB/"
+  # The library as the maintainer has it: no starter pack copied in.
+  defaults write com.kkratterf.f4 seededStarterFolders -array Maramao
+  defaults write com.kkratterf.f4 didSeedLibrary -bool true
+  defaults write com.kkratterf.f4 didRemoveRetiredStarter -bool true
+  defaults write com.kkratterf.f4 didRenameStarterFolders -bool true
+fi
 open "$APP"
-sleep 8   # the starter pack is copied, and the login item notice comes and goes
+sleep 8   # the library is scanned, and the login item notice comes and goes
 
 # The chat, a window in the middle of the screen with the gradient around it.
 win_w=$((width * 82 / 100))
@@ -106,10 +152,10 @@ screencapture -v -x -V "$SECONDS_TO_RECORD" "$OUT/raw.mov" &
 recorder=$!
 sleep 2.5
 
-# 1. A still sticker: fn F4, "ma che", Enter, ⌘V.
+# 1. A still sticker: fn F4, "cazzo di", Enter, ⌘V.
 open_panel
 sleep 1.4
-typed "ma che"
+typed "cazzo di"
 sleep 1.1
 press 36            # Enter: copies, the panel hides, the toast shows
 sleep 1.6
@@ -121,8 +167,8 @@ sleep 2.4
 open_panel
 sleep 1.0
 press 124; sleep 0.45; press 124; sleep 0.45; press 125; sleep 0.8
-typed "capr"
-sleep 1.8           # the selected GIF plays in the panel
+typed "happ"
+sleep 1.8           # the selected sticker plays in the panel
 press 36
 sleep 1.6
 pasteboard_types
@@ -131,6 +177,7 @@ sleep 4
 
 wait "$recorder" || true
 screencapture -x "$OUT/end.png"
-osascript -e "tell application \"$proc\" to quit" || true
-pkill -x F4 || true
+if [ "$BROWSER" = safari ]; then osascript -e 'tell application "Safari" to quit' || true
+else pkill -f -- "--user-data-dir=$profile" || true; fi
+[ -n "$LOCAL" ] || pkill -x F4 || true
 ls -la "$OUT"

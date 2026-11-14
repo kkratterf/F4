@@ -1,8 +1,8 @@
 name: Hero video
 
 # Records the website's hero clip with the real app on a macOS runner
-# (scripts/record-hero.sh), in Chrome and in Safari, and pushes each raw take
-# to the hero-video/<ref>-<browser> branch, where scripts/make-hero-video.sh can fetch it and cut the clip
+# (scripts/record-hero.sh) and pushes the raw take to the hero-video/<ref>
+# branch, where scripts/make-hero-video.sh can fetch it and cut the clip
 # (artifacts need a login to download). Runs by hand, and on pull requests
 # that change the recording.
 
@@ -23,13 +23,9 @@ concurrency:
 
 jobs:
   record:
-    name: Record the hero clip (${{ matrix.browser }})
+    name: Record the hero clip
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: macos-15
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chrome, safari]
     permissions:
       contents: write
     steps:
@@ -39,31 +35,24 @@ jobs:
       - name: Build the app bundle
         run: scripts/build-app.sh release
 
-      - name: The animated sticker
-        # The maintainer's goat (site/media/stickers/capretta.webp) as a GIF,
-        # the format F4 plays in the panel. Made here, never committed.
+      - name: The stickers
+        # The maintainer's own stickers for the clip live on the
+        # hero-video/stickers branch, never on main.
         run: |
-          python3 -m pip install --quiet --break-system-packages pillow || python3 -m pip install --quiet pillow
-          python3 - <<'PY'
-          from PIL import Image, ImageSequence
-          im = Image.open("site/media/stickers/capretta.webp")
-          frames, durations = [], []
-          for f in ImageSequence.Iterator(im):
-              frames.append(f.convert("RGBA"))
-              durations.append(f.info.get("duration", 80))
-          frames[0].save("dist/capretta.gif", save_all=True, append_images=frames[1:],
-                         duration=durations, loop=0, disposal=2)
-          PY
+          mkdir -p dist/stickers
+          git fetch -q origin hero-video/stickers
+          git archive FETCH_HEAD | tar -x -C dist/stickers
+          ls dist/stickers | wc -l
 
       - name: Record
         run: |
           system_profiler SPDisplaysDataType | sed -n '/Displays:/,$p'
-          BROWSER=${{ matrix.browser }} QUERY="?debug" ANIMATED="$PWD/dist/capretta.gif" scripts/record-hero.sh
+          STICKERS="$PWD/dist/stickers" scripts/record-hero.sh
 
       - name: Push the take to its branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: hero-video/${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}-${{ matrix.browser }}
+          BRANCH: hero-video/${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
           SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           cd dist/hero

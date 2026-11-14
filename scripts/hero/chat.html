@@ -34,11 +34,11 @@
   .conv b { display: block; font-size: 14px; }
   .conv small { display: block; color: var(--muted); font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 170px; }
   .av { flex: none; display: grid; place-items: center; width: 42px; height: 42px; border-radius: 50%; font-weight: 700; color: #111; }
-  main { display: flex; flex-direction: column; min-width: 0; }
+  main { display: flex; flex-direction: column; min-width: 0; min-height: 0; height: 100vh; }
   header { display: flex; align-items: center; gap: 12px; padding: 12px 20px; border-bottom: 1px solid var(--line); background: var(--panel); }
   header b { display: block; }
   header small { color: var(--muted); font-size: 12.5px; }
-  #log { flex: 1; overflow-y: auto; padding: 24px 6% 12px; display: flex; flex-direction: column; gap: 6px; }
+  #log { flex: 1; min-height: 0; overflow-y: auto; padding: 24px 6% 12px; display: flex; flex-direction: column; gap: 6px; }
   .day { align-self: center; margin: 8px 0 14px; padding: 4px 10px; border-radius: 8px; background: var(--line); color: var(--muted); font-size: 12px; }
   .row { display: flex; gap: 10px; align-items: flex-end; max-width: 70%; }
   .row.mine { align-self: flex-end; flex-direction: row-reverse; }
@@ -122,7 +122,7 @@
   };
   var images = function (dt) {
     var out = [];
-    Array.prototype.forEach.call(dt.files || [], function (f) { if (/^image\//.test(f.type)) out.push(f); });
+    Array.prototype.forEach.call(dt.files || [], function (f) { if (/^image\//.test(f.type) || /\.(gif|png|jpe?g|webp)$/i.test(f.name)) out.push(f); });
     if (!out.length) Array.prototype.forEach.call(dt.items || [], function (i) {
       if (i.kind === "file" && /^image\//.test(i.type)) { var f = i.getAsFile(); if (f) out.push(f); }
     });
