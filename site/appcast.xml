@@ -6,6 +6,16 @@
     <description>F4 updates</description>
     <language>en</language>
     <item>
+      <title>F4 0.8.0</title>
+      <pubDate>Sat, 14 Nov 2026 17:15:11 GMT</pubDate>
+      <link>https://github.com/kkratterf/f4/releases/tag/v0.8.0</link>
+      <sparkle:version>0.8.0</sparkle:version>
+      <sparkle:shortVersionString>0.8.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <sparkle:fullReleaseNotesLink>https://github.com/kkratterf/f4/releases/tag/v0.8.0</sparkle:fullReleaseNotesLink>
+      <enclosure url="https://github.com/kkratterf/F4/releases/download/v0.8.0/F4-0.8.0.zip" length="6084390" type="application/octet-stream" sparkle:edSignature="q421/2VSJ5+Rjh2pkGZBoKa3BwF3dTYQYvqlQ5IYOWgkzPKqG1uxizNNOCxk3J0yFJ/Ed8UyxyrfSeZovyDyBQ==" />
+    </item>
+    <item>
       <title>F4 0.7.1</title>
       <pubDate>Sat, 14 Nov 2026 16:23:55 GMT</pubDate>
       <link>https://github.com/kkratterf/f4/releases/tag/v0.7.1</link>
@@ -94,16 +104,6 @@
       <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
       <sparkle:fullReleaseNotesLink>https://github.com/kkratterf/f4/releases/tag/v0.3.3</sparkle:fullReleaseNotesLink>
       <enclosure url="https://github.com/kkratterf/F4/releases/download/v0.3.3/F4-0.3.3.zip" length="5505353" type="application/octet-stream" sparkle:edSignature="UrHuoTHe7yp83c6mD/XeyoB848to05F69uHrnymTudLA94aZ2UK7JuVt/6u8SH4nfGBIkm/jVylimJSNe1jFDg==" />
-    </item>
-    <item>
-      <title>F4 0.3.2</title>
-      <pubDate>Sat, 31 Oct 2026 15:34:14 GMT</pubDate>
-      <link>https://github.com/kkratterf/f4/releases/tag/v0.3.2</link>
-      <sparkle:version>0.3.2</sparkle:version>
-      <sparkle:shortVersionString>0.3.2</sparkle:shortVersionString>
-      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
-      <sparkle:fullReleaseNotesLink>https://github.com/kkratterf/f4/releases/tag/v0.3.2</sparkle:fullReleaseNotesLink>
-      <enclosure url="https://github.com/kkratterf/F4/releases/download/v0.3.2/F4-0.3.2.zip" length="5479106" type="application/octet-stream" sparkle:edSignature="WYt+Nl4sSc5TnYRZ28Ek5SLVd3uXMTBpew/m13zWRlIv00wTRdCBHUn3A80aEitI9vVguTUJnv1GQSEvFTq4BQ==" />
     </item>
   </channel>
 </rss>
