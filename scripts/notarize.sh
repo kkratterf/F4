@@ -9,17 +9,15 @@
 # with the hardened runtime and a secure timestamp (scripts/build-app.sh and
 # scripts/build-dmg.sh do that when SIGN_IDENTITY is set).
 #
-# Environment (GitHub secrets in release.yml):
-#   APPLE_ID                     the Apple Account of the developer team
-#   APPLE_APP_SPECIFIC_PASSWORD  an app-specific password of that account
-#   APPLE_TEAM_ID                the 10-character team ID
+# Environment (GitHub secrets in release.yml), an App Store Connect API key:
+#   APPLE_NOTARY_KEY_ID          the key's ID
+#   APPLE_NOTARY_ISSUER_ID       the issuer ID shown above the keys list
+#   APPLE_NOTARY_KEY_P8_BASE64   the AuthKey_<id>.p8 file, in base64
+# or, without a key, an Apple Account:
+#   APPLE_ID, APPLE_APP_SPECIFIC_PASSWORD, APPLE_TEAM_ID
 set -euo pipefail
 
 TARGET="${1:?usage: scripts/notarize.sh <F4.app|F4.dmg>}"
-: "${APPLE_ID:?APPLE_ID is not set}"
-: "${APPLE_APP_SPECIFIC_PASSWORD:?APPLE_APP_SPECIFIC_PASSWORD is not set}"
-: "${APPLE_TEAM_ID:?APPLE_TEAM_ID is not set}"
-
 if [ ! -e "$TARGET" ]; then
   echo "error: $TARGET does not exist" >&2
   exit 1
@@ -43,20 +41,46 @@ case "$TARGET" in
     ;;
 esac
 
-auth=(--apple-id "$APPLE_ID" --password "$APPLE_APP_SPECIFIC_PASSWORD" --team-id "$APPLE_TEAM_ID")
+if [ -n "${APPLE_NOTARY_KEY_P8_BASE64:-}" ]; then
+  : "${APPLE_NOTARY_KEY_ID:?APPLE_NOTARY_KEY_ID is not set}"
+  : "${APPLE_NOTARY_ISSUER_ID:?APPLE_NOTARY_ISSUER_ID is not set}"
+  KEY_FILE="$WORK/AuthKey_$APPLE_NOTARY_KEY_ID.p8"
+  printf '%s' "$APPLE_NOTARY_KEY_P8_BASE64" | base64 --decode > "$KEY_FILE"
+  auth=(--key "$KEY_FILE" --key-id "$APPLE_NOTARY_KEY_ID" --issuer "$APPLE_NOTARY_ISSUER_ID")
+else
+  : "${APPLE_ID:?set APPLE_NOTARY_KEY_P8_BASE64 (with its key and issuer IDs) or APPLE_ID}"
+  : "${APPLE_APP_SPECIFIC_PASSWORD:?APPLE_APP_SPECIFIC_PASSWORD is not set}"
+  : "${APPLE_TEAM_ID:?APPLE_TEAM_ID is not set}"
+  auth=(--apple-id "$APPLE_ID" --password "$APPLE_APP_SPECIFIC_PASSWORD" --team-id "$APPLE_TEAM_ID")
+fi
 
-echo "Submitting $(basename "$TARGET") for notarization..."
-# notarytool can exit 0 for a rejected submission, so read the status itself.
-xcrun notarytool submit "$UPLOAD" "${auth[@]}" --wait --timeout 30m \
-  --output-format json > "$WORK/result.json"
-cat "$WORK/result.json"
-echo
 read_field() {
   /usr/bin/python3 -c 'import json, sys; print(json.load(open(sys.argv[1])).get(sys.argv[2], ""))' "$WORK/result.json" "$1"
 }
-STATUS="$(read_field status)"
-ID="$(read_field id)"
 
+echo "Submitting $(basename "$TARGET") for notarization..."
+xcrun notarytool submit "$UPLOAD" "${auth[@]}" --output-format json > "$WORK/result.json"
+cat "$WORK/result.json"
+echo
+ID="$(read_field id)"
+if [ -z "$ID" ]; then
+  echo "error: the notary service returned no submission ID" >&2
+  exit 1
+fi
+# A team's first submissions can stay "In Progress" for hours while Apple
+# looks at them; later ones take minutes. NOTARY_TIMEOUT sets how long to wait.
+echo "Submission $ID, waiting up to ${NOTARY_TIMEOUT:-3h}"
+xcrun notarytool wait "$ID" "${auth[@]}" --timeout "${NOTARY_TIMEOUT:-3h}" \
+  --output-format json > "$WORK/result.json" || true
+cat "$WORK/result.json"
+echo
+# notarytool can exit 0 for a rejected submission, so read the status itself.
+STATUS="$(read_field status)"
+
+if [ "$STATUS" = "In Progress" ] || [ -z "$STATUS" ]; then
+  echo "error: submission $ID is still in progress after ${NOTARY_TIMEOUT:-3h}; Apple may still accept it" >&2
+  exit 1
+fi
 if [ "$STATUS" != "Accepted" ]; then
   echo "error: notarization of $(basename "$TARGET") ended with status '$STATUS'" >&2
   if [ -n "$ID" ]; then
