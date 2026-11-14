@@ -18,7 +18,7 @@
   <a href="#install">Other ways to install</a>
 </p>
 
-Stickers like on WhatsApp, but for the whole Mac. Press **fn F4**, type a few letters, hit Enter: the sticker is on your clipboard, animation included, ready to paste into WhatsApp, Slack, Discord, Telegram or anywhere else. A native macOS app in Swift (SwiftUI and AppKit), free and open source, with no account and no tracking.
+Stickers like on WhatsApp, but for the whole Mac. Press **fn F4**, type a few letters, hit Enter: the sticker is on your clipboard, animation included, ready to paste into Slack, Discord, Teams, Telegram or anywhere else. A native macOS app in Swift (SwiftUI and AppKit), free and open source, with no account and no tracking.
 
 *F4, basito.* Named after the most famous face in [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)).
 
@@ -42,7 +42,7 @@ or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F
       Copy any sticker or picture (in WhatsApp: right-click a sticker, Copy), press <b>fn F4</b> and paste it with <b>⌘V</b>. Dropping files on the panel, or on F4 in the menu bar, works too.
     </td>
     <td width="60%" valign="top">
-      <img src="Resources/readme/panel.png" alt="The F4 panel: a search field, the Stickers, Favourites and maramao tabs, and a grid of cat stickers" width="100%">
+      <img src="Resources/readme/panel.png" alt="The F4 panel: a search field, the Stickers, Favourites and Maramao tabs, and a grid of cat stickers" width="100%">
       <h4>2. Find one and press Enter</h4>
       <b>fn F4</b> opens the panel over any app, full screen included. Type to search, move with the arrow keys, press <b>Enter</b>: a small <b>Copied to Clipboard</b> toast says it is ready, and <b>⌘V</b> pastes it wherever you want.
     </td>
@@ -55,7 +55,7 @@ On a Mac keyboard the top row are media keys first (F4 opens Spotlight or Launch
 
 ### Where the stickers come from
 
-- 🎁 **A starter pack.** F4 never opens empty: it ships with a folder of meme cats (`maramao/`), copied into F4's library on the first launch, so they are yours to move, rename or delete.
+- 🎁 **A starter pack.** F4 never opens empty: it ships with a folder of meme cats (`Maramao/`), copied into F4's library on the first launch, so they are yours to move, rename or delete.
 - 📋 **Anything you copy.** ⌘V in the panel adds a copied sticker, a picture or an image link. A photo or a meme becomes a 512×512 sticker, the size WhatsApp uses: the whole picture, caption included, fitted into the square with the space left over transparent. Transparent PNGs, GIFs and WebP stay exactly as they are, and **⌥⌘V** keeps any picture as it is. A GIF copied in a browser with Copy Image stays a GIF (F4 downloads it from the image's link). F4 names a copied picture after its caption, or after what it shows ("cat"), and tags it, all read on your Mac.
 - 🫳 **Files you drop.** Drop files on the panel, drag a sticker out of WhatsApp, a browser or Finder onto F4's icon in the menu bar, or open **Add Stickers…** in the menu bar: a window that stays open above other apps to drop stickers into, or to pick images in Finder.
 - 📥 **WhatsApp sticker packs.** Drop or paste a `.wastickers` file, or paste a link to a pack on [getstickerpack.com](https://getstickerpack.com/stickers) (what the "Sticker Maker" apps use): F4 unpacks it into a folder named after the pack.
@@ -237,7 +237,7 @@ F4 has no analytics, no account and no server. It reads the files in your sticke
 
 **Which files does it understand?** GIF, PNG, JPEG and WebP (WhatsApp and Telegram stickers). HEIC and short videos are on the [roadmap](https://github.com/kkratterf/f4/issues).
 
-**Where do the stickers come from?** From you: stickers you paste or drop, WhatsApp sticker packs (`.wastickers`), and the packs you switch on. F4 itself ships only the maramao cats of its starter pack: the packs are lists of links, downloaded on your Mac when you switch them on.
+**Where do the stickers come from?** From you: stickers you paste or drop, WhatsApp sticker packs (`.wastickers`), and the packs you switch on. F4 itself ships only the Maramao cats of its starter pack: the packs are lists of links, downloaded on your Mac when you switch them on.
 
 **Can I change the shortcut?** No: F4 is the F4 key, fn F4 on a Mac keyboard, and it stays that way.
 
@@ -253,7 +253,7 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the short 
 
 ## Credits
 
-- The cats in the starter pack's **maramao** folder, also shown on the website and in this README, are internet memes whose authors we don't know. If one of them is yours and you want it out of F4, [open an issue](https://github.com/kkratterf/f4/issues) and it goes. The same goes for the goat sticker on the website.
+- The cats in the starter pack's **Maramao** folder, also shown on the website and in this README, are internet memes whose authors we don't know. If one of them is yours and you want it out of F4, [open an issue](https://github.com/kkratterf/f4/issues) and it goes. The same goes for the goat sticker on the website.
 - The Michael Scott GIF at the bottom of the website is from The Office, served by [GIPHY](https://giphy.com/theoffice) and never copied into this repository.
 - The logo is Stanis from [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)), "F4, basito".
 - Headings on the website and in the banner use [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (SIL Open Font License 1.1).

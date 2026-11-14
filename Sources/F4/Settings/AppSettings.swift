@@ -13,6 +13,7 @@ final class AppSettings: ObservableObject {
         static let seededStarterFolders = "seededStarterFolders"
         static let didShowWelcome = "didShowWelcome"
         static let didRemoveRetiredStarter = "didRemoveRetiredStarter"
+        static let didRenameStarterFolders = "didRenameStarterFolders"
     }
 
     private let defaults: UserDefaults
@@ -46,6 +47,13 @@ final class AppSettings: ObservableObject {
     var didRemoveRetiredStarter: Bool {
         get { defaults.bool(forKey: Key.didRemoveRetiredStarter) }
         set { defaults.set(newValue, forKey: Key.didRemoveRetiredStarter) }
+    }
+
+    /// Whether the starter folders renamed in an update (`maramao/` became
+    /// `Maramao/` after 0.8) were renamed in F4's own library. Once.
+    var didRenameStarterFolders: Bool {
+        get { defaults.bool(forKey: Key.didRenameStarterFolders) }
+        set { defaults.set(newValue, forKey: Key.didRenameStarterFolders) }
     }
 
     /// Whether "Add your stickers" was shown, on the first launch.

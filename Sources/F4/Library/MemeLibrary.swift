@@ -30,6 +30,13 @@ final class MemeLibrary: ObservableObject {
     private var removesRetiredStarter: Bool
     /// Called once they were, so it happens once (`AppSettings.didRemoveRetiredStarter`).
     var onRetiredStarterRemoved: (() -> Void)?
+    /// Whether starter folders renamed in an update (`maramao/` became
+    /// `Maramao/`) are still to be renamed in F4's own library.
+    private var renamesStarterFolders: Bool
+    /// Called once that ran (`AppSettings.didRenameStarterFolders`), with
+    /// every folder moved, the app bundle's included, so favourites and
+    /// recents can follow.
+    var onStarterFoldersRenamed: (([(from: URL, to: URL)]) -> Void)?
     /// Whether this launch already looked for starter folders to copy.
     private var didCheckStarter = false
     private var scanTask: Task<Void, Never>?
@@ -39,12 +46,14 @@ final class MemeLibrary: ObservableObject {
         folder: URL = MemeScanner.defaultFolder,
         showsStarterPack: Bool = true,
         seededStarterFolders: Set<String> = [],
-        removesRetiredStarter: Bool = false
+        removesRetiredStarter: Bool = false,
+        renamesStarterFolders: Bool = false
     ) {
         self.folder = folder
         self.showsStarterPack = showsStarterPack
-        self.seededStarterFolders = seededStarterFolders
+        self.seededStarterFolders = LibraryFolders.currentStarterFolders(seededStarterFolders)
         self.removesRetiredStarter = removesRetiredStarter
+        self.renamesStarterFolders = renamesStarterFolders
     }
 
     /// Whether the folder is F4's own library (`LibraryFolders.appLibrary`).
@@ -110,10 +119,14 @@ final class MemeLibrary: ObservableObject {
         let alreadySeeded = seededStarterFolders
         let retire = isAppLibrary && removesRetiredStarter
         if retire { removesRetiredStarter = false }
+        let rename = renamesStarterFolders
+        if rename { renamesStarterFolders = false }
         scanTask = Task { [weak self] in
-            let result = await Task.detached(priority: .userInitiated) { () -> Result<([Meme], [String], Set<String>?), Error> in
-                Result {
+            let (result, moved) = await Task.detached(priority: .userInitiated) { () -> (Result<([Meme], [String], Set<String>?), Error>, [(from: URL, to: URL)]) in
+                var moved: [(from: URL, to: URL)] = []
+                let result = Result {
                     try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+                    if rename && isAppLibrary { moved = Self.renameStarterFolders(in: folder) }
                     if retire { Self.trashRetiredStarter(in: folder) }
                     let seeded = seedFrom.flatMap { Self.copyStarterPack(from: $0, into: folder, seeded: alreadySeeded) }
                     let own = try MemeScanner.scan(folder: folder)
@@ -121,9 +134,20 @@ final class MemeLibrary: ObservableObject {
                     let builtIn = starter.flatMap { try? MemeScanner.scan(folder: $0) } ?? []
                     return (own + builtIn, MemeScanner.folders(in: folder), seeded)
                 }
+                return (result, moved)
             }.value
             guard let self else { return }
             if retire { self.onRetiredStarterRemoved?() }
+            if rename {
+                // The starter pack listed from the bundle moved too.
+                let bundle = Self.starterFolder.map { starter in
+                    LibraryFolders.renamedStarterFolders.sorted { $0.key < $1.key }.map {
+                        (from: starter.appendingPathComponent($0.key, isDirectory: true),
+                         to: starter.appendingPathComponent($0.value, isDirectory: true))
+                    }
+                } ?? []
+                self.onStarterFoldersRenamed?(moved + bundle)
+            }
             guard !Task.isCancelled else { return }
             defer { if !self.hasLoaded { self.hasLoaded = true } }
             switch result {
@@ -148,7 +172,7 @@ final class MemeLibrary: ObservableObject {
         }
     }
 
-    /// Copies the starter folders (maramao/ today) not in `seeded`
+    /// Copies the starter folders (Maramao/ today) not in `seeded`
     /// into `folder`, skipping files already there, so the memes become the
     /// user's to move or delete. Returns every top-level starter folder when
     /// it ran to the end, nil otherwise. Blocking: off the main thread.
@@ -171,6 +195,36 @@ final class MemeLibrary: ObservableObject {
             }
         }
         return Set(relative.map(LibraryFolders.topFolder(of:)))
+    }
+
+    /// Renames the starter folders renamed in an update (`maramao/` to
+    /// `Maramao/`) where they still have their old name and the new one is
+    /// free. Through a hidden temporary name, because on a case-insensitive
+    /// volume a rename that only changes the case can fail as "already
+    /// exists". Returns the folders moved. Blocking: off the main thread.
+    nonisolated private static func renameStarterFolders(in folder: URL) -> [(from: URL, to: URL)] {
+        let fileManager = FileManager.default
+        guard let names = try? fileManager.contentsOfDirectory(atPath: folder.path) else { return [] }
+        var moved: [(from: URL, to: URL)] = []
+        for rename in LibraryFolders.starterFolderRenames(existing: names) {
+            let old = folder.appendingPathComponent(rename.from, isDirectory: true)
+            let new = folder.appendingPathComponent(rename.to, isDirectory: true)
+            let temporary = folder.appendingPathComponent(".\(rename.to)-\(UUID().uuidString)", isDirectory: true)
+            do {
+                try fileManager.moveItem(at: old, to: temporary)
+            } catch {
+                NSLog("F4: could not rename the starter folder %@: %@", rename.from, error.localizedDescription)
+                continue
+            }
+            do {
+                try fileManager.moveItem(at: temporary, to: new)
+                moved.append((from: old, to: new))
+            } catch {
+                NSLog("F4: could not rename the starter folder %@: %@", rename.from, error.localizedDescription)
+                try? fileManager.moveItem(at: temporary, to: old)
+            }
+        }
+        return moved
     }
 
     /// Moves to the Trash the starter stickers F4 no longer ships (Emoji/

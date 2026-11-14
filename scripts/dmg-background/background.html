@@ -3,7 +3,8 @@
   The DMG installer background: the website hero (the same Grainient
   gradient, colours and headline) cut to the Finder window.
   scripts/render-dmg-background.mjs screenshots it into Resources/dmg/.
-  Open it with #icons to preview where Finder puts the two icons.
+  Open it with #icons to preview where Finder puts the two icons, or with
+  #plain for the gradient alone (the website's "Try it here" backdrop).
 
   The design space is 660x420 points. Finder places the icons (centres,
   top-left origin) at (190, 222) and (470, 222): keep scripts/build-dmg.sh
@@ -50,7 +51,11 @@
     </div>
   </div>
 </div>
-<script>if (location.hash === '#icons') document.getElementById('icons').hidden = false;</script>
+<script>
+  if (location.hash === '#icons') document.getElementById('icons').hidden = false;
+  // #plain: the gradient alone, the backdrop of "Try it here" on the website.
+  if (location.hash === '#plain') document.querySelectorAll('h1, .arrow').forEach(function (el) { el.style.display = 'none'; });
+</script>
 <script src="grainient.js"></script>
 </body>
 </html>

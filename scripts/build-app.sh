@@ -89,14 +89,14 @@ else
 fi
 
 # Starter pack (issue #92): what a new user sees before adding their own.
-# Since 0.7 it is maramao/ alone (meme cats the maintainer chose, added in
+# Since 0.7 it is Maramao/ alone (meme cats the maintainer chose, added in
 # 0.5.0, the maintainer's call). MemeLibrary copies it into F4's own
 # library (~/Library/Application Support/F4/Memes), each top-level folder once.
 STARTER="$RES/Starter"
 rm -rf "$STARTER"
 mkdir -p "$STARTER"
-ditto "$ROOT/Resources/Starter/maramao" "$STARTER/maramao"
-echo "Starter pack: $(find "$STARTER/maramao" -name '*.png' | wc -l | tr -d ' ') maramao cats"
+ditto "$ROOT/Resources/Starter/Maramao" "$STARTER/Maramao"
+echo "Starter pack: $(find "$STARTER/Maramao" -name '*.png' | wc -l | tr -d ' ') Maramao cats"
 
 # Sticker packs: links only, never files. PackDownloader fetches them into
 # the library when the user switches a pack on in the menu bar's Packs.

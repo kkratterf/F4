@@ -76,16 +76,16 @@ final class LibraryFoldersTests: XCTestCase {
     }
 
     func testANewStarterFolderIsCopiedToALibraryAlreadySeeded() {
-        let starter = ["Emoji/clown.gif", "F4/basito.png", "maramao/boh.png", "maramao/bleh.png"]
+        let starter = ["Emoji/clown.gif", "F4/basito.png", "Maramao/boh.png", "Maramao/bleh.png"]
         XCTAssertEqual(
             LibraryFolders.starterFilesToCopy(starter, existing: [], seeded: LibraryFolders.firstStarterFolders),
-            ["maramao/boh.png", "maramao/bleh.png"]
+            ["Maramao/boh.png", "Maramao/bleh.png"]
         )
         XCTAssertEqual(
-            LibraryFolders.starterFilesToCopy(starter, existing: [], seeded: ["Emoji", "F4", "maramao"]),
+            LibraryFolders.starterFilesToCopy(starter, existing: [], seeded: ["Emoji", "F4", "Maramao"]),
             []
         )
-        XCTAssertEqual(LibraryFolders.topFolder(of: "maramao/boh.png"), "maramao")
+        XCTAssertEqual(LibraryFolders.topFolder(of: "Maramao/boh.png"), "Maramao")
         XCTAssertEqual(LibraryFolders.topFolder(of: "a/b/c.png"), "a")
         XCTAssertEqual(LibraryFolders.topFolder(of: "top.png"), "top.png")
     }
@@ -97,7 +97,26 @@ final class LibraryFoldersTests: XCTestCase {
         XCTAssertEqual(Set(files.map(LibraryFolders.topFolder(of:))), LibraryFolders.retiredStarterFolders)
         XCTAssertTrue(files.contains("Emoji/clown.gif"))
         XCTAssertTrue(files.contains("F4/basito.png"))
-        XCTAssertFalse(LibraryFolders.retiredStarterFolders.contains("maramao"))
+        XCTAssertFalse(LibraryFolders.retiredStarterFolders.contains("Maramao"))
+    }
+
+    func testTheCatsFolderCopiedAsMaramaoIsNotCopiedAgain() {
+        let seeded = LibraryFolders.currentStarterFolders(["Emoji", "F4", "maramao"])
+        XCTAssertEqual(seeded, ["Emoji", "F4", "Maramao"])
+        XCTAssertEqual(
+            LibraryFolders.starterFilesToCopy(["Maramao/boh.png"], existing: [], seeded: seeded),
+            []
+        )
+        XCTAssertEqual(LibraryFolders.currentStarterFolders(["Reazioni"]), ["Reazioni"])
+    }
+
+    func testTheCatsFolderIsRenamedOnlyWhenTheNewNameIsFree() {
+        let renames = LibraryFolders.starterFolderRenames(existing: ["maramao", "Reazioni", "a.png"])
+        XCTAssertEqual(renames.map(\.from), ["maramao"])
+        XCTAssertEqual(renames.map(\.to), ["Maramao"])
+        XCTAssertTrue(LibraryFolders.starterFolderRenames(existing: ["Maramao"]).isEmpty)
+        XCTAssertTrue(LibraryFolders.starterFolderRenames(existing: ["maramao", "Maramao"]).isEmpty)
+        XCTAssertTrue(LibraryFolders.starterFolderRenames(existing: []).isEmpty)
     }
 
     func testRelocatedPathFollowsMovesAndRenames() {
