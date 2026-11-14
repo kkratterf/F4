@@ -22,8 +22,11 @@
   // "Try it here": a working copy of the panel. Type to search (fuzzy, like
   // F4Core's FuzzySearch), arrows move the selection, Enter or a click copies
   // the sticker (as a PNG, where the browser allows it) and closes the panel
-  // with the "Copied to Clipboard" pill; F4 or a click opens it again. The
-  // sticker just copied moves to the front, like the app's Stickers tab.
+  // with the "Copied to Clipboard" pill; a click opens it again. ⌘K opens the
+  // actions (Copy, Favourites, Trash), with their shortcuts. The sticker just
+  // copied moves to the front, like the app's Stickers tab. Once the panel
+  // was clicked, the keys go to it wherever the focus is, until a click lands
+  // outside it.
   (function () {
     var sim = document.querySelector("[data-sim]");
     if (!sim) return;
@@ -32,12 +35,23 @@
     var none = grid.querySelector(".sim-none");
     var picked = sim.querySelector("[data-sim-picked]");
     var toast = sim.querySelector("[data-sim-toast]");
+    var pal = sim.querySelector("[data-sim-pal]");
+    var palTitle = sim.querySelector("[data-sim-pal-title]");
+    var palInput = sim.querySelector("[data-sim-pal-input]");
+    var palNone = pal.querySelector(".sim-pal-none");
+    var acts = Array.prototype.slice.call(pal.querySelectorAll(".sim-act"));
+    var favAct = pal.querySelector('[data-act="fav"]');
     var all = Array.prototype.slice.call(grid.querySelectorAll(".sim-cell"));
     var shown = all.slice();
     var current = 0;
+    var palShown = acts.slice();
+    var palCurrent = 0;
     var toastTimer = null;
     var lastPointer = null;
+    var active = false;
 
+    var isOpen = function () { return sim.dataset.open !== "false"; };
+    var palOpen = function () { return !pal.hidden; };
     var fuzzy = function (name, q) {
       var i = 0;
       for (var c = 0; c < name.length && i < q.length; c++) if (name[c] === q[i]) i++;
@@ -63,8 +77,41 @@
       none.hidden = shown.length > 0;
       select(0);
     };
+    var focusInput = function () {
+      (palOpen() ? palInput : input).focus({ preventScroll: true });
+    };
+    var closePalette = function () {
+      pal.hidden = true;
+      if (isOpen()) input.focus({ preventScroll: true });
+    };
+    var selectAction = function (i) {
+      if (!palShown.length) return;
+      palCurrent = (i + palShown.length) % palShown.length;
+      acts.forEach(function (a) { a.classList.toggle("on", a === palShown[palCurrent]); });
+    };
+    var filterActions = function () {
+      var q = palInput.value.trim().toLowerCase();
+      palShown = acts.filter(function (a) {
+        var hit = !q || a.textContent.toLowerCase().indexOf(q) !== -1;
+        a.hidden = !hit;
+        return hit;
+      });
+      palNone.hidden = palShown.length > 0;
+      selectAction(0);
+    };
+    var openPalette = function () {
+      var cell = shown[current];
+      if (!cell || !isOpen()) return;
+      palTitle.textContent = cell.dataset.name;
+      favAct.querySelector("span").textContent = cell.classList.contains("fav") ? favAct.dataset.on : favAct.dataset.off;
+      palInput.value = "";
+      pal.hidden = false;
+      filterActions();
+      palInput.focus({ preventScroll: true });
+    };
     var setOpen = function (open) {
       sim.dataset.open = open ? "true" : "false";
+      pal.hidden = true;
       if (open) {
         input.value = "";
         filter();
@@ -72,6 +119,7 @@
         input.focus({ preventScroll: true });
       } else {
         input.blur();
+        palInput.blur();
       }
     };
     var copyImage = function (img) {
@@ -98,54 +146,111 @@
       clearTimeout(toastTimer);
       toastTimer = setTimeout(function () { toast.classList.remove("on"); }, 1600);
     };
+    var favourite = function () {
+      var cell = shown[current];
+      if (cell) cell.classList.toggle("fav");
+      closePalette();
+    };
+    var trash = function () {
+      var cell = shown[current];
+      if (!cell) return;
+      all.splice(all.indexOf(cell), 1);
+      cell.remove();
+      closePalette();
+      filterKeep();
+    };
+    // After a sticker leaves, keep the selection where it was.
+    var filterKeep = function () {
+      var at = current;
+      filter();
+      select(Math.min(at, shown.length - 1));
+    };
+    var run = function (act) {
+      if (act === "copy") copy();
+      else if (act === "fav") favourite();
+      else if (act === "trash") trash();
+    };
 
-    input.addEventListener("input", filter);
-    input.addEventListener("keydown", function (e) {
+    // Every key of the panel, wherever the focus is while it is active.
+    var onKey = function (e) {
+      if (!isOpen()) return false;
+      var mod = e.metaKey || e.ctrlKey;
+      if (mod && (e.key === "k" || e.key === "K")) {
+        if (palOpen()) closePalette(); else openPalette();
+        return true;
+      }
+      if (palOpen()) {
+        if (e.key === "ArrowDown") selectAction(palCurrent + 1);
+        else if (e.key === "ArrowUp") selectAction(palCurrent - 1);
+        else if (e.key === "Enter") { if (palShown[palCurrent]) run(palShown[palCurrent].dataset.act); }
+        else if (e.key === "Escape") closePalette();
+        else return false;
+        return true;
+      }
+      if (mod && (e.key === "d" || e.key === "D")) { favourite(); return true; }
+      if (mod && e.key === "Backspace") { trash(); return true; }
       var cols = columns();
       var step = { ArrowRight: 1, ArrowLeft: -1, ArrowDown: cols, ArrowUp: -cols }[e.key];
       if (step) {
-        e.preventDefault();
         var next = current + step;
         if (next >= 0 && next < shown.length) select(next, true);
-        else if (step > 0 && current < shown.length - 1 && e.key === "ArrowDown") select(shown.length - 1, true);
-      } else if (e.key === "Enter") {
-        e.preventDefault();
-        copy();
-      } else if (e.key === "Escape") {
-        e.preventDefault();
-        setOpen(false);
+        else if (e.key === "ArrowDown" && current < shown.length - 1) select(shown.length - 1, true);
+        return true;
       }
+      if (e.key === "Enter") { copy(); return true; }
+      if (e.key === "Escape") { setOpen(false); return true; }
+      return false;
+    };
+    document.addEventListener("keydown", function (e) {
+      var inside = e.target === input || e.target === palInput;
+      if (!inside && !active) return;
+      if (e.isComposing) return;
+      if (onKey(e)) { e.preventDefault(); return; }
+      // A letter typed while the focus is elsewhere goes to the search field.
+      if (!inside && isOpen() && e.key.length === 1 && !e.metaKey && !e.ctrlKey && !e.altKey) focusInput();
     });
+    document.addEventListener("pointerdown", function (e) {
+      active = sim.contains(e.target);
+    });
+
+    input.addEventListener("input", filter);
+    palInput.addEventListener("input", filterActions);
     // Like the app, the mouse selects a sticker only once it really moves.
     grid.addEventListener("mousemove", function (e) {
       var here = e.screenX + "," + e.screenY;
       if (here === lastPointer) return;
       lastPointer = here;
+      if (palOpen()) return;
       var cell = e.target.closest(".sim-cell");
       if (cell && shown.indexOf(cell) !== current) select(shown.indexOf(cell));
     });
     grid.addEventListener("click", function (e) {
       var cell = e.target.closest(".sim-cell");
       if (!cell) return;
+      if (palOpen()) { closePalette(); return; }
       select(shown.indexOf(cell));
       copy();
     });
+    pal.addEventListener("mousemove", function (e) {
+      var a = e.target.closest(".sim-act");
+      if (a && palShown.indexOf(a) !== -1) selectAction(palShown.indexOf(a));
+    });
+    pal.addEventListener("click", function (e) {
+      var a = e.target.closest(".sim-act");
+      if (a) run(a.dataset.act);
+    });
     sim.querySelector("[data-sim-copy]").addEventListener("click", copy);
+    sim.querySelector("[data-sim-actions]").addEventListener("click", function () {
+      if (palOpen()) closePalette(); else openPalette();
+    });
+    // Clicks never take the keyboard away from the search fields.
     sim.querySelector("[data-sim-panel]").addEventListener("mousedown", function (e) {
-      if (e.target !== input) { e.preventDefault(); input.focus({ preventScroll: true }); }
+      if (e.target !== input && e.target !== palInput) { e.preventDefault(); focusInput(); }
     });
+    // A click on the desktop opens the panel, or closes it, as F4 hides
+    // when another app is clicked.
     sim.querySelector("[data-sim-desk]").addEventListener("click", function () {
-      if (sim.dataset.open === "false") setOpen(true);
-    });
-    // F4 (fn F4 on a Mac keyboard) opens and closes it while it is on screen.
-    var visible = false;
-    if ("IntersectionObserver" in window) {
-      new IntersectionObserver(function (entries) { visible = entries[0].isIntersecting; }, { threshold: 0.4 }).observe(sim);
-    }
-    document.addEventListener("keydown", function (e) {
-      if (e.key !== "F4" || !visible) return;
-      e.preventDefault();
-      setOpen(sim.dataset.open === "false");
+      setOpen(!isOpen());
     });
     filter();
   })();

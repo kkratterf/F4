@@ -2,8 +2,10 @@
 // into Resources/dmg/background.png (660x420) and background@2x.png (1320x840).
 // scripts/build-dmg.sh combines the two into the TIFF Finder shows.
 //
-// Usage: node scripts/render-dmg-background.mjs [--preview]
+// Usage: node scripts/render-dmg-background.mjs [--preview | --site]
 //   --preview also writes .build/dmg-preview.png with the two icons in place.
+//   --site writes only site/media/try-bg.jpg, the same gradient without the
+//   headline, behind "Try it here" on the website.
 // Needs Playwright with Chromium (npm i -D playwright && npx playwright install chromium).
 //
 // The Grainient gradient moves over time, so each run gives a slightly
@@ -19,11 +21,13 @@ const page = pathToFileURL(join(root, 'scripts/dmg-background/background.html'))
 // Long enough for the gradient's intro to settle into its warm colours.
 const SETTLE_MS = 6000;
 
-const shots = [
+const shots = process.argv.includes('--site') ? [
+  { scale: 2, hash: '#plain', out: 'site/media/try-bg.jpg' },
+] : [
   { scale: 1, hash: '', out: 'Resources/dmg/background.png' },
   { scale: 2, hash: '', out: 'Resources/dmg/background@2x.png' },
 ];
-if (process.argv.includes('--preview')) {
+if (!process.argv.includes('--site') && process.argv.includes('--preview')) {
   shots.push({ scale: 2, hash: '#icons', out: '.build/dmg-preview.png' });
 }
 
@@ -39,9 +43,9 @@ try {
     const live = await tab.evaluate(() => document.querySelector('.grainient').classList.contains('is-live'));
     if (!live) throw new Error('the gradient did not start (no WebGL 2?)');
     const display = await tab.evaluate(async () => { await document.fonts.ready; return [...document.fonts].filter(f => f.family.replace(/"/g, '') === 'Bricolage Grotesque' && f.status === 'loaded').length; });
-    if (display < 1) throw new Error('Bricolage Grotesque did not load (site/fonts/bricolage-grotesque-latin.wght.woff2 missing?)');
+    if (display < 1 && hash !== '#plain') throw new Error('Bricolage Grotesque did not load (site/fonts/bricolage-grotesque-latin.wght.woff2 missing?)');
     mkdirSync(dirname(join(root, out)), { recursive: true });
-    await tab.locator('#bg').screenshot({ path: join(root, out) });
+    await tab.locator('#bg').screenshot(out.endsWith('.jpg') ? { path: join(root, out), type: 'jpeg', quality: 85 } : { path: join(root, out) });
     console.log(`Wrote ${out}`);
     await tab.close();
   }
