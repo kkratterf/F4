@@ -26,10 +26,10 @@
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "macOS dice che non può verificare lo sviluppatore. E ora?",
+        "name": "macOS mi fa aprire F4?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "F4 non è ancora notarizzata da Apple. Aprila una volta e chiudi l'avviso, poi vai in Impostazioni di Sistema → Privacy e sicurezza e fai clic su Apri comunque. Oppure esegui xattr -dr com.apple.quarantine /Applications/F4.app nel Terminale."
+          "text": "Sì. Dalla 0.7.1 F4 è firmata con un Developer ID e notarizzata da Apple, quindi si apre come qualsiasi altra app scaricata da internet. Le versioni fino alla 0.7.0 non lo erano: se macOS dice che non può verificare lo sviluppatore di una di queste, vai in Impostazioni di Sistema → Privacy e sicurezza e fai clic su Apri comunque, oppure aggiorna F4."
         }
       },
       {
@@ -142,8 +142,8 @@
         </div>
         <div class="acc" data-accordion>
           <div class="acc-item">
-            <h2><button class="acc-trigger" type="button" id="q1" aria-expanded="true" aria-controls="a1">macOS dice che non può verificare lo sviluppatore. E ora?<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>
-            <div class="acc-panel" id="a1" role="region" aria-labelledby="q1"><div class="acc-inner"><p>F4 non è ancora notarizzata da Apple. Aprila una volta e chiudi l'avviso, poi vai in <b>Impostazioni di Sistema → Privacy e sicurezza</b> e fai clic su <b>Apri comunque</b>. Oppure esegui <code>xattr -dr com.apple.quarantine /Applications/F4.app</code> nel Terminale.</p></div></div>
+            <h2><button class="acc-trigger" type="button" id="q1" aria-expanded="true" aria-controls="a1">macOS mi fa aprire F4?<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>
+            <div class="acc-panel" id="a1" role="region" aria-labelledby="q1"><div class="acc-inner"><p>Sì. Dalla 0.7.1 F4 è firmata con un Developer ID e notarizzata da Apple, quindi si apre come qualsiasi altra app scaricata da internet. Le versioni fino alla 0.7.0 non lo erano: se macOS dice che non può verificare lo sviluppatore di una di queste, vai in <b>Impostazioni di Sistema → Privacy e sicurezza</b> e fai clic su <b>Apri comunque</b>, oppure aggiorna F4.</p></div></div>
           </div>
           <div class="acc-item">
             <h2><button class="acc-trigger" type="button" id="q2" aria-expanded="true" aria-controls="a2">F4 apre Spotlight o Launchpad. Perché?<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></h2>

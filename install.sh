@@ -153,7 +153,8 @@ if [ -e "$dest" ]; then
   rm -rf "$dest" || fail "cannot replace $dest"
 fi
 ditto "$tmp/unzipped/$APP_NAME" "$dest" || fail "cannot copy the app into $dir"
-# Not notarized yet: clear the quarantine flag so Gatekeeper lets it start.
+# F4 is notarized since 0.7.1; clearing the quarantine flag skips the
+# "downloaded from the internet" question, and lets older versions start.
 xattr -dr com.apple.quarantine "$dest" 2>/dev/null || true
 
 say "Done. F4 $version is installed in $dest"

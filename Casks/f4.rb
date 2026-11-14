@@ -32,11 +32,6 @@ cask "f4" do
   ]
 
   caveats <<~EOS
-    F4 is not notarized by Apple yet, so macOS may block the first launch.
-    Open it once, then click Open Anyway in System Settings > Privacy & Security,
-    or run:
-      xattr -dr com.apple.quarantine #{appdir}/F4.app
-
     Paste or drop your memes into the panel: they go in F4's library (or any folder you pick from the menu bar).
   EOS
 end
