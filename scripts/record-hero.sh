@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Records the website's hero clip on a Mac: the real F4.app over a made-up chat
-# (scripts/hero/chat.html in Google Chrome), driven by synthetic key presses.
+# (scripts/hero/chat.html in Google Chrome or Safari), driven by synthetic key presses.
 # fn F4 opens the panel, a search is typed, Enter copies, ⌘V pastes into the
 # chat; twice, the second time an animated sticker. The raw take lands in
 # $OUT/raw.mov; scripts/make-hero-video.sh turns it into site/media/hero.mp4,
@@ -8,7 +8,7 @@
 #
 # It changes the Mac it runs on (wallpaper, Dock, F4's library and defaults),
 # so it is meant for a CI runner (.github/workflows/hero-video.yml). Needs
-# dist/F4.app (scripts/build-app.sh release), Google Chrome, and Accessibility
+# dist/F4.app (scripts/build-app.sh release), and Accessibility
 # and Screen Recording for the shell, which GitHub's macOS runners grant.
 # Usage: scripts/record-hero.sh   (ANIMATED=path/to/sticker.gif to add one)
 set -euo pipefail
@@ -16,13 +16,13 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 APP="${APP:-$ROOT/dist/F4.app}"
 OUT="${OUT:-$ROOT/dist/hero}"
-LANG_QUERY="${LANG_QUERY:-}"   # "?it" records the Italian chat
+QUERY="${QUERY:-}"            # "?it" records the Italian chat, "?debug" shows what a paste carried
+BROWSER="${BROWSER:-chrome}"  # chrome or safari
 CHROME="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
 LIB="$HOME/Library/Application Support/F4/Memes"
 SECONDS_TO_RECORD="${SECONDS_TO_RECORD:-30}"
 
 [ -d "$APP" ] || { echo "error: $APP not found, run scripts/build-app.sh release first" >&2; exit 1; }
-[ -x "$CHROME" ] || { echo "error: Google Chrome not found" >&2; exit 1; }
 mkdir -p "$OUT"
 
 se() { osascript -e "tell application \"System Events\" to $1"; }
@@ -33,6 +33,9 @@ typed() {
     se "keystroke \"${text:i:1}\""
     sleep 0.09
   done
+}
+pasteboard_types() {
+  osascript -l JavaScript -e 'ObjC.import("AppKit"); ObjC.deepUnwrap($.NSPasteboard.generalPasteboard.types).join(", ")' >&2 || true
 }
 panel_windows() { se 'count (windows of process "F4")' 2>/dev/null || echo 0; }
 # fn F4 as the user presses it; f4://open if the synthetic key did not reach
@@ -51,7 +54,8 @@ echo "screen: $screen"
 width=${screen%x*}
 height=${screen#*x}
 
-# A clean desk: the website's gradient as wallpaper, no Dock.
+# A clean desk: dark mode, the website's gradient as wallpaper, no Dock.
+se 'tell appearance preferences to set dark mode to true' || echo "warning: could not turn on dark mode"
 defaults write com.apple.dock autohide -bool true
 defaults write com.apple.dock autohide-delay -float 1000
 killall Dock || true
@@ -74,14 +78,26 @@ win_w=$((width * 82 / 100))
 win_h=$(((height * 625 / 768) * 84 / 100))
 win_x=$(((width - win_w) / 2))
 win_y=$((25 + ((height * 625 / 768) - 25 - win_h) / 2))
-profile=$(mktemp -d)
-"$CHROME" --user-data-dir="$profile" --no-first-run --no-default-browser-check \
-  --use-mock-keychain --password-store=basic --disable-features=Translate \
-  --window-position="$win_x,$win_y" --window-size="$win_w,$win_h" \
-  --app="file://$ROOT/scripts/hero/chat.html$LANG_QUERY" >/dev/null 2>&1 &
-chrome=$!
-sleep 6
-se 'set frontmost of process "Google Chrome" to true' || true
+page="file://$ROOT/scripts/hero/chat.html$QUERY"
+if [ "$BROWSER" = safari ]; then
+  proc=Safari
+  open -a Safari "$page"
+  sleep 6
+  se 'tell process "Safari" to click menu item "Hide Toolbar" of menu "View" of menu bar 1' ||
+    echo "warning: could not hide Safari's toolbar"
+  se "tell process \"Safari\" to set position of window 1 to {$win_x, $win_y}"
+  se "tell process \"Safari\" to set size of window 1 to {$win_w, $win_h}"
+else
+  proc="Google Chrome"
+  [ -x "$CHROME" ] || { echo "error: Google Chrome not found" >&2; exit 1; }
+  profile=$(mktemp -d)
+  "$CHROME" --user-data-dir="$profile" --no-first-run --no-default-browser-check \
+    --use-mock-keychain --password-store=basic --disable-features=Translate \
+    --window-position="$win_x,$win_y" --window-size="$win_w,$win_h" \
+    --app="$page" >/dev/null 2>&1 &
+  sleep 6
+fi
+se "set frontmost of process \"$proc\" to true" || true
 osascript -l JavaScript -e 'ObjC.import("CoreGraphics"); $.CGWarpMouseCursorPosition({x: 5000, y: 5000})' || true
 sleep 1
 screencapture -x "$OUT/setup.png"
@@ -97,6 +113,7 @@ typed "ma che"
 sleep 1.1
 press 36            # Enter: copies, the panel hides, the toast shows
 sleep 1.6
+pasteboard_types
 se 'keystroke "v" using command down'
 sleep 2.4
 
@@ -108,10 +125,12 @@ typed "capr"
 sleep 1.8           # the selected GIF plays in the panel
 press 36
 sleep 1.6
+pasteboard_types
 se 'keystroke "v" using command down'
 sleep 4
 
 wait "$recorder" || true
-kill "$chrome" 2>/dev/null || true
+screencapture -x "$OUT/end.png"
+osascript -e "tell application \"$proc\" to quit" || true
 pkill -x F4 || true
 ls -la "$OUT"

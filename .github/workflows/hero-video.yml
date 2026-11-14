@@ -1,8 +1,8 @@
 name: Hero video
 
 # Records the website's hero clip with the real app on a macOS runner
-# (scripts/record-hero.sh) and pushes the raw take to the hero-video/<ref>
-# branch, where scripts/make-hero-video.sh can fetch it and cut the clip
+# (scripts/record-hero.sh), in Chrome and in Safari, and pushes each raw take
+# to the hero-video/<ref>-<browser> branch, where scripts/make-hero-video.sh can fetch it and cut the clip
 # (artifacts need a login to download). Runs by hand, and on pull requests
 # that change the recording.
 
@@ -23,9 +23,13 @@ concurrency:
 
 jobs:
   record:
-    name: Record the hero clip
+    name: Record the hero clip (${{ matrix.browser }})
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: macos-15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, safari]
     permissions:
       contents: write
     steps:
@@ -54,12 +58,12 @@ jobs:
       - name: Record
         run: |
           system_profiler SPDisplaysDataType | sed -n '/Displays:/,$p'
-          ANIMATED="$PWD/dist/capretta.gif" scripts/record-hero.sh
+          BROWSER=${{ matrix.browser }} QUERY="?debug" ANIMATED="$PWD/dist/capretta.gif" scripts/record-hero.sh
 
       - name: Push the take to its branch
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: hero-video/${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}
+          BRANCH: hero-video/${{ github.event.pull_request.number && format('pr-{0}', github.event.pull_request.number) || github.ref_name }}-${{ matrix.browser }}
           SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: |
           cd dist/hero

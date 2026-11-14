@@ -128,11 +128,26 @@
     });
     return out.slice(0, 1);
   };
+  var sendURL = function (url) {
+    var box = document.createElement("div");
+    var img = document.createElement("img");
+    img.className = "sticker";
+    img.src = url;
+    var t = document.createElement("div");
+    t.className = "sticker-time";
+    t.textContent = now();
+    box.appendChild(img);
+    box.appendChild(t);
+    row(box);
+  };
   document.addEventListener("paste", function (e) {
-    var files = images(e.clipboardData);
-    if (!files.length) return;
-    e.preventDefault();
-    files.forEach(sendImage);
+    var dt = e.clipboardData;
+    if (/[?&]debug\b/.test(location.search)) document.title = "paste: " + Array.prototype.join.call(dt.types, ", ");
+    var files = images(dt);
+    if (files.length) { e.preventDefault(); files.forEach(sendImage); return; }
+    // Chrome hides a copied GIF's bytes but may pass on the file's link.
+    var link = (dt.getData("text/uri-list") || dt.getData("text/plain") || "").split(/\r?\n/)[0].trim();
+    if (/^file:.*\.(gif|png|jpe?g|webp)$/i.test(link)) { e.preventDefault(); sendURL(link); }
   });
   var drop = document.getElementById("drop");
   document.addEventListener("dragover", function (e) { e.preventDefault(); drop.classList.add("on"); });
