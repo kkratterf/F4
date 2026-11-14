@@ -20,6 +20,8 @@
 
 Stickers like on WhatsApp, but for the whole Mac. Press **fn F4**, type a few letters, hit Enter: the sticker is on your clipboard, animation included, ready to paste into Slack, Discord, Teams, Telegram or anywhere else. A native macOS app in Swift (SwiftUI and AppKit), free and open source, with no account and no tracking.
 
+<p align="center"><img src="Resources/readme/hero.webp" alt="F4 on a Mac: over a chat, fn F4 opens the panel, a few letters find a sticker, Enter copies it and ⌘V pastes it into the chat; then an animated one, the same way" width="100%"></p>
+
 *F4, basito.* Named after the most famous face in [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)).
 
 **Install** (macOS 14+, free, no special permissions):
@@ -254,6 +256,7 @@ Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for the short 
 ## Credits
 
 - The cats in the starter pack's **Maramao** folder, also shown on the website and in this README, are internet memes whose authors we don't know. If one of them is yours and you want it out of F4, [open an issue](https://github.com/kkratterf/f4/issues) and it goes. The same goes for the goat sticker on the website.
+- The stickers in the website's hero video and the preview above are the maintainer's own collection of internet memes, recorded in F4 and never copied into `main`. If one of them is yours and you want it out of the video, [open an issue](https://github.com/kkratterf/f4/issues).
 - The Michael Scott GIF at the bottom of the website is from The Office, served by [GIPHY](https://giphy.com/theoffice) and never copied into this repository.
 - The logo is Stanis from [Boris](https://it.wikipedia.org/wiki/Boris_(serie_televisiva)), "F4, basito".
 - Headings on the website and in the banner use [Bricolage Grotesque](https://github.com/ateliertriay/bricolage) (SIL Open Font License 1.1).
