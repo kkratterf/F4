@@ -30,10 +30,6 @@ curl -fsSL https://raw.githubusercontent.com/kkratterf/f4/main/install.sh | sh
 
 or [download the DMG](https://github.com/kkratterf/f4/releases/latest/download/F4.dmg), or use [Homebrew](#3-homebrew). F4 is signed with a Developer ID and notarized by Apple, so it opens like any other app.
 
-<p align="center">
-  <img src="Resources/readme/demo.webp" alt="F4 opens over a chat, a few letters find a cat sticker, Enter copies it and it lands in the chat" width="720">
-</p>
-
 ---
 
 ## How it works

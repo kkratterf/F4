@@ -270,34 +270,12 @@ section[id] { scroll-margin-top: 84px; }
 @media (prefers-reduced-motion: reduce) { .key.hot { animation: none; } .caret { animation: none; } }
 @media (max-width: 760px) { .kb-wrap { justify-content: flex-start; -webkit-mask-image: linear-gradient(to right, #000 92%, transparent); mask-image: linear-gradient(to right, #000 92%, transparent); } .kb { --k: 36px; --g: 5px; padding: 10px; } .k-wider { width: calc(var(--k) * 1.2); } .key { font-size: 13px; border-radius: 9px; } .k-mod small { display: none; } }
 
-/* Modes: three tabs in a row, the recording of the selected one big underneath */
-.modes { display: grid; gap: 24px; }
-.mode-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 6px; border-radius: 18px; background: rgb(255 255 255 / 2.5%); box-shadow: inset 0 0 0 1px var(--line); }
-.mode-tab {
-  display: block; width: 100%; text-align: left; padding: 14px 16px; border-radius: 13px; cursor: pointer;
-  border: 0; background: none; color: var(--dim); font: inherit;
-  transition: background-color .15s, color .15s, box-shadow .15s;
-}
-.mode-tab:hover { color: var(--muted); background: rgb(255 255 255 / 3%); }
-.mode-tab[aria-selected="true"] { color: var(--muted); background: rgb(255 255 255 / 7%); box-shadow: inset 0 1px 0 rgb(255 255 255 / 7%), 0 8px 24px -12px rgb(0 0 0 / 80%); }
-.mode-tab h3 { color: var(--muted); display: flex; align-items: center; gap: 10px; transition: color .15s; }
-.mode-tab[aria-selected="true"] h3 { color: var(--ink); }
-.mode-tab h3 span { font-size: 18px; }
-.mode-tab p { margin-top: 6px; font-size: 14px; line-height: 1.5; }
 .screen {
   position: relative; margin: 0; overflow: hidden; border-radius: 16px; background: #000; aspect-ratio: 16 / 10;
   border: 1px solid var(--line-strong); box-shadow: 0 0 0 6px rgb(255 255 255 / 3%), 0 40px 120px -20px rgb(0 0 0 / 90%);
 }
 .screen video, .screen img { width: 100%; height: 100%; object-fit: cover; }
 .screen .mb-cat { background: var(--accent); }
-.mode-panel[hidden] { display: none; }
-.mode-caption { display: none; margin-top: 14px; color: var(--muted); font-size: 15px; text-align: center; }
-@media (max-width: 820px) {
-  .mode-list { display: flex; overflow-x: auto; scrollbar-width: none; }
-  .mode-tab { flex: none; width: auto; padding: 10px 14px; }
-  .mode-tab p { display: none; }
-  .mode-caption { display: block; }
-}
 
 /* Bento grid of features, each cell with a small piece of the app's UI */
 .bento { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
@@ -351,9 +329,6 @@ kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-si
 .bubble-gif img { width: 100%; height: 100%; object-fit: cover; color: transparent; font-size: 0; }
 .bubble-apps { font-size: 12px; font-weight: 600; color: var(--dim); }
 .bubble-gif.square { aspect-ratio: 1; width: 132px; }
-.tab-pills { display: flex; flex-wrap: nowrap; justify-content: center; gap: 6px; }
-.tab-pills span { padding: 5px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--dim); }
-.tab-pills .on { color: var(--ink); background: rgb(255 255 255 / 8%); box-shadow: inset 0 0 0 1px var(--line); }
 
 
 /* Closing call to action */
@@ -458,3 +433,67 @@ kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-si
 .pasted.sticker .tsk { font-size: 22cqi; }
 .outro .clip.sticker { border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
 .outro .clip.sticker img { object-fit: contain; filter: drop-shadow(0 18px 40px rgb(255 196 61 / 35%)); }
+
+/* "Try it here": a working copy of the F4 panel over a Raycast wallpaper
+   (hotlinked from raycast.com/wallpapers, never committed). It follows the
+   app: one Stickers tab, a 5-column grid of square tiles, the accent-blue
+   selection with the name under it, Copy and Actions in the footer, and the
+   "Copied to Clipboard" pill at the bottom of the screen. */
+.sim {
+  --blue: #0a84ff;
+  position: relative; margin: 0 auto; max-width: 1000px; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 16px;
+  border: 1px solid var(--line-strong); box-shadow: 0 0 0 6px rgb(255 255 255 / 3%), 0 40px 120px -20px rgb(0 0 0 / 90%);
+  background: #2a1a10 url("https://misc-assets.raycast.com/wallpapers/autumnal-peach.png") center / cover no-repeat;
+  text-align: left; cursor: default;
+}
+.sim-desk { position: absolute; inset: 26px 0 0; display: grid; place-items: center; }
+.sim-closed { opacity: 0; transition: opacity .3s; padding: 10px 16px; border-radius: 999px; font-size: 14px; font-weight: 600; color: #fff; background: rgb(0 0 0 / 45%); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+.sim[data-open="false"] .sim-closed { opacity: 1; transition-delay: .9s; }
+.sim[data-open="false"] .sim-desk { cursor: pointer; }
+.sim-panel {
+  position: absolute; left: 50%; top: 13%; width: min(680px, 72%); height: 68%; display: flex; flex-direction: column;
+  transform: translateX(-50%); border-radius: 16px; overflow: hidden;
+  background: rgb(30 30 32 / 82%); border: 1px solid rgb(255 255 255 / 14%);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 8%), 0 30px 80px -10px rgb(0 0 0 / 70%);
+  -webkit-backdrop-filter: blur(30px) saturate(170%); backdrop-filter: blur(30px) saturate(170%);
+  color: #f5f5f7; font-size: 13px; transition: opacity .15s, transform .15s;
+}
+.sim[data-open="false"] .sim-panel { opacity: 0; transform: translateX(-50%) scale(.98); pointer-events: none; }
+.sim-search { display: flex; align-items: center; gap: 10px; flex: none; height: 52px; padding: 0 16px; cursor: text; }
+.sim-search svg { width: 18px; height: 18px; flex: none; color: rgb(255 255 255 / 55%); }
+.sim-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: none; color: inherit; font: 400 20px/1 var(--font); caret-color: var(--blue); }
+.sim-search input::placeholder { color: rgb(255 255 255 / 35%); }
+.sim-tabs { display: flex; flex: none; padding: 0 12px 8px; border-bottom: 1px solid rgb(255 255 255 / 10%); }
+.sim-tabs span { padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600; }
+.sim-tabs .on { background: rgb(10 132 255 / 25%); }
+.sim-grid { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-content: start; gap: 10px; padding: 12px; scrollbar-width: thin; }
+.sim-cell { position: relative; display: block; width: 100%; height: 0; padding: 0 0 100%; border: 0; border-radius: 8px; overflow: hidden; cursor: pointer; background: rgb(255 255 255 / 6%); font: inherit; color: inherit; }
+.sim-cell img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; color: transparent; font-size: 0; }
+.sim-cell::after { content: ""; position: absolute; inset: 0; border-radius: inherit; border: 3px solid transparent; pointer-events: none; }
+.sim-cell[aria-selected="true"]::after { border-color: var(--blue); }
+.sim-cell[hidden] { display: none; }
+.sim-name { position: absolute; left: 0; right: 0; bottom: 0; display: none; padding: 3px 6px; font-size: 11px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; background: rgb(40 40 44 / 75%); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.sim-cell[aria-selected="true"] .sim-name { display: block; }
+.sim-gif { position: absolute; top: 5px; right: 5px; padding: 2px 4px; border-radius: 3px; font: 700 9px/1 var(--font); font-style: normal; color: #fff; background: rgb(0 0 0 / 55%); }
+.sim-none { grid-column: 1 / -1; margin: 48px 0; text-align: center; color: rgb(255 255 255 / 45%); }
+.sim-foot { display: flex; flex: none; align-items: center; justify-content: space-between; gap: 12px; height: 40px; padding: 0 14px; font-size: 12px; background: rgb(255 255 255 / 3%); border-top: 1px solid rgb(255 255 255 / 10%); }
+.sim-foot b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 400; color: rgb(255 255 255 / 55%); }
+.sim-foot > span { display: flex; align-items: center; gap: 6px; white-space: nowrap; }
+.sim-foot button { display: flex; align-items: center; gap: 6px; padding: 0; border: 0; background: none; color: inherit; font: 500 12px/1 var(--font); cursor: pointer; }
+.sim-foot i { width: 1px; height: 16px; margin: 0 6px; background: rgb(255 255 255 / 15%); }
+.sim-key { display: inline-grid; place-items: center; min-width: 20px; height: 20px; padding: 0 4px; border-radius: 5px; font-size: 11px; background: rgb(255 255 255 / 8%); color: rgb(255 255 255 / 60%); }
+.sim-toast {
+  position: absolute; left: 50%; bottom: 10%; display: flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 999px;
+  font: 500 13px/1 var(--font); color: #fff; white-space: nowrap; background: rgb(0 0 0 / 82%); border: 1px solid rgb(255 255 255 / 12%);
+  transform: translate(-50%, 8px); opacity: 0; transition: opacity .25s, transform .25s; pointer-events: none;
+}
+.sim-toast svg { width: 16px; height: 16px; }
+.sim-toast.on { opacity: 1; transform: translate(-50%, 0); }
+@media (max-width: 760px) {
+  .sim { aspect-ratio: 3 / 4; }
+  .sim-panel { width: 92%; top: 9%; height: 74%; }
+  .sim-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 10px; }
+  .sim-foot > span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .sim-panel, .sim-toast, .sim-closed { transition: none; } }
+
