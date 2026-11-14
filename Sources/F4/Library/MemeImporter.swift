@@ -78,6 +78,11 @@ enum MemeImporter {
         for item in pasteboard.pasteboardItems ?? [] {
             if let image = imageData(in: item) { images.append(image) }
         }
+        if images.count == 1, [MemeKind.png, .jpeg].contains(images[0].1),
+           let animated = await animatedOriginal(on: pasteboard) {
+            // A browser copied a still frame of a GIF: keep the GIF.
+            return [try await write(animated.data, kind: animated.kind, name: animated.name, into: folder, convert: false)]
+        }
         if !images.isEmpty {
             var saved: [URL] = []
             for (data, kind) in images {
@@ -124,6 +129,26 @@ enum MemeImporter {
             return (png, .png)
         }
         return nil
+    }
+
+    /// The animated GIF or WebP behind a still picture on `pasteboard`.
+    /// "Copy Image" in Chrome, Safari or Firefox puts a PNG or TIFF of the
+    /// first frame on the clipboard, and the image's link beside it: F4
+    /// downloads that link (the user pasted it) and keeps the file when it
+    /// really is a GIF or a WebP. Nil when there is no such link or the
+    /// download fails, and the still picture is saved instead.
+    private static func animatedOriginal(on pasteboard: NSPasteboard) async -> (data: Data, kind: MemeKind, name: String?)? {
+        let urls = ((pasteboard.readObjects(forClasses: [NSURL.self]) as? [URL]) ?? [])
+            .filter { !$0.isFileURL }
+            .map(\.absoluteString)
+        guard let link = MemeImport.animatedImageLink(urls: urls, html: pasteboard.string(forType: .html)),
+              let data = try? await fetch(link),
+              let kind = MemeImport.kind(sniffing: data), kind == .gif || kind == .webp
+        else { return nil }
+        // A file name from the link ("dancing-cat.gif"), else, when the link
+        // only gives a host, what F4 reads on the picture.
+        let suggested = MemeImport.suggestedName(for: link)
+        return (data, kind, suggested == link.host ? nil : suggested)
     }
 
     private static func receive(_ receivers: [NSFilePromiseReceiver]) async throws -> [URL] {
@@ -241,25 +266,7 @@ enum MemeImporter {
         }
         let giphy = MemeImport.giphyMedia(for: link)
         let source = giphy?.url ?? link
-        let configuration = URLSessionConfiguration.ephemeral
-        configuration.timeoutIntervalForRequest = 20
-        let session = URLSession(configuration: configuration)
-        defer { session.finishTasksAndInvalidate() }
-        let data: Data
-        do {
-            let (body, response) = try await session.data(from: source)
-            if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
-                throw Failure.download(HTTPURLResponse.localizedString(forStatusCode: http.statusCode))
-            }
-            data = body
-        } catch let failure as Failure {
-            throw failure
-        } catch {
-            throw Failure.download(error.localizedDescription)
-        }
-        guard data.count <= maxDownloadBytes else {
-            throw Failure.download(String(localized: "the file is larger than 50 MB"))
-        }
+        let data = try await fetch(source)
         if StickerArchive.isArchive(source), data.starts(with: [0x50, 0x4B]) {
             // A link to a sticker pack file ("PK", a zip): unpack it.
             let file = FileManager.default.temporaryDirectory.appendingPathComponent(source.lastPathComponent)
@@ -276,6 +283,30 @@ enum MemeImporter {
 }
 
 extension MemeImporter {
+    /// The body of `url`, up to 50 MB. Throws `Failure.download`.
+    fileprivate static func fetch(_ url: URL) async throws -> Data {
+        let configuration = URLSessionConfiguration.ephemeral
+        configuration.timeoutIntervalForRequest = 20
+        let session = URLSession(configuration: configuration)
+        defer { session.finishTasksAndInvalidate() }
+        let data: Data
+        do {
+            let (body, response) = try await session.data(from: url)
+            if let http = response as? HTTPURLResponse, !(200..<300).contains(http.statusCode) {
+                throw Failure.download(HTTPURLResponse.localizedString(forStatusCode: http.statusCode))
+            }
+            data = body
+        } catch let failure as Failure {
+            throw failure
+        } catch {
+            throw Failure.download(error.localizedDescription)
+        }
+        guard data.count <= maxDownloadBytes else {
+            throw Failure.download(String(localized: "the file is larger than 50 MB"))
+        }
+        return data
+    }
+
     /// Downloads a getstickerpack pack into a folder named after it.
     fileprivate static func downloadPack(slug: String, title: String?, into folder: URL) async throws -> [URL] {
         let name = StickerPackLink.folderName(slug: slug, title: title)

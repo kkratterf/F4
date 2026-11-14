@@ -1,5 +1,6 @@
 import AppKit
 import Carbon.HIToolbox
+import Combine
 import F4Core
 import SwiftUI
 
@@ -27,6 +28,7 @@ final class PanelController: NSObject, NSWindowDelegate {
     /// ⌘K and ⌘M: the actions over the panel.
     private let palette = ActionPalette()
     private let organizer: LibraryOrganizer
+    private var tabChanges: AnyCancellable?
 
     init(library: MemeLibrary, usage: UsageStore, organizer: LibraryOrganizer) {
         self.library = library
@@ -52,6 +54,13 @@ final class PanelController: NSObject, NSWindowDelegate {
         panel.contentView = hosting
         panel.delegate = self
         panel.onCancel = { [weak self] in self?.hide() }
+        // A tab picked with a click or a key: the search field keeps the
+        // keyboard, whatever the click landed on. SwiftUI's focus state
+        // alone can't do it: it still reads "focused" after AppKit moved
+        // the first responder, so setting it again changes nothing.
+        tabChanges = model.$tab.dropFirst().sink { [weak self] _ in
+            DispatchQueue.main.async { MainActor.assumeIsolated { self?.focusSearchField() } }
+        }
     }
 
     /// Copies the meme and gets out of the way, so the user can paste right

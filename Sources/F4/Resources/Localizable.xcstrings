@@ -242,16 +242,6 @@
         }
       }
     },
-    "Everything else": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tutto il resto"
-          }
-        }
-      }
-    },
     "F4 can only add GIF, PNG, JPEG and WebP images, and WhatsApp sticker packs (.wastickers).": {
       "localizations": {
         "it": {
