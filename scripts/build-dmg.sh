@@ -119,15 +119,9 @@ else
 fi
 
 # 5. Finder window layout.
-# Finder has no setting for the colour of icon labels: it picks black or
-# white from the window's background colour, even with a picture over
-# it (black labels on our dark picture were unreadable in 0.7.1). The
-# colour behind the picture is set to black, so "F4" and "Applications"
-# come out white.
 background_line=""
 if [ -n "$BACKGROUND" ]; then
-  background_line="set background color of viewOptions to {0, 0, 0}
-    set background picture of viewOptions to file \".background:$BACKGROUND\""
+  background_line="set background picture of viewOptions to file \".background:$BACKGROUND\""
 fi
 LAYOUT_SCRIPT="
 tell application \"Finder\"
