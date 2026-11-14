@@ -189,7 +189,6 @@ p { margin: 0; }
 .f4p-tabs { display: flex; gap: .3em; padding: .7em .9em 0; color: var(--dim); font-weight: 500; }
 .f4p-tabs span { padding: .35em .75em; border-radius: .55em; }
 .f4p-tabs .on { background: rgb(255 255 255 / 8%); color: var(--ink); }
-.f4p-sec { padding: .9em 1.1em 0; font-size: .85em; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--dim); }
 .f4p-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65em; padding: .75em .9em .9em; }
 .f4p-cell { position: relative; aspect-ratio: 4 / 3; overflow: hidden; border-radius: .75em; border: 2px solid transparent; background: linear-gradient(135deg, #2e2620, #191614); transition: opacity .25s, border-color .25s, box-shadow .25s; }
 .f4p-cell:nth-child(3n+2) { background: linear-gradient(135deg, #2a2030, #161419); }
@@ -292,8 +291,6 @@ section[id] { scroll-margin-top: 84px; }
 .screen video, .screen img { width: 100%; height: 100%; object-fit: cover; }
 .screen .mb-cat { background: var(--accent); }
 .mode-panel[hidden] { display: none; }
-.modes-note { margin-top: 28px; color: var(--dim); font-size: 14px; text-align: center; }
-.modes-note b { color: var(--muted); font-weight: 600; }
 .mode-caption { display: none; margin-top: 14px; color: var(--muted); font-size: 15px; text-align: center; }
 @media (max-width: 820px) {
   .mode-list { display: flex; overflow-x: auto; scrollbar-width: none; }
@@ -353,12 +350,11 @@ kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-si
 .bubble-gif { display: block; width: 168px; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 14px 14px 14px 4px; border: 1px solid var(--line-strong); background: linear-gradient(135deg, #3a2a0e, #1a1714); box-shadow: 0 16px 40px -12px rgb(0 0 0 / 70%); }
 .bubble-gif img { width: 100%; height: 100%; object-fit: cover; color: transparent; font-size: 0; }
 .bubble-apps { font-size: 12px; font-weight: 600; color: var(--dim); }
-/* Favourites first: a starred tile leads the row */
-.fav-row { display: flex; gap: 8px; }
-.fav-tile { position: relative; display: grid; place-items: center; width: 56px; height: 56px; border-radius: 12px; border: 2px solid transparent; background: rgb(255 255 255 / 5%); }
-.fav-tile img { width: 34px; height: 34px; color: transparent; font-size: 0; }
-.fav-tile.on { border-color: var(--accent); box-shadow: 0 0 0 3px rgb(255 196 61 / 18%); }
-.fav-star { position: absolute; top: -7px; right: -7px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; font-style: normal; font-size: 11px; color: #1a1204; background: var(--accent); }
+.bubble-gif.square { aspect-ratio: 1; width: 132px; }
+.tab-pills { display: flex; flex-wrap: nowrap; justify-content: center; gap: 6px; }
+.tab-pills span { padding: 5px 10px; border-radius: 8px; font-size: 13px; font-weight: 600; color: var(--dim); }
+.tab-pills .on { color: var(--ink); background: rgb(255 255 255 / 8%); box-shadow: inset 0 0 0 1px var(--line); }
+
 
 /* Closing call to action */
 .outro { position: relative; text-align: center; padding: 140px 0; overflow: hidden; }
@@ -438,9 +434,8 @@ kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-si
 .screen .f4p { transform: none; width: 68%; }
 .screen .f4p-cell img { object-fit: cover; }
 .screen .f4p-cell.st img { object-fit: contain; }
-/* The maramao cats are photos: they fill their cell, unlike the emoji, which float in it. */
+/* The maramao cats are photos: they fill their cell. */
 .f4p-cell.st img[src*="media/stickers/"] { object-fit: cover; padding: 0; }
-.fav-tile img[src*="media/stickers/"] { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
 /* A GIF that fails to load leaves its coloured tile, not its alt text */
 .f4p-cell img, .pasted img, .clip img { color: transparent; font-size: 0; }
 @media (max-width: 640px) { .mac-screen, .screen { aspect-ratio: 4 / 3.4; } .over { padding-top: 5%; } .screen .f4p { width: 90%; } }
@@ -463,5 +458,3 @@ kbd.sm { min-width: 0; height: 24px; padding: 0 7px; border-radius: 7px; font-si
 .pasted.sticker .tsk { font-size: 22cqi; }
 .outro .clip.sticker { border: 0; border-radius: 0; box-shadow: none; overflow: visible; }
 .outro .clip.sticker img { object-fit: contain; filter: drop-shadow(0 18px 40px rgb(255 196 61 / 35%)); }
-.bubble-gif.sticker, .bubble-gif:has(img[src*="notoemoji"]) { aspect-ratio: 1; width: 120px; border: 0; background: none; box-shadow: none; }
-.bubble-gif:has(img[src*="notoemoji"]) img { object-fit: contain; }
